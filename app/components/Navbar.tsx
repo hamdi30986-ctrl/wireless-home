@@ -134,8 +134,8 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-md'
-          : 'bg-white'
+          ? 'bg-[#111318]/95 backdrop-blur-md shadow-lg shadow-black/20'
+          : 'bg-[#111318]'
       }`}
       style={{
         height: 'var(--header-height)',
@@ -143,12 +143,19 @@ export default function Navbar() {
         isolation: 'isolate'
       }}
     >
+      {/* Soft bottom edge gradient */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-4 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, transparent 0%, rgba(17, 19, 24, 0.3) 100%)'
+        }}
+      />
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <nav className="flex items-center justify-between h-full">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-3 text-xl font-extrabold tracking-tight text-gray-900 hover:opacity-80 transition-opacity duration-200"
+            className="flex items-center gap-3 text-xl font-extrabold tracking-tight text-white hover:opacity-80 transition-opacity duration-200"
           >
             <div className="relative w-12 h-12 flex-shrink-0">
               <Image
@@ -160,14 +167,14 @@ export default function Navbar() {
                 priority
               />
             </div>
-            <span className="hidden sm:inline">Wireless Home</span>
+            <span className="inline">Wireless Home</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             <Link
               href="/"
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#0066FF] transition-colors duration-200 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-[#00B5AD] transition-colors duration-200 rounded-lg hover:bg-white/10"
             >
               {t.nav.home}
             </Link>
@@ -180,8 +187,8 @@ export default function Navbar() {
               onMouseLeave={handleMouseLeave}
             >
               <button
-                className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg hover:bg-gray-50 ${
-                  isDropdownOpen ? 'text-[#0066FF]' : 'text-gray-700 hover:text-[#0066FF]'
+                className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg hover:bg-white/10 ${
+                  isDropdownOpen ? 'text-[#00B5AD]' : 'text-gray-300 hover:text-[#00B5AD]'
                 }`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
@@ -212,14 +219,14 @@ export default function Navbar() {
 
             <Link
               href="/store"
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#0066FF] transition-colors duration-200 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-[#00B5AD] transition-colors duration-200 rounded-lg hover:bg-white/10"
             >
               {t.nav.store}
             </Link>
 
             <Link
               href="/about"
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#0066FF] transition-colors duration-200 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-[#00B5AD] transition-colors duration-200 rounded-lg hover:bg-white/10"
             >
               {t.nav.about}
             </Link>
@@ -229,18 +236,18 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <button
               onClick={toggleLanguage}
-              className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#0066FF] transition-colors duration-200 rounded-lg hover:bg-gray-50 hidden sm:flex items-center gap-1"
+              className="px-3 py-2 text-sm font-medium text-gray-300 hover:text-[#00B5AD] transition-colors duration-200 rounded-lg hover:bg-white/10 flex items-center gap-1"
             >
               {language === 'en' ? (
                 <>
                   <span className="arabic-text">العربية</span>
-                  <span className="text-gray-300">|</span>
+                  <span className="text-gray-600">|</span>
                   <span>EN</span>
                 </>
               ) : (
                 <>
                   <span>English</span>
-                  <span className="text-gray-300">|</span>
+                  <span className="text-gray-600">|</span>
                   <span className="arabic-text">ع</span>
                 </>
               )}
@@ -255,7 +262,7 @@ export default function Navbar() {
             </Link>
 
             <button
-              className="lg:hidden p-2 text-gray-700 hover:text-[#0066FF] hover:bg-gray-50 rounded-lg transition-colors duration-200"
+              className="lg:hidden p-2 text-white hover:text-[#00B5AD] hover:bg-white/10 rounded-lg transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               style={{ zIndex: 10001 }}
             >
