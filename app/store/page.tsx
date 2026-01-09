@@ -623,7 +623,7 @@ export default function StorePage() {
   return (
     <div style={{ backgroundColor: '#ffffff' }}>
       {/* Hero Section */}
-      <section className="pt-20">
+      <section>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeBrand}
