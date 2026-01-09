@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@import "tailwindcss";
+
+@theme {
+  --color-electric-blue: #0066FF;
+  --color-electric-blue-hover: #0052CC;
+  --color-dark-slate: #0F172A;
+  --color-light-gray: #F8FAFC;
+}
+
+/* Base Setup */
+body {
+  background-color: white;
+  color: var(--color-dark-slate);
+}
+:root {
+  /* Layout / sizing */
+  --header-height: 64px;
+
+  /* Brand Colors */
+  --color-electric-blue: #0066FF;
+  --color-electric-blue-hover: #0052CC;
+  --color-electric-blue-light: rgba(0, 102, 255, 0.06);
+  --color-aqara-cyan: #00B5AD;
+  --color-dark-slate: #0F172A;
+  --color-light-gray: #F8FAFC;
+
+  /* Shadows */
+  --shadow-dropdown: 0 8px 24px rgba(2,6,23,0.08);
+}
+
+/* Base Styles */
+body {
+  color: var(--color-dark-slate);
+  background: white;
+  margin: 0;
+  overflow-x: hidden; /* Prevents horizontal scrollbar issues */
+}
+
+/* Prevent the fixed header from overlapping content */
+main {
+  padding-top: var(--header-height);
+  /* CRITICAL FIX: Isolate stacking context to prevent sections from creating layers above navbar */
+  position: relative;
+  z-index: 1;
+}
+
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Utility classes for the specific blue color */
+.bg-electric-blue {
+  background-color: var(--color-electric-blue);
+}
+
+.text-electric-blue {
+  color: var(--color-electric-blue);
+}
+
+.border-electric-blue {
+  border-color: var(--color-electric-blue);
+}
+
+/* CRITICAL: Force navbar and mobile menu to ALWAYS be on top */
+header[style*="height: var(--header-height)"] {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+/* Mobile menu backdrop and panel - MUST be above everything */
+.mobile-menu-overlay {
+  z-index: 99998 !important;
+  position: fixed !important;
+}
+
+/* Mobile menu toggle button */
+button[style*="zIndex: 10001"] {
+  z-index: 100000 !important;
+  position: relative !important;
+}
+
+/* RTL Support for Arabic */
+[dir="rtl"] {
+  font-family: var(--font-arabic), sans-serif;
+}
+
+[dir="rtl"] .arabic-text {
+  font-family: var(--font-arabic), sans-serif;
+}
+
+/* RTL text alignment */
+[dir="rtl"] body {
+  text-align: right;
+}
+
+[dir="rtl"] .text-center {
+  text-align: center !important;
+}

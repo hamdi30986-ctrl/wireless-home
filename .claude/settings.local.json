@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 8)",
+      "Bash(taskkill /F /PID 36448)",
+      "Bash(cat:*)",
+      "Bash(for dir in lighting curtains water wifi entertainment)",
+      "Bash(do cp \"$dir/page.tsx\" \"$dir/page.tsx.backup2\")",
+      "Bash(done)",
+      "Bash(for file in lighting/page.tsx curtains/page.tsx water/page.tsx wifi/page.tsx entertainment/page.tsx)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(do cp \"$dir/page.tsx.backup\" \"$dir/page.tsx\")",
+      "Bash(do if [ -f \"$dir/page.tsx.backup\" ])",
+      "Bash(then cp \"$dir/page.tsx.backup\" \"$dir/page.tsx\")",
+      "Bash(echo:*)",
+      "Bash(elif [ -f \"$dir/page.tsx.backup2\" ])",
+      "Bash(then cp \"$dir/page.tsx.backup2\" \"$dir/page.tsx\")",
+      "Bash(fi)",
+      "Bash(mkdir:*)",
+      "Bash(python:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)"
+    ]
+  }
+}

@@ -1,0 +1,873 @@
+{
+  "nav": {
+    "home": "Home",
+    "solutions": "Solutions",
+    "store": "Store",
+    "about": "About Us",
+    "book": "Book an Appointment"
+  },
+  "solutions": {
+    "lighting": "Smart Lighting",
+    "climate": "Climate Control",
+    "security": "Security",
+    "curtains": "Motorized Curtains",
+    "water": "Water Management",
+    "entertainment": "Entertainment",
+    "wifi": "Wi-Fi & Networking"
+  },
+  "home": {
+    "badge": "The Future of Home Living",
+    "heading1": "Your Home, Just Smarter.",
+    "heading2": "No Wires, No Mess.",
+    "subheading": "The 2026 standard for home automation in Saudi Arabia.",
+    "cta1": "Explore Solutions",
+    "cta2": "Devices Store",
+    "trust1": "2 Year Warranty",
+    "trust2": "100% Wireless",
+    "trust3": "One App Control",
+    "scroll": "Scroll",
+    "whyUs": {
+      "badge": "Why Choose Us",
+      "heading": "Smart Home, the Right Way",
+      "subheading": "We've engineered our solutions specifically for Saudi homes and lifestyles.",
+      "retrofit": {
+        "title": "Zero Damage Retrofit",
+        "description": "Our wireless solutions install without drilling, cutting, or damaging your walls. Perfect for renters and homeowners who want smart features without the mess.",
+        "check": "No construction required"
+      },
+      "oneApp": {
+        "title": "One App Control",
+        "description": "Forget juggling multiple apps. Control your lights, AC, curtains, and security from a single, intuitive interface—even when you're away from home.",
+        "check": "Works with Apple & Google"
+      },
+      "climate": {
+        "title": "Saudi Climate Ready",
+        "description": "Devices tested for extreme heat and humidity. Our smart climate control learns your patterns and optimizes for Saudi Arabia's unique environment.",
+        "check": "50°C+ heat resistant"
+      }
+    },
+    "transformation": {
+      "badge": "Transformation",
+      "heading": "See the Difference",
+      "subheading": "Drag the slider to compare a traditional wired setup with our wireless smart home solution."
+    },
+    "portfolio": {
+      "badge": "Our Portfolio",
+      "heading": "Smart Homes We've Built",
+      "cta": "View Our Work",
+      "livingRoom": "Living Room",
+      "kitchen": "Kitchen",
+      "bedroom": "Bedroom",
+      "office": "Office"
+    },
+    "finalCta": {
+      "heading": "Ready to Transform Your Home?",
+      "subheading": "Book a free consultation with our smart home experts. We'll design the perfect solution for your space.",
+      "button1": "Request a Consultation",
+      "button2": "Chat on WhatsApp"
+    }
+  },
+  "lighting": {
+    "badge": "Next-Gen Illumination",
+    "heading1": "Lighting That",
+    "heading2": "Thinks & Feels.",
+    "subheading": "Forget flipping switches. Experience lighting that welcomes you home and sets the perfect mood.",
+    "cta1": "Design Your Lighting",
+    "cta2": "View Products",
+    "trust1": "Circadian Rhythm",
+    "trust2": "Energy Efficient",
+    "trust3": "App Controlled",
+    "scroll": "Scroll",
+    "features": {
+      "title": "Smart Features",
+      "heading": "Control at Your Fingertips",
+      "subheading": "Modern lighting that adapts to your life, not the other way around.",
+      "control": {
+        "title": "Control From Anywhere",
+        "description": "Left the lights on? No problem. Turn them off from anywhere in the world with our mobile app.",
+        "check": "iOS & Android compatible"
+      },
+      "voice": {
+        "title": "Voice Command",
+        "description": "\"Hey Siri, dim the living room.\" Works seamlessly with Siri, Google Assistant, and Alexa.",
+        "check": "Siri, Google & Alexa ready"
+      },
+      "energy": {
+        "title": "Energy Saving",
+        "description": "Smart scheduling and presence detection means lights are only on when needed. Save up to 40%.",
+        "check": "Reduce AC bills too"
+      }
+    },
+    "automation": {
+      "title": "Intelligent Automation",
+      "heading1": "It knows what you need,",
+      "heading2": "before you ask.",
+      "prayer": {
+        "title": "Synced with Prayer Times",
+        "description": "Lights automatically adjust for Fajr wake-up routines and Maghrib ambiance."
+      },
+      "presence": {
+        "title": "True Presence Detection",
+        "description": "mmWave radar sensors detect even the slightest movement. No more lights turning off while you're reading."
+      },
+      "child": {
+        "title": "Child Safety",
+        "description": "Nightlights activate automatically when kids wake up"
+      },
+      "vacation": {
+        "title": "Vacation Mode",
+        "description": "Random patterns simulate presence while you're away"
+      },
+      "movie": {
+        "title": "Movie Time",
+        "description": "One tap dims lights and sets cinema ambiance"
+      }
+    },
+    "hardware": {
+      "title": "Premium Hardware",
+      "heading1": "Beauty meets",
+      "heading2": "Intelligence.",
+      "subheading": "Our curated selection of smart lighting hardware combines stunning design with powerful automation capabilities.",
+      "switches": {
+        "title": "Smart Wall Switches",
+        "description": "Retrofit-ready switches that replace your existing ones. No new wiring required."
+      },
+      "strips": {
+        "title": "COB LED Strips",
+        "description": "Dot-free, continuous lighting for under-cabinet and accent applications."
+      },
+      "modules": {
+        "title": "Dimmable Modules",
+        "description": "Smooth 1-100% dimming with no flicker. Perfect for setting any mood."
+      },
+      "browse": "Browse All Lighting Products"
+    },
+    "cta": {
+      "badge": "Free Consultation",
+      "heading": "Ready to light up your home?",
+      "subheading": "Our lighting specialists will design a custom solution that transforms every room in your home.",
+      "quote": "Get a Free Lighting Quote",
+      "chat": "Chat with Specialist"
+    }
+  },
+  "climate": {
+    "badge": "Intelligent Climate Control",
+    "heading1": "Perfect Weather,",
+    "heading2": "Inside Your Home.",
+    "subheading": "Walk into a cool home every time without wasting energy. Pre-cool from the office, track your bills, and let your home handle the Saudi heat.",
+    "cta1": "Get a Quote",
+    "cta2": "View Products",
+    "trust1": "Pre-Cool Remote",
+    "trust2": "Energy Tracking",
+    "trust3": "Smart Scheduling",
+    "scroll": "Scroll",
+    "features": {
+      "title": "Smart Climate Features",
+      "heading": "Cool Comfort, Lower Bills",
+      "subheading": "Advanced AC control that saves energy while keeping you comfortable in Saudi summers.",
+      "remote": {
+        "title": "Remote Pre-Cooling",
+        "description": "On your way home? Start cooling 20 minutes before arrival. Walk into comfort without wasting energy all day.",
+        "check": "Works from anywhere"
+      },
+      "zones": {
+        "title": "Zone Control",
+        "description": "Different temperatures for different rooms. Keep bedrooms cooler at night, save energy in unused spaces.",
+        "check": "Individual room control"
+      },
+      "tracking": {
+        "title": "Energy Monitoring",
+        "description": "See exactly how much each AC unit costs you. Get alerts when usage spikes and optimize your consumption.",
+        "check": "Real-time cost tracking"
+      }
+    },
+    "automation": {
+      "title": "Intelligent Automation",
+      "heading1": "It adapts to Saudi weather,",
+      "heading2": "automatically.",
+      "weather": {
+        "title": "Weather-Aware Cooling",
+        "description": "System adjusts based on outdoor temperature and humidity forecasts for optimal efficiency."
+      },
+      "presence": {
+        "title": "Occupancy Detection",
+        "description": "ACs automatically turn off in empty rooms and resume when you enter. No more cooling empty spaces."
+      },
+      "sleep": {
+        "title": "Sleep Mode",
+        "description": "Gradually adjusts temperature through the night for perfect sleep comfort"
+      },
+      "prayer": {
+        "title": "Prayer Time Optimization",
+        "description": "Reduces cooling during prayer times when rooms are typically empty"
+      },
+      "peak": {
+        "title": "Peak Avoidance",
+        "description": "Shift cooling to off-peak hours to reduce electricity costs"
+      }
+    },
+    "hardware": {
+      "title": "Premium Hardware",
+      "heading1": "Universal compatibility,",
+      "heading2": "Premium control.",
+      "subheading": "Smart AC controllers that work with any brand of air conditioner, giving you app control and automation.",
+      "controllers": {
+        "title": "Smart AC Controllers",
+        "description": "Retrofit any AC unit with smart control. Works with all major brands in Saudi Arabia."
+      },
+      "sensors": {
+        "title": "Temperature Sensors",
+        "description": "Place sensors in key locations for accurate temperature readings and zone control."
+      },
+      "thermostats": {
+        "title": "Smart Thermostats",
+        "description": "Replace your traditional thermostat with intelligent climate control and energy monitoring."
+      },
+      "browse": "Browse All Climate Products"
+    },
+    "cta": {
+      "badge": "Free Energy Audit",
+      "heading": "Ready to beat the heat smartly?",
+      "subheading": "Our climate specialists will analyze your current setup and design a solution that keeps you cool while cutting your electricity bills.",
+      "quote": "Get Free Climate Quote",
+      "chat": "Chat with Specialist"
+    }
+  },
+  "security": {
+    "badge": "Advanced Security Systems",
+    "heading1": "Sleep Soundly.",
+    "heading2": "We're Watching.",
+    "subheading": "24/7 smart surveillance, instant alerts, and remote access. Know what's happening at home whether you're traveling or just at work.",
+    "cta1": "Secure My Home",
+    "cta2": "View Systems",
+    "trust1": "24/7 Monitoring",
+    "trust2": "Instant Alerts",
+    "trust3": "Cloud Recording",
+    "scroll": "Scroll",
+    "features": {
+      "title": "Security Features",
+      "heading": "Peace of Mind, Always",
+      "subheading": "Advanced surveillance and smart alerts that keep your family and property protected around the clock.",
+      "live": {
+        "title": "Live Remote Viewing",
+        "description": "Check in on your home from anywhere in the world. Crystal-clear video streams directly to your phone.",
+        "check": "HD video streaming"
+      },
+      "ai": {
+        "title": "AI Person Detection",
+        "description": "Smart cameras distinguish between people, pets, and vehicles. Get alerts that matter, not false alarms from shadows.",
+        "check": "Reduces false alerts by 95%"
+      },
+      "night": {
+        "title": "Night Vision",
+        "description": "Full-color night vision keeps watch even in complete darkness. See who's there, day or night.",
+        "check": "Full-color night mode"
+      }
+    },
+    "automation": {
+      "title": "Intelligent Security",
+      "heading1": "Protection that thinks",
+      "heading2": "one step ahead.",
+      "zones": {
+        "title": "Smart Activity Zones",
+        "description": "Define specific areas to monitor. Get alerted when someone approaches your front door or enters restricted zones."
+      },
+      "recognition": {
+        "title": "Face Recognition",
+        "description": "System learns to recognize family members and alerts you only when strangers appear."
+      },
+      "away": {
+        "title": "Away Mode",
+        "description": "Automatically arms all sensors when everyone leaves home"
+      },
+      "doorbell": {
+        "title": "Smart Doorbell Integration",
+        "description": "See and speak to visitors before opening the door"
+      },
+      "lights": {
+        "title": "Security Lighting",
+        "description": "Lights flash when motion is detected to deter intruders"
+      }
+    },
+    "hardware": {
+      "title": "Premium Hardware",
+      "heading1": "Military-grade security,",
+      "heading2": "Consumer-friendly.",
+      "subheading": "Professional-grade security cameras and sensors designed for Saudi conditions - extreme heat, dust, and bright sunlight.",
+      "cameras": {
+        "title": "4K Security Cameras",
+        "description": "Ultra-high resolution cameras with wide-angle lenses and weatherproof housing for outdoor use."
+      },
+      "doorbell": {
+        "title": "Video Doorbells",
+        "description": "See who's at the door with HD video, two-way audio, and instant alerts to your phone."
+      },
+      "sensors": {
+        "title": "Door & Window Sensors",
+        "description": "Wireless sensors that alert you when doors or windows are opened, even when you're away."
+      },
+      "browse": "Browse All Security Products"
+    },
+    "cta": {
+      "badge": "Free Security Assessment",
+      "heading": "Ready to secure your home?",
+      "subheading": "Our security experts will assess your property and design a comprehensive protection system tailored to your needs.",
+      "quote": "Get Free Security Quote",
+      "chat": "Chat with Specialist"
+    }
+  },
+  "curtains": {
+    "badge": "Motorized Curtains & Blinds",
+    "heading1": "Wake Up to Sunshine.",
+    "heading2": "Automated.",
+    "subheading": "Schedule your curtains to open with sunrise or close for movie time. Control light and privacy without leaving your bed.",
+    "cta1": "Get a Quote",
+    "cta2": "View Options",
+    "trust1": "Whisper Quiet",
+    "trust2": "Solar Powered",
+    "trust3": "Voice Control",
+    "scroll": "Scroll",
+    "features": {
+      "title": "Smart Curtain Features",
+      "heading": "Effortless Light Control",
+      "subheading": "Automated window treatments that transform how natural light flows through your Saudi home.",
+      "schedule": {
+        "title": "Sunrise & Sunset Sync",
+        "description": "Wake up naturally as curtains open with sunrise. Automatically close at sunset to keep your home cool.",
+        "check": "Follows local sun times"
+      },
+      "remote": {
+        "title": "Remote Control",
+        "description": "Open, close, or adjust any curtain from your phone. Perfect for hard-to-reach windows.",
+        "check": "Control from anywhere"
+      },
+      "scenes": {
+        "title": "One-Touch Scenes",
+        "description": "Create scenes like 'Movie Time' that closes all curtains and dims lights with a single tap.",
+        "check": "Instant ambiance control"
+      }
+    },
+    "automation": {
+      "title": "Intelligent Automation",
+      "heading1": "Light control that adapts",
+      "heading2": "to your lifestyle.",
+      "temperature": {
+        "title": "Temperature Control",
+        "description": "Automatically close curtains during peak sun hours to reduce AC load and energy costs."
+      },
+      "privacy": {
+        "title": "Smart Privacy Mode",
+        "description": "Curtains automatically close when you turn on bedroom lights in the evening for instant privacy."
+      },
+      "morning": {
+        "title": "Gentle Wake-Up",
+        "description": "Curtains gradually open over 10 minutes for natural waking"
+      },
+      "away": {
+        "title": "Vacation Mode",
+        "description": "Random opening/closing patterns to simulate presence"
+      },
+      "wind": {
+        "title": "Wind Protection",
+        "description": "Auto-close outdoor blinds when wind speeds exceed safe limits"
+      }
+    },
+    "hardware": {
+      "title": "Premium Hardware",
+      "heading1": "Silent operation,",
+      "heading2": "Stunning design.",
+      "subheading": "Whisper-quiet motors and elegant tracks that disappear into your home's architecture.",
+      "motors": {
+        "title": "Smart Curtain Motors",
+        "description": "Battery-powered or wired motors that retrofit to existing curtain tracks. Solar charging option available."
+      },
+      "tracks": {
+        "title": "Motorized Tracks",
+        "description": "Custom-fit aluminum tracks designed for Saudi windows. Supports heavy blackout curtains."
+      },
+      "blinds": {
+        "title": "Smart Blinds & Shades",
+        "description": "Roller blinds, vertical blinds, and Roman shades with integrated smart control."
+      },
+      "browse": "Browse All Window Solutions"
+    },
+    "cta": {
+      "badge": "Free Home Consultation",
+      "heading": "Ready to automate your windows?",
+      "subheading": "Our window treatment experts will measure your windows and design a custom motorized solution for every room.",
+      "quote": "Get Free Curtain Quote",
+      "chat": "Chat with Specialist"
+    }
+  },
+  "water": {
+    "badge": "Smart Water Management",
+    "heading1": "Never Worry About",
+    "heading2": "Water Leaks Again.",
+    "subheading": "Detect leaks instantly, shut off valves remotely, and monitor usage. Protect your home from water damage 24/7.",
+    "cta1": "Protect My Home",
+    "cta2": "View Sensors",
+    "trust1": "Instant Alerts",
+    "trust2": "Auto Shutoff",
+    "trust3": "Usage Tracking",
+    "scroll": "Scroll",
+    "features": {
+      "title": "Water Protection Features",
+      "heading": "Early Detection, Zero Damage",
+      "subheading": "Smart water sensors and automatic shutoff valves that prevent costly water damage before it happens.",
+      "detection": {
+        "title": "Leak Detection",
+        "description": "Wireless sensors placed near water heaters, washing machines, and pipes alert you instantly when water is detected.",
+        "check": "Instant phone alerts"
+      },
+      "shutoff": {
+        "title": "Remote Water Shutoff",
+        "description": "Smart water valves let you turn off your home's main water supply from anywhere in case of emergency.",
+        "check": "Control from anywhere"
+      },
+      "monitoring": {
+        "title": "Usage Monitoring",
+        "description": "Track daily water consumption and get alerts for unusual usage patterns that might indicate leaks.",
+        "check": "Real-time consumption data"
+      }
+    },
+    "automation": {
+      "title": "Intelligent Protection",
+      "heading1": "Prevention that works",
+      "heading2": "around the clock.",
+      "auto": {
+        "title": "Automatic Shutoff",
+        "description": "System automatically shuts off water when major leaks are detected, preventing flooding while you're away."
+      },
+      "vacation": {
+        "title": "Vacation Mode Protection",
+        "description": "Close main water valve when you leave for extended periods. Open it remotely when you return."
+      },
+      "alerts": {
+        "title": "Multi-Level Alerts",
+        "description": "Get notified via app, SMS, and email for critical water issues"
+      },
+      "frost": {
+        "title": "Freeze Protection",
+        "description": "Alerts when pipe temperatures drop to freezing levels"
+      },
+      "pressure": {
+        "title": "Pressure Monitoring",
+        "description": "Track water pressure to detect issues before they become problems"
+      }
+    },
+    "hardware": {
+      "title": "Premium Hardware",
+      "heading1": "Industrial sensors,",
+      "heading2": "Smart protection.",
+      "subheading": "Professional-grade water sensors and smart valves designed for reliability in Saudi conditions.",
+      "sensors": {
+        "title": "Water Leak Sensors",
+        "description": "Battery-powered sensors with 2-year life. Place near appliances, under sinks, or anywhere water damage could occur."
+      },
+      "valves": {
+        "title": "Smart Water Valves",
+        "description": "Retrofit your existing main water valve with smart control. Auto-close on leak detection or manual control from app."
+      },
+      "meters": {
+        "title": "Smart Water Meters",
+        "description": "Monitor flow rate and consumption in real-time. Compatible with existing plumbing installations."
+      },
+      "browse": "Browse All Water Products"
+    },
+    "cta": {
+      "badge": "Free Water Assessment",
+      "heading": "Ready to protect your home from water damage?",
+      "subheading": "Our water protection specialists will assess your home's vulnerable areas and design a comprehensive monitoring system.",
+      "quote": "Get Free Water Protection Quote",
+      "chat": "Chat with Specialist"
+    }
+  },
+  "wifi": {
+    "badge": "Smart Mesh Networking",
+    "heading1": "Full Bars in",
+    "heading2": "Every Corner.",
+    "subheading": "Eliminate dead zones in your Mulhaq or Basement. Get enterprise-grade speeds that penetrate Saudi concrete walls.",
+    "cta1": "Boost My Wi-Fi",
+    "cta2": "View Mesh Systems",
+    "trust1": "Gigabit Speeds",
+    "trust2": "Whole Home",
+    "trust3": "Self-Healing",
+    "scroll": "Scroll",
+    "features": {
+      "title": "Advanced Networking",
+      "heading": "Fast Wi-Fi, Everywhere",
+      "subheading": "Enterprise mesh networking designed to handle Saudi Arabia's thick concrete walls and multi-story homes.",
+      "coverage": {
+        "title": "Complete Coverage",
+        "description": "Mesh nodes work together to blanket your entire home - from basement to rooftop Mulhaq - with strong Wi-Fi signal.",
+        "check": "Up to 1000+ sqm coverage"
+      },
+      "speed": {
+        "title": "Gigabit Performance",
+        "description": "Wi-Fi 6E technology delivers blazing speeds even with 50+ devices connected simultaneously.",
+        "check": "Supports 100+ devices"
+      },
+      "management": {
+        "title": "Centralized Management",
+        "description": "Single app controls your entire network. Create guest networks, set parental controls, and monitor usage.",
+        "check": "Professional network control"
+      }
+    },
+    "automation": {
+      "title": "Intelligent Networking",
+      "heading1": "Network that optimizes",
+      "heading2": "itself automatically.",
+      "adaptive": {
+        "title": "Smart Band Steering",
+        "description": "System automatically moves devices between 2.4GHz and 5GHz bands for optimal performance."
+      },
+      "healing": {
+        "title": "Self-Healing Network",
+        "description": "If one node fails, the mesh automatically reroutes traffic through other nodes with zero downtime."
+      },
+      "parental": {
+        "title": "Parental Controls",
+        "description": "Schedule internet access for kids' devices and filter content"
+      },
+      "guest": {
+        "title": "Secure Guest Network",
+        "description": "Separate Wi-Fi for visitors that keeps your smart home secure"
+      },
+      "priority": {
+        "title": "Device Prioritization",
+        "description": "Give bandwidth priority to work devices during video calls"
+      }
+    },
+    "hardware": {
+      "title": "Premium Hardware",
+      "heading1": "Enterprise power,",
+      "heading2": "Home simplicity.",
+      "subheading": "Professional mesh systems designed for Saudi homes - powerful antennas that penetrate concrete and elegant design.",
+      "mesh": {
+        "title": "Wi-Fi 6E Mesh Systems",
+        "description": "Latest Wi-Fi technology with tri-band support. Each node covers up to 250 sqm."
+      },
+      "routers": {
+        "title": "High-Performance Routers",
+        "description": "Powerful main routers with 10 Gbps WAN ports for full fiber speeds and advanced QoS."
+      },
+      "extenders": {
+        "title": "Smart Extenders",
+        "description": "Seamlessly expand your network to outdoor areas, garages, and distant rooms."
+      },
+      "browse": "Browse All Network Products"
+    },
+    "cta": {
+      "badge": "Free Network Assessment",
+      "heading": "Ready for whole-home Wi-Fi?",
+      "subheading": "Our network specialists will survey your home and design a mesh system that delivers strong Wi-Fi in every corner.",
+      "quote": "Get Free Network Quote",
+      "chat": "Chat with Specialist"
+    }
+  },
+  "entertainment": {
+    "badge": "Home Entertainment Hub",
+    "heading1": "Movie Night,",
+    "heading2": "One Button.",
+    "subheading": "Dim lights, close curtains, power on TV and sound system - all with a single tap or voice command.",
+    "cta1": "Setup My Theater",
+    "cta2": "View Solutions",
+    "trust1": "One-Touch Scenes",
+    "trust2": "Voice Control",
+    "trust3": "Universal Remote",
+    "scroll": "Scroll",
+    "features": {
+      "title": "Entertainment Features",
+      "heading": "Cinema Experience, Home Comfort",
+      "subheading": "Transform your living room into a home theater with automated lighting, audio, and video control.",
+      "scenes": {
+        "title": "Smart Scenes",
+        "description": "Create custom scenes like 'Movie Time' that dims lights, closes curtains, and powers on your entertainment system - all with one tap.",
+        "check": "Unlimited custom scenes"
+      },
+      "universal": {
+        "title": "Universal Control",
+        "description": "Control TV, sound bar, Apple TV, PlayStation, and more from a single app. No more juggling multiple remotes.",
+        "check": "Works with 10,000+ devices"
+      },
+      "streaming": {
+        "title": "Smart Streaming",
+        "description": "Launch Netflix, Shahid, or any streaming service with voice commands. \"Hey Siri, play Stranger Things.\"",
+        "check": "All platforms supported"
+      }
+    },
+    "automation": {
+      "title": "Intelligent Entertainment",
+      "heading1": "Entertainment that adapts",
+      "heading2": "to the moment.",
+      "automatic": {
+        "title": "Automatic Scene Triggers",
+        "description": "When you start a movie, lights automatically dim to 20%, curtains close, and AC adjusts for perfect comfort."
+      },
+      "paused": {
+        "title": "Pause Detection",
+        "description": "Lights gently brighten to 50% when you pause for bathroom breaks, then dim again when you resume."
+      },
+      "gaming": {
+        "title": "Gaming Mode",
+        "description": "Optimize display settings and reduce input lag automatically"
+      },
+      "sports": {
+        "title": "Sports Mode",
+        "description": "Brighter lighting and enhanced audio for game day atmosphere"
+      },
+      "kids": {
+        "title": "Kids Content Protection",
+        "description": "Auto-pause and alert when kids try to access mature content"
+      }
+    },
+    "hardware": {
+      "title": "Premium Hardware",
+      "heading1": "Theater-grade equipment,",
+      "heading2": "Living room design.",
+      "subheading": "Professional AV equipment that integrates seamlessly with your smart home for the ultimate entertainment experience.",
+      "remotes": {
+        "title": "Smart Universal Remotes",
+        "description": "Elegant touchscreen remotes that control everything. Or use your phone - no additional remote needed."
+      },
+      "audio": {
+        "title": "Multi-Room Audio",
+        "description": "Play different music in each room or sync the entire home. Supports Sonos, Bose, and more."
+      },
+      "projectors": {
+        "title": "Smart Projectors & Screens",
+        "description": "Motorized projection screens that automatically lower when movie mode activates."
+      },
+      "browse": "Browse All Entertainment Products"
+    },
+    "cta": {
+      "badge": "Free Theater Consultation",
+      "heading": "Ready for your home theater?",
+      "subheading": "Our entertainment specialists will design a system that transforms movie nights into cinema experiences.",
+      "quote": "Get Free Entertainment Quote",
+      "chat": "Chat with Specialist"
+    }
+  },
+  "footer": {
+    "description": "Transforming Saudi homes into intelligent living spaces with cutting-edge automation technology.",
+    "support": {
+      "title": "Support",
+      "faq": "FAQ",
+      "privacy": "Privacy Policy",
+      "terms": "Terms & Conditions",
+      "warranty": "Warranty"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "location": "Office Location",
+      "viewMap": "View on Google Maps"
+    },
+    "legal": {
+      "title": "Legal Information",
+      "cr": "Commercial Registration",
+      "vat": "VAT Number",
+      "disclaimer": "Licensed and registered in the Kingdom of Saudi Arabia. All products comply with SASO standards."
+    },
+    "bottom": {
+      "rights": "All rights reserved",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "sitemap": "Sitemap"
+    }
+  },
+  "store": {
+    "featured": "Featured Collection",
+    "loading": "Loading Products...",
+    "description": "Description",
+    "specs": "Specs",
+    "reviews": "Reviews",
+    "faqs": "FAQs",
+    "noSpecs": "No specs available",
+    "noReviews": "No reviews",
+    "noFaqs": "No FAQs",
+    "configuration": "Configuration",
+    "color": "Color",
+    "type": "Type / Wiring",
+    "addToInquiry": "Add to Inquiry",
+    "addedToInquiry": "Added to Inquiry",
+    "inquiryList": "Inquiry List",
+    "itemsSelected": "selected",
+    "item": "item",
+    "items": "items",
+    "quantity": "Quantity",
+    "requestQuote": "Request Quote",
+    "brands": {
+      "aqara": {
+        "tagline": "Premium Hardware. Browse the complete range of Aqara products.",
+        "description": "Apple HomeKit certified devices with enterprise-grade reliability. The gold standard for seamless smart home integration."
+      },
+      "wirelesshome": {
+        "tagline": "Made for Saudi homes. Custom-engineered audio & water management.",
+        "description": "Locally engineered solutions purpose-built for Saudi architecture — from whole-home audio to precise tank level monitoring."
+      },
+      "shelly": {
+        "tagline": "Retrofit anything. No hub needed — Wi-Fi control for every device.",
+        "description": "Powerful relay modules that make existing switches smart. Install behind the wall without replacing your existing hardware."
+      },
+      "tuya": {
+        "tagline": "Budget-friendly automation. Reliable IoT devices that won't break the bank.",
+        "description": "Smart plugs, sensors, and switches at accessible prices. Perfect for entry-level automation or secondary rooms."
+      },
+      "zigbee": {
+        "tagline": "Universal Zigbee. Sensors and devices that work with any Zigbee hub.",
+        "description": "Generic Zigbee-compatible sensors, switches, and relays. Works with Aqara hubs, Home Assistant, and most smart home systems."
+      },
+      "wifi": {
+        "tagline": "Pure Wi-Fi. Simple standalone devices — no hub, no subscription.",
+        "description": "Direct Wi-Fi devices that connect to your network and phone. Great for standalone use or integration with voice assistants."
+      }
+    }
+  },
+  "about": {
+    "stats": {
+      "homes": "Homes Automated",
+      "satisfaction": "Satisfaction Rate",
+      "experience": "Years Experience",
+      "response": "Response Time"
+    },
+    "hero": {
+      "badge": "About Us",
+      "heading": "Wireless Home",
+      "subheading": "The future of Saudi home automation",
+      "location": {
+        "title": "Based in Jeddah, Serving All of KSA",
+        "description": "From Riyadh villas to Dammam compounds, we bring smart home excellence to every corner of the Kingdom."
+      }
+    },
+    "challenge": {
+      "badge": "The Challenge",
+      "heading1": "Saudi Walls Are",
+      "heading2": "Signal Killers.",
+      "description": "Traditional Saudi architecture uses thick reinforced concrete and superior thermal insulation. While great for keeping homes cool, these materials block Wi-Fi and smart home signals like a Faraday cage.",
+      "problem": {
+        "title": "The Problem",
+        "description": "Standard smart home kits fail in Saudi homes. Dead zones everywhere."
+      },
+      "solution": {
+        "title": "Our Solution",
+        "description": "Proprietary wireless mapping. We survey your home and design a mesh that penetrates every wall."
+      },
+      "diagram": {
+        "wall": "30cm Concrete",
+        "strong": "Strong",
+        "medium": "Medium",
+        "label": "Full Coverage with Mesh"
+      }
+    },
+    "hardware": {
+      "badge": "Hardware Excellence",
+      "heading1": "Premium Components,",
+      "heading2": "Global Sources.",
+      "description": "We don't settle for off-the-shelf solutions. Our partnerships with world-class manufacturers ensure every component meets our exacting standards.",
+      "italian": {
+        "badge": "Audio Systems",
+        "title": "Italian Engineering",
+        "description": "Our whole-home audio systems are custom-built by Italian artisans in the same factories that supply Europe's finest hotels. Crystal-clear sound in every room.",
+        "check1": "Hi-Fi Grade",
+        "check2": "Multi-Room"
+      },
+      "saudi": {
+        "badge": "Water Management",
+        "title": "Made in Saudi Arabia",
+        "description": "Our tank level sensors are designed and manufactured right here in KSA. They're built for our water quality, our tank sizes, and our climate conditions.",
+        "check1": "Precision Level",
+        "check2": "Leak Detection",
+        "tankLevel": "Tank Level"
+      }
+    },
+    "values": {
+      "badge": "Our Philosophy",
+      "heading": "Built on Core Values.",
+      "description": "Every decision we make is guided by these principles.",
+      "zeroFriction": {
+        "title": "Zero Friction",
+        "description": "No drilling, no conduits, no mess. Our wireless-first approach means your walls stay pristine while your home gets smarter."
+      },
+      "globalSourcing": {
+        "title": "Global Sourcing",
+        "description": "We partner with the best manufacturers worldwide — Aqara from China, Bang & Olufsen-grade audio from Italy, and precision sensors from Germany."
+      },
+      "localEngineering": {
+        "title": "Local Engineering",
+        "description": "Every system is custom-engineered for Saudi conditions. We account for concrete density, thermal mass, and local climate factors."
+      }
+    },
+    "team": {
+      "badge": "Our Team",
+      "heading1": "Engineers Who",
+      "heading2": "Care About Craft.",
+      "description": "We're not salespeople — we're engineers, designers, and problem-solvers. Every team member is trained on the latest smart home technologies and certified by our hardware partners.",
+      "stats": {
+        "members": "Team Members",
+        "certified": "Certified Techs",
+        "support": "Support Available"
+      },
+      "certs": {
+        "aqara": "Aqara Certified Integrators",
+        "homeassistant": "Home Assistant Experts",
+        "homekit": "Apple HomeKit Specialists"
+      }
+    },
+    "cta": {
+      "badge": "Start Your Journey",
+      "heading1": "Ready to Experience",
+      "heading2": "Intelligent Living?",
+      "description": "Book a free consultation. We'll visit your home, understand your needs, and design a custom automation system that fits your lifestyle.",
+      "button1": "Request a Consultation",
+      "button2": "WhatsApp Us"
+    }
+  },
+  "book": {
+    "badge": "Free Site Assessment",
+    "heading": "Schedule Your Smart Home Consultation",
+    "subheading": "Our specialists will visit your property, assess your needs, and design a custom automation solution.",
+    "form": {
+      "name": "Full Name",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "projectType": "Project Type",
+      "selectProject": "Select project type",
+      "villa": "Villa",
+      "apartment": "Apartment",
+      "office": "Office",
+      "construction": "Under Construction",
+      "location": "Click on the map to mark your location",
+      "submit": "Book Free Consultation",
+      "submitting": "Submitting..."
+    },
+    "success": {
+      "heading": "Request Received!",
+      "message": "Thank you {name}. We will contact you within 24 hours.",
+      "return": "Return to Home"
+    },
+    "whyUs": {
+      "title": "Why Choose Us",
+      "experience": {
+        "title": "7+ Years Experience",
+        "description": "Pioneering smart home automation in Saudi Arabia since 2018"
+      },
+      "warranty": {
+        "title": "2-Year Warranty",
+        "description": "Full coverage on all equipment and installation work"
+      },
+      "support": {
+        "title": "24/7 Support",
+        "description": "Technical support available round the clock via WhatsApp"
+      }
+    },
+    "contact": {
+      "title": "Contact Information",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Working Hours",
+      "hoursValue": "Sun-Thu: 9AM-6PM"
+    }
+  }
+}
