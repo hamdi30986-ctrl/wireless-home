@@ -338,100 +338,161 @@ export default function AboutPage() {
                 </motion.div>
               </div>
 
-              {/* Visual: Signal Diagram */}
+              {/* Visual: 3-Floor Villa with Wi-Fi Coverage */}
               <motion.div variants={fadeInUp} className="relative">
-                <div 
+                <div
                   className="relative rounded-3xl p-8 md:p-12"
-                  style={{ backgroundColor: '#f3f4f6' }}
+                  style={{
+                    background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)'
+                  }}
                 >
-                  {/* House representation */}
-                  <div className="relative">
-                    {/* Outer container - the house */}
-                    <div 
-                      className="relative w-full aspect-square max-w-md mx-auto rounded-2xl p-8"
-                      style={{ 
-                        backgroundColor: '#e5e7eb',
-                        border: '4px solid #9ca3af'
-                      }}
-                    >
-                      {/* Wall thickness indicator */}
+                  <div className="relative max-w-sm mx-auto">
+                    {/* Villa Building */}
+                    <div className="relative">
+                      {/* Roof */}
+                      <div className="flex justify-center mb-1">
+                        <div
+                          style={{
+                            width: 0,
+                            height: 0,
+                            borderLeft: '140px solid transparent',
+                            borderRight: '140px solid transparent',
+                            borderBottom: '50px solid #94a3b8'
+                          }}
+                        />
+                      </div>
+
+                      {/* Building Structure */}
                       <div
-                        className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold"
-                        style={{ backgroundColor: '#fef3c7', color: '#92400e' }}
-                      >
-                        {t.about.challenge.diagram.wall}
-                      </div>
-
-                      {/* Inner rooms */}
-                      <div className="grid grid-cols-2 gap-4 h-full">
-                        {/* Room 1 - Strong signal */}
-                        <div
-                          className="rounded-xl flex flex-col items-center justify-center p-4"
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          <Wifi className="w-8 h-8 mb-2" style={{ color: '#16a34a' }} />
-                          <span className="text-xs font-medium" style={{ color: '#16a34a' }}>{t.about.challenge.diagram.strong}</span>
-                        </div>
-
-                        {/* Room 2 - Medium signal */}
-                        <div
-                          className="rounded-xl flex flex-col items-center justify-center p-4"
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          <Wifi className="w-8 h-8 mb-2" style={{ color: '#f59e0b' }} />
-                          <span className="text-xs font-medium" style={{ color: '#f59e0b' }}>{t.about.challenge.diagram.medium}</span>
-                        </div>
-
-                        {/* Room 3 - Weak signal (without us) */}
-                        <div
-                          className="rounded-xl flex flex-col items-center justify-center p-4"
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          <Wifi className="w-8 h-8 mb-2" style={{ color: '#16a34a' }} />
-                          <span className="text-xs font-medium" style={{ color: '#16a34a' }}>{t.about.challenge.diagram.strong}</span>
-                        </div>
-
-                        {/* Room 4 - Strong signal (with us) */}
-                        <div
-                          className="rounded-xl flex flex-col items-center justify-center p-4"
-                          style={{ backgroundColor: '#ffffff' }}
-                        >
-                          <Wifi className="w-8 h-8 mb-2" style={{ color: '#16a34a' }} />
-                          <span className="text-xs font-medium" style={{ color: '#16a34a' }}>{t.about.challenge.diagram.strong}</span>
-                        </div>
-                      </div>
-
-                      {/* Mesh nodes */}
-                      <div 
-                        className="absolute -right-4 top-1/4 w-8 h-8 rounded-full flex items-center justify-center"
-                        style={{ 
-                          backgroundColor: '#0066FF',
-                          boxShadow: '0 0 20px rgba(0,102,255,0.5)'
+                        className="relative rounded-b-3xl overflow-hidden"
+                        style={{
+                          backgroundColor: '#cbd5e1',
+                          boxShadow: '0 20px 60px rgba(0,0,0,0.15)'
                         }}
                       >
-                        <Radio className="w-4 h-4" style={{ color: '#ffffff' }} />
+                        {/* Floor 3 */}
+                        <div className="relative p-4" style={{ backgroundColor: '#e2e8f0', borderBottom: '2px solid #94a3b8' }}>
+                          <div className="absolute top-2 left-2 text-xs font-bold" style={{ color: '#64748b' }}>3F</div>
+                          <div className="grid grid-cols-3 gap-3 pt-4">
+                            {[0, 1, 2].map((i) => (
+                              <div key={`f3-${i}`} className="bg-white/80 backdrop-blur rounded-lg p-3 flex items-center justify-center relative" style={{ aspectRatio: '1', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                                <motion.div
+                                  animate={{ opacity: [0.3, 1, 0.3] }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                                >
+                                  <Wifi className="w-6 h-6" style={{ color: '#10b981' }} />
+                                </motion.div>
+                                {/* Signal waves */}
+                                <motion.div
+                                  className="absolute inset-0 rounded-lg"
+                                  style={{ border: '2px solid #10b981', opacity: 0 }}
+                                  animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Floor 2 */}
+                        <div className="relative p-4" style={{ backgroundColor: '#e2e8f0', borderBottom: '2px solid #94a3b8' }}>
+                          <div className="absolute top-2 left-2 text-xs font-bold" style={{ color: '#64748b' }}>2F</div>
+                          <div className="grid grid-cols-4 gap-2 pt-4">
+                            {[0, 1, 2, 3].map((i) => (
+                              <div key={`f2-${i}`} className="bg-white/80 backdrop-blur rounded-lg p-2 flex items-center justify-center relative" style={{ aspectRatio: '1', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                                <motion.div
+                                  animate={{ opacity: [0.3, 1, 0.3] }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: 0.2 + i * 0.3 }}
+                                >
+                                  <Wifi className="w-5 h-5" style={{ color: '#10b981' }} />
+                                </motion.div>
+                                <motion.div
+                                  className="absolute inset-0 rounded-lg"
+                                  style={{ border: '2px solid #10b981', opacity: 0 }}
+                                  animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: 0.2 + i * 0.3 }}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Floor 1 */}
+                        <div className="relative p-4" style={{ backgroundColor: '#e2e8f0' }}>
+                          <div className="absolute top-2 left-2 text-xs font-bold" style={{ color: '#64748b' }}>1F</div>
+                          <div className="grid grid-cols-4 gap-2 pt-4">
+                            {[0, 1, 2, 3].map((i) => (
+                              <div key={`f1-${i}`} className="bg-white/80 backdrop-blur rounded-lg p-2 flex items-center justify-center relative" style={{ aspectRatio: '1', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                                <motion.div
+                                  animate={{ opacity: [0.3, 1, 0.3] }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: 0.4 + i * 0.3 }}
+                                >
+                                  <Wifi className="w-5 h-5" style={{ color: '#10b981' }} />
+                                </motion.div>
+                                <motion.div
+                                  className="absolute inset-0 rounded-lg"
+                                  style={{ border: '2px solid #10b981', opacity: 0 }}
+                                  animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: 0.4 + i * 0.3 }}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <div 
-                        className="absolute -left-4 bottom-1/4 w-8 h-8 rounded-full flex items-center justify-center"
-                        style={{ 
-                          backgroundColor: '#0066FF',
-                          boxShadow: '0 0 20px rgba(0,102,255,0.5)'
+
+                      {/* Mesh Nodes */}
+                      <motion.div
+                        className="absolute -right-6 top-1/4 w-12 h-12 rounded-full flex items-center justify-center"
+                        style={{
+                          background: 'linear-gradient(135deg, #0066FF 0%, #00a3ff 100%)',
+                          boxShadow: '0 4px 20px rgba(0,102,255,0.5)'
                         }}
+                        animate={{ y: [-5, 5, -5] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                       >
-                        <Radio className="w-4 h-4" style={{ color: '#ffffff' }} />
-                      </div>
+                        <Radio className="w-6 h-6" style={{ color: '#ffffff' }} />
+                      </motion.div>
+
+                      <motion.div
+                        className="absolute -left-6 top-1/2 w-12 h-12 rounded-full flex items-center justify-center"
+                        style={{
+                          background: 'linear-gradient(135deg, #0066FF 0%, #00a3ff 100%)',
+                          boxShadow: '0 4px 20px rgba(0,102,255,0.5)'
+                        }}
+                        animate={{ y: [-5, 5, -5] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                      >
+                        <Radio className="w-6 h-6" style={{ color: '#ffffff' }} />
+                      </motion.div>
+
+                      <motion.div
+                        className="absolute -right-6 bottom-1/4 w-12 h-12 rounded-full flex items-center justify-center"
+                        style={{
+                          background: 'linear-gradient(135deg, #0066FF 0%, #00a3ff 100%)',
+                          boxShadow: '0 4px 20px rgba(0,102,255,0.5)'
+                        }}
+                        animate={{ y: [-5, 5, -5] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                      >
+                        <Radio className="w-6 h-6" style={{ color: '#ffffff' }} />
+                      </motion.div>
                     </div>
 
                     {/* Label */}
-                    <div
-                      className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-sm font-semibold"
+                    <motion.div
+                      className="mt-8 px-6 py-3 rounded-full text-sm font-bold text-center mx-auto"
                       style={{
-                        backgroundColor: '#0066FF',
-                        color: '#ffffff'
+                        background: 'linear-gradient(135deg, #0066FF 0%, #00a3ff 100%)',
+                        color: '#ffffff',
+                        boxShadow: '0 4px 15px rgba(0,102,255,0.3)',
+                        maxWidth: 'fit-content'
                       }}
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
                     >
                       {t.about.challenge.diagram.label}
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
@@ -525,23 +586,99 @@ export default function AboutPage() {
                   </div>
                 </div>
 
-                {/* Visual */}
-                <div 
-                  className="mt-8 p-6 rounded-2xl flex items-center justify-center"
+                {/* Visual - Animated Speakers with Sound Beats */}
+                <div
+                  className="mt-8 p-8 rounded-2xl flex items-center justify-center gap-8"
                   style={{ backgroundColor: 'rgba(251,191,36,0.1)' }}
                 >
-                  <div className="flex items-end gap-1">
-                    {[40, 70, 50, 80, 60, 90, 45, 75, 55, 85, 65].map((height, i) => (
+                  {/* Left Speaker */}
+                  <div className="relative">
+                    <div
+                      className="w-20 h-28 rounded-2xl flex items-center justify-center"
+                      style={{
+                        backgroundColor: 'rgba(251,191,36,0.3)',
+                        border: '3px solid #fbbf24'
+                      }}
+                    >
+                      <Speaker className="w-10 h-10" style={{ color: '#fbbf24' }} />
+                    </div>
+                    {/* Sound waves radiating from left speaker */}
+                    {[0, 1, 2].map((i) => (
                       <motion.div
-                        key={i}
-                        initial={{ height: 0 }}
-                        animate={{ height: `${height}%` }}
-                        transition={{ duration: 0.5, delay: i * 0.05 }}
-                        className="w-2 md:w-3 rounded-full"
-                        style={{ 
+                        key={`left-${i}`}
+                        className="absolute top-1/2 -translate-y-1/2 -left-2 w-16 h-16 rounded-full"
+                        style={{
+                          border: '2px solid #fbbf24',
+                          opacity: 0
+                        }}
+                        animate={{
+                          scale: [1, 2, 2.5],
+                          opacity: [0.6, 0.3, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.6,
+                          ease: 'easeOut'
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Center Visualization - Pulsing Circles */}
+                  <div className="relative flex items-center justify-center w-16">
+                    {[0, 1, 2, 3].map((i) => (
+                      <motion.div
+                        key={`center-${i}`}
+                        className="absolute w-3 h-3 rounded-full"
+                        style={{
                           backgroundColor: '#fbbf24',
-                          height: `${height}px`,
-                          maxHeight: '80px'
+                          left: '0'
+                        }}
+                        animate={{
+                          x: [0, 64],
+                          opacity: [0, 1, 1, 0],
+                          scale: [0.5, 1, 1, 0.5]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.5,
+                          ease: 'linear'
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Right Speaker */}
+                  <div className="relative">
+                    <div
+                      className="w-20 h-28 rounded-2xl flex items-center justify-center"
+                      style={{
+                        backgroundColor: 'rgba(251,191,36,0.3)',
+                        border: '3px solid #fbbf24'
+                      }}
+                    >
+                      <Speaker className="w-10 h-10" style={{ color: '#fbbf24' }} />
+                    </div>
+                    {/* Sound waves radiating from right speaker */}
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={`right-${i}`}
+                        className="absolute top-1/2 -translate-y-1/2 -right-2 w-16 h-16 rounded-full"
+                        style={{
+                          border: '2px solid #fbbf24',
+                          opacity: 0
+                        }}
+                        animate={{
+                          scale: [1, 2, 2.5],
+                          opacity: [0.6, 0.3, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.6,
+                          ease: 'easeOut'
                         }}
                       />
                     ))}

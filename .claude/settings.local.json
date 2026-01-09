@@ -22,7 +22,8 @@
       "Bash(mkdir:*)",
       "Bash(python:*)",
       "Bash(dir:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

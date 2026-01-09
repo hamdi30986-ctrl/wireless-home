@@ -893,5 +893,205 @@
       "subtitle": "Let us help you create your dream smart home",
       "button": "Book Consultation"
     }
+  },
+  "faq": {
+    "badge": "FAQ",
+    "heading": "Frequently Asked Questions",
+    "subheading": "Find answers to common questions about our smart home solutions",
+    "categories": {
+      "general": "General",
+      "installation": "Installation",
+      "warranty": "Warranty & Support",
+      "products": "Products"
+    },
+    "questions": {
+      "q1": {
+        "question": "What is a smart home and how does it work?",
+        "answer": "A smart home uses automation technology to control lighting, climate, security, entertainment, and other systems wirelessly through a central app or voice commands. Our solutions work without requiring any wiring changes to your existing home."
+      },
+      "q2": {
+        "question": "How long does installation take?",
+        "answer": "Most installations are completed within 1-3 days depending on the size of your home and the number of systems you want to automate. We work efficiently to minimize disruption to your daily routine."
+      },
+      "q3": {
+        "question": "Do I need to renovate my home for smart automation?",
+        "answer": "No! Our wireless solutions are designed for retrofit installations. We don't need to drill, cut walls, or run new wiring. This makes it perfect for both homeowners and renters."
+      },
+      "q4": {
+        "question": "What is your warranty policy?",
+        "answer": "We provide a comprehensive 2-year warranty covering all equipment and installation work. This includes free repairs, replacements, and technical support throughout the warranty period."
+      },
+      "q5": {
+        "question": "Will smart home automation work during power outages?",
+        "answer": "Most of our devices have battery backup systems that keep critical functions running during power outages. Your security system, door locks, and essential controls remain operational."
+      },
+      "q6": {
+        "question": "Can I control my home while I'm traveling?",
+        "answer": "Yes! Our app works from anywhere in the world with an internet connection. Monitor your home, adjust settings, and receive alerts no matter where you are."
+      },
+      "q7": {
+        "question": "Are your products compatible with Apple and Google Home?",
+        "answer": "Yes, most of our solutions integrate seamlessly with Apple HomeKit, Google Home, and Amazon Alexa for voice control and automation."
+      },
+      "q8": {
+        "question": "How secure is a smart home system?",
+        "answer": "We use enterprise-grade encryption and secure protocols for all communication. Regular security updates keep your system protected against emerging threats."
+      }
+    },
+    "stillHaveQuestions": "Still have questions?",
+    "contactUs": "Contact us via WhatsApp and we'll be happy to help"
+  },
+  "privacy": {
+    "badge": "Privacy Policy",
+    "heading": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "sections": {
+      "intro": {
+        "title": "Introduction",
+        "content": "At Wireless Home, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our services, website, or smart home systems."
+      },
+      "collection": {
+        "title": "Information We Collect",
+        "content": "We collect information that you provide directly to us, including: name, email address, phone number, home address, and payment details when you make purchases or request services. We also collect device usage data from your smart home system to improve functionality and provide technical support."
+      },
+      "usage": {
+        "title": "How We Use Your Information",
+        "content": "We use your information to provide and improve our services, process your orders, communicate with you about appointments and updates, troubleshoot technical issues, and send marketing communications (with your consent)."
+      },
+      "security": {
+        "title": "Data Security",
+        "content": "We implement industry-standard security measures including encryption, secure servers, regular security audits, and access controls. Your smart home data is encrypted both in transit and at rest, ensuring maximum protection against unauthorized access."
+      },
+      "sharing": {
+        "title": "Information Sharing",
+        "content": "We do not sell your personal information to third parties. We may share your information only with service providers who help us operate our business, when required by law, or with your explicit consent."
+      },
+      "rights": {
+        "title": "Your Rights",
+        "content": "You have the right to access your personal data, request corrections or deletions, opt-out of marketing communications, and request data portability. To exercise these rights, contact us at info@wireless.sa."
+      },
+      "contact": {
+        "title": "Contact Us",
+        "content": "If you have questions about this Privacy Policy or our data practices, please contact us at info@wireless.sa or via WhatsApp at +966 59 890 4919."
+      }
+    },
+    "questionsTitle": "Questions About Privacy?",
+    "questionsContent": "If you have any questions or concerns about our privacy practices, please don't hesitate to reach out.",
+    "emailButton": "Email Us",
+    "whatsappButton": "WhatsApp"
+  },
+  "terms": {
+    "badge": "Terms & Conditions",
+    "heading": "Terms & Conditions",
+    "lastUpdated": "Last updated",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "content": "By accessing and using Wireless Home's services, you accept and agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, please do not use our services."
+      },
+      "services": {
+        "title": "Services Description",
+        "content": "Wireless Home provides smart home automation solutions including installation, configuration, and maintenance of wireless smart devices and systems. Our services are subject to availability and may be modified at our discretion."
+      },
+      "payment": {
+        "title": "Payment Terms",
+        "content": "Payment is required before or at the time of installation unless otherwise agreed in writing. We accept bank transfers, credit cards, and cash payments. All prices are in Saudi Riyals (SAR) and include applicable VAT."
+      },
+      "installation": {
+        "title": "Installation and Access",
+        "content": "You agree to provide access to your property and necessary facilities for installation. You are responsible for ensuring the installation area is ready and accessible. Any delays caused by inaccessibility may result in rescheduling fees."
+      },
+      "warranty": {
+        "title": "Warranty and Returns",
+        "content": "All products and installations come with a 2-year warranty covering defects in materials, workmanship, and installation. The warranty does not cover damage caused by misuse, accidents, or unauthorized modifications. See our Warranty page for complete details."
+      },
+      "liability": {
+        "title": "Limitation of Liability",
+        "content": "Wireless Home shall not be liable for indirect, incidental, or consequential damages arising from the use of our products or services. Our total liability is limited to the amount paid for the specific product or service in question."
+      },
+      "changes": {
+        "title": "Changes to Terms",
+        "content": "We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting to our website. Continued use of our services constitutes acceptance of modified terms."
+      },
+      "governing": {
+        "title": "Governing Law",
+        "content": "These terms are governed by the laws of the Kingdom of Saudi Arabia. Any disputes shall be resolved in the courts of Riyadh, Saudi Arabia."
+      }
+    },
+    "noticeTitle": "Important Notice",
+    "noticeContent": "By using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. These terms are governed by the laws of the Kingdom of Saudi Arabia."
+  },
+  "warranty": {
+    "badge": "Warranty",
+    "heading": "2-Year Warranty",
+    "subheading": "Comprehensive coverage for your peace of mind",
+    "lastUpdated": "Last updated",
+    "intro": "At Wireless Home, we stand behind the quality of our products and services. Every installation comes with a comprehensive 2-year warranty covering equipment, workmanship, and technical support.",
+    "coverage": {
+      "title": "What's Covered",
+      "items": {
+        "item1": "All smart devices and equipment installed by Wireless Home",
+        "item2": "Installation workmanship and integration",
+        "item3": "Free replacement of defective components",
+        "item4": "Free technical support via WhatsApp and phone",
+        "item5": "Software updates and firmware upgrades",
+        "item6": "Remote troubleshooting and configuration support"
+      }
+    },
+    "notCovered": {
+      "title": "What's Not Covered",
+      "items": {
+        "item1": "Damage caused by misuse, accidents, or neglect",
+        "item2": "Unauthorized modifications or repairs",
+        "item3": "Natural disasters, power surges, or electrical issues",
+        "item4": "Normal wear and tear (e.g., battery degradation)",
+        "item5": "Damage caused by third-party devices or software",
+        "item6": "Products purchased from unauthorized sellers"
+      }
+    },
+    "claim": {
+      "title": "How to Make a Warranty Claim",
+      "step1": "Contact our support team via WhatsApp at +966 59 890 4919",
+      "step2": "Provide your order number and describe the issue",
+      "step3": "Our technician will diagnose the problem (remotely or on-site)",
+      "step4": "We'll repair or replace the defective item within 7 business days"
+    },
+    "commitment": {
+      "title": "Our Commitment",
+      "content": "We're committed to ensuring your smart home system works flawlessly. If you experience any issues during the warranty period, our team will resolve them quickly and professionally. Your satisfaction is our top priority."
+    },
+    "questions": {
+      "title": "Questions About Your Warranty?",
+      "content": "Contact our support team at info@wireless.sa or via WhatsApp at +966 59 890 4919. We're here to help!"
+    }
+  },
+  "sitemap": {
+    "badge": "Sitemap",
+    "heading": "Site Map",
+    "subheading": "Navigate our website easily",
+    "main": {
+      "title": "Main Pages",
+      "home": "Home",
+      "about": "About Us",
+      "store": "Store",
+      "gallery": "Gallery",
+      "book": "Book Appointment"
+    },
+    "solutions": {
+      "title": "Solutions"
+    },
+    "support": {
+      "title": "Support & Legal",
+      "faq": "FAQ",
+      "privacy": "Privacy Policy",
+      "terms": "Terms & Conditions",
+      "warranty": "Warranty"
+    },
+    "contact": {
+      "title": "Contact",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "location": "Office Location"
+    }
   }
 }
