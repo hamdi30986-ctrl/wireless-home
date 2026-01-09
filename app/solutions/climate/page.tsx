@@ -14,7 +14,6 @@ import {
   Moon,
   Wind,
   Thermometer,
-  Calendar,
   ChevronRight,
   Gauge,
   CircuitBoard,
@@ -430,7 +429,7 @@ export default function ClimateControlPage() {
             {/* Card 3 */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30">
-                <Droplets className="w-8 h-8 text-white" />
+                <Thermometer className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.climate.features.zones.title}</h3>
               <p className="text-gray-600 leading-relaxed mb-6">
@@ -494,29 +493,21 @@ export default function ClimateControlPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-cyan-500/20 transition-all duration-300 text-center">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-cyan-500/20 flex items-center justify-center">
-                <Thermometer className="w-6 h-6 text-cyan-400" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 hover:border-cyan-500/20 transition-all duration-300 text-center">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                <Moon className="w-7 h-7 text-cyan-400" />
               </div>
-              <h4 className="font-semibold text-white mb-2">{t.climate.automation.sleep.title}</h4>
-              <p className="text-sm text-gray-500">{t.climate.automation.sleep.description}</p>
+              <h4 className="text-lg font-semibold text-white mb-3">{t.climate.automation.sleep.title}</h4>
+              <p className="text-sm text-gray-400 leading-relaxed">{t.climate.automation.sleep.description}</p>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-cyan-500/20 transition-all duration-300 text-center">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-sky-500/20 flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-sky-400" />
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10 hover:border-cyan-500/20 transition-all duration-300 text-center">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                <Zap className="w-7 h-7 text-blue-400" />
               </div>
-              <h4 className="font-semibold text-white mb-2">{t.climate.automation.prayer.title}</h4>
-              <p className="text-sm text-gray-500">{t.climate.automation.prayer.description}</p>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-cyan-500/20 transition-all duration-300 text-center">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                <Droplets className="w-6 h-6 text-blue-400" />
-              </div>
-              <h4 className="font-semibold text-white mb-2">{t.climate.automation.peak.title}</h4>
-              <p className="text-sm text-gray-500">{t.climate.automation.peak.description}</p>
+              <h4 className="text-lg font-semibold text-white mb-3">{t.climate.automation.peak.title}</h4>
+              <p className="text-sm text-gray-400 leading-relaxed">{t.climate.automation.peak.description}</p>
             </div>
           </div>
         </div>

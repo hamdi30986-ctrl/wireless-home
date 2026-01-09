@@ -10,17 +10,18 @@ import {
   Unlock,
   Eye,
   Bell,
-  Siren,
   Smartphone,
   Check,
   UserCheck,
-  Package,
-  Droplets,
-  Flame,
   Wifi,
   Video,
   Fingerprint,
-  ChevronRight
+  ChevronRight,
+  Glasses,
+  ScanFace,
+  Moon,
+  BellRing,
+  Lightbulb
 } from 'lucide-react';
 
 // --- INTERACTIVE SMART LOCK COMPONENT ---
@@ -213,7 +214,7 @@ export default function SecurityPage() {
 
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center mb-6 shadow-lg shadow-green-500/20">
-                <Package className="w-8 h-8 text-green-600" />
+                <Glasses className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.security.features.night.title}</h3>
               <p className="text-gray-600 leading-relaxed mb-6">
@@ -258,7 +259,7 @@ export default function SecurityPage() {
                   </p>
                   <div className="flex items-center gap-2 text-sm text-emerald-300 font-medium">
                     <Check className="w-4 h-4" />
-                    <span>Always secure</span>
+                    <span>{t.security.automation.zones.check}</span>
                   </div>
                 </div>
               </div>
@@ -267,7 +268,7 @@ export default function SecurityPage() {
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-emerald-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center flex-shrink-0">
-                  <Siren className="w-7 h-7 text-white" />
+                  <ScanFace className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.security.automation.recognition.title}</h3>
@@ -276,7 +277,7 @@ export default function SecurityPage() {
                   </p>
                   <div className="flex items-center gap-2 text-sm text-red-300 font-medium">
                     <ShieldCheck className="w-4 h-4" />
-                    <span>Instant response</span>
+                    <span>{t.security.automation.recognition.check}</span>
                   </div>
                 </div>
               </div>
@@ -286,7 +287,7 @@ export default function SecurityPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-emerald-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                <Droplets className="w-6 h-6 text-blue-400" />
+                <Moon className="w-6 h-6 text-blue-400" />
               </div>
               <h4 className="font-semibold text-white mb-2">{t.security.automation.away.title}</h4>
               <p className="text-sm text-gray-500">{t.security.automation.away.description}</p>
@@ -294,7 +295,7 @@ export default function SecurityPage() {
 
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-emerald-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                <Flame className="w-6 h-6 text-orange-400" />
+                <BellRing className="w-6 h-6 text-orange-400" />
               </div>
               <h4 className="font-semibold text-white mb-2">{t.security.automation.doorbell.title}</h4>
               <p className="text-sm text-gray-500">{t.security.automation.doorbell.description}</p>
@@ -302,7 +303,7 @@ export default function SecurityPage() {
 
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-emerald-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                <Bell className="w-6 h-6 text-purple-400" />
+                <Lightbulb className="w-6 h-6 text-purple-400" />
               </div>
               <h4 className="font-semibold text-white mb-2">{t.security.automation.lights.title}</h4>
               <p className="text-sm text-gray-500">{t.security.automation.lights.description}</p>

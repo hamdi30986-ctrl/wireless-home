@@ -6,18 +6,22 @@ import { useLanguage } from '../../context/LanguageContext';
 import {
   ArrowRight,
   Music,
-  Film,
   Mic,
   Cast,
   Speaker,
   Volume2,
   Play,
   Pause,
-  Moon,
   Wifi,
   Radio,
   Check,
-  ChevronRight
+  ChevronRight,
+  Bell,
+  Home,
+  Bluetooth,
+  Waves,
+  MessageSquare,
+  Clock
 } from 'lucide-react';
 
 // --- INTERACTIVE VISUAL: Smart Audio Zones ---
@@ -188,15 +192,15 @@ export default function EntertainmentPage() {
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-white/70">
               <div className="flex items-center gap-2">
                 <Speaker className="w-5 h-5 text-white" />
-                <span>Invisible Audio</span>
+                <span>{t.entertainment.trust1}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Cast className="w-5 h-5 text-white" />
-                <span>AirPlay 2 & Bluetooth</span>
+                <span>{t.entertainment.trust2}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mic className="w-5 h-5 text-white" />
-                <span>Intercom System</span>
+                <span>{t.entertainment.trust3}</span>
               </div>
             </div>
           </div>
@@ -249,11 +253,11 @@ export default function EntertainmentPage() {
                 </div>
             </div>
 
-            {/* Card 2: Majlis Cinema */}
+            {/* Card 2: Wireless Streaming */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
 
                 <div className="w-16 h-16 rounded-2xl bg-fuchsia-100 flex items-center justify-center mb-6 shadow-lg shadow-fuchsia-500/20">
-                  <Film className="w-8 h-8 text-fuchsia-600" />
+                  <Bluetooth className="w-8 h-8 text-fuchsia-600" />
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
                   {t.entertainment.features.universal.title}
@@ -271,7 +275,7 @@ export default function EntertainmentPage() {
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
 
                 <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/20">
-                  <Mic className="w-8 h-8 text-purple-600" />
+                  <MessageSquare className="w-8 h-8 text-purple-600" />
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
                   {t.entertainment.features.streaming.title}
@@ -308,14 +312,14 @@ export default function EntertainmentPage() {
                 {t.entertainment.automation.heading2}
               </h2>
               <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-                Our custom app gives you granular control over every speaker. Group rooms for a party, or play separate audio in the Majlis and Kitchen.
+                {t.entertainment.automation.subtext}
               </p>
 
               <div className="space-y-6">
-                {/* Feature 1 */}
+                {/* Feature 1: Athan */}
                 <div className="flex gap-4">
                   <div className="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center flex-shrink-0">
-                    <Moon className="w-6 h-6 text-rose-400" />
+                    <Bell className="w-6 h-6 text-rose-400" />
                   </div>
                   <div>
                     <h4 className="text-white font-bold text-lg">{t.entertainment.automation.automatic.title}</h4>
@@ -325,10 +329,10 @@ export default function EntertainmentPage() {
                   </div>
                 </div>
 
-                {/* Feature 2 */}
+                {/* Feature 2: Multi-Zone */}
                 <div className="flex gap-4">
                   <div className="w-12 h-12 rounded-xl bg-fuchsia-500/20 flex items-center justify-center flex-shrink-0">
-                    <Cast className="w-6 h-6 text-fuchsia-400" />
+                    <Radio className="w-6 h-6 text-fuchsia-400" />
                   </div>
                   <div>
                     <h4 className="text-white font-bold text-lg">{t.entertainment.automation.paused.title}</h4>
@@ -338,10 +342,10 @@ export default function EntertainmentPage() {
                   </div>
                 </div>
 
-                {/* Feature 3 */}
+                {/* Feature 3: Welcome Home */}
                 <div className="flex gap-4">
                   <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    <Volume2 className="w-6 h-6 text-purple-400" />
+                    <Home className="w-6 h-6 text-purple-400" />
                   </div>
                   <div>
                     <h4 className="text-white font-bold text-lg">{t.entertainment.automation.gaming.title}</h4>
@@ -380,21 +384,10 @@ export default function EntertainmentPage() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-8 text-left">
-            {/* Hardware 1 */}
+            {/* Hardware 1: Amplification */}
             <div className="p-8 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
               <div className="w-14 h-14 bg-rose-100 rounded-xl flex items-center justify-center mb-6">
-                <Speaker className="w-7 h-7 text-rose-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t.entertainment.hardware.audio.title}</h3>
-              <p className="text-gray-600">
-                {t.entertainment.hardware.audio.description}
-              </p>
-            </div>
-
-            {/* Hardware 2 */}
-            <div className="p-8 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-                <Wifi className="w-7 h-7 text-purple-600" />
+                <Volume2 className="w-7 h-7 text-rose-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{t.entertainment.hardware.remotes.title}</h3>
               <p className="text-gray-600">
@@ -402,10 +395,21 @@ export default function EntertainmentPage() {
               </p>
             </div>
 
-            {/* Hardware 3 */}
+            {/* Hardware 2: Speakers */}
+            <div className="p-8 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
+                <Speaker className="w-7 h-7 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{t.entertainment.hardware.audio.title}</h3>
+              <p className="text-gray-600">
+                {t.entertainment.hardware.audio.description}
+              </p>
+            </div>
+
+            {/* Hardware 3: PA System */}
             <div className="p-8 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
               <div className="w-14 h-14 bg-fuchsia-100 rounded-xl flex items-center justify-center mb-6">
-                <Film className="w-7 h-7 text-fuchsia-600" />
+                <Mic className="w-7 h-7 text-fuchsia-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{t.entertainment.hardware.projectors.title}</h3>
               <p className="text-gray-600">

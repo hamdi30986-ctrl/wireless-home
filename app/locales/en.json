@@ -270,11 +270,13 @@
       "heading2": "one step ahead.",
       "zones": {
         "title": "Smart Activity Zones",
-        "description": "Define specific areas to monitor. Get alerted when someone approaches your front door or enters restricted zones."
+        "description": "Define specific areas to monitor. Get alerted when someone approaches your front door or enters restricted zones.",
+        "check": "Always secure"
       },
       "recognition": {
         "title": "Face Recognition",
-        "description": "System learns to recognize family members and alerts you only when strangers appear."
+        "description": "System learns to recognize family members and alerts you only when strangers appear.",
+        "check": "Instant response"
       },
       "away": {
         "title": "Away Mode",
@@ -323,10 +325,11 @@
     "subheading": "Schedule your curtains to open with sunrise or close for movie time. Control light and privacy without leaving your bed.",
     "cta1": "Get a Quote",
     "cta2": "View Options",
-    "trust1": "Whisper Quiet",
-    "trust2": "Solar Powered",
-    "trust3": "Voice Control",
+    "trust1": "Natural Wake-Up",
+    "trust2": "One-Tap Privacy",
+    "trust3": "Energy Saving",
     "scroll": "Scroll",
+    "ctaInfo": "Free measurement and compatibility check included.",
     "features": {
       "title": "Smart Curtain Features",
       "heading": "Effortless Light Control",
@@ -406,9 +409,9 @@
     "subheading": "Detect leaks instantly, shut off valves remotely, and monitor usage. Protect your home from water damage 24/7.",
     "cta1": "Protect My Home",
     "cta2": "View Sensors",
-    "trust1": "Instant Alerts",
-    "trust2": "Auto Shutoff",
-    "trust3": "Usage Tracking",
+    "trust1": "0-100% Accuracy",
+    "trust2": "Pump Protection",
+    "trust3": "Phone Alerts",
     "scroll": "Scroll",
     "features": {
       "title": "Water Protection Features",
@@ -456,17 +459,17 @@
       }
     },
     "hardware": {
-      "title": "Premium Hardware",
-      "heading1": "Industrial sensors,",
-      "heading2": "Smart protection.",
-      "subheading": "Professional-grade water sensors and smart valves designed for reliability in Saudi conditions.",
+      "title": "Custom Innovation",
+      "heading1": "Custom Water Level Sensor,",
+      "heading2": "Designed for You.",
+      "subheading": "Our proprietary water level monitoring system provides precise 0-100% tank readings and intelligent pump protection—technology we developed specifically for Saudi homes.",
       "sensors": {
-        "title": "Water Leak Sensors",
-        "description": "Battery-powered sensors with 2-year life. Place near appliances, under sinks, or anywhere water damage could occur."
+        "title": "Precision Water Level Monitoring",
+        "description": "Custom-designed sensor with 0-100% accuracy. Real-time tank level tracking prevents dry running and extends pump life."
       },
       "valves": {
-        "title": "Smart Water Valves",
-        "description": "Retrofit your existing main water valve with smart control. Auto-close on leak detection or manual control from app."
+        "title": "Intelligent Pump Protection",
+        "description": "Automatically prevents pump activation when water level is too low, protecting your investment from damage."
       },
       "meters": {
         "title": "Smart Water Meters",
@@ -489,9 +492,9 @@
     "subheading": "Eliminate dead zones in your Mulhaq or Basement. Get enterprise-grade speeds that penetrate Saudi concrete walls.",
     "cta1": "Boost My Wi-Fi",
     "cta2": "View Mesh Systems",
-    "trust1": "Gigabit Speeds",
-    "trust2": "Whole Home",
-    "trust3": "Self-Healing",
+    "trust1": "Zero Dead Zones",
+    "trust2": "Low Ping Gaming",
+    "trust3": "Seamless Roaming",
     "scroll": "Scroll",
     "features": {
       "title": "Advanced Networking",
@@ -566,85 +569,86 @@
     }
   },
   "entertainment": {
-    "badge": "Home Entertainment Hub",
-    "heading1": "Movie Night,",
-    "heading2": "One Button.",
-    "subheading": "Dim lights, close curtains, power on TV and sound system - all with a single tap or voice command.",
-    "cta1": "Setup My Theater",
-    "cta2": "View Solutions",
-    "trust1": "One-Touch Scenes",
-    "trust2": "Voice Control",
-    "trust3": "Universal Remote",
+    "badge": "Intelligent Audio & PA System",
+    "heading1": "Premium Sound,",
+    "heading2": "Every Room.",
+    "subheading": "Whole-home audio with AirPlay 2, Bluetooth streaming, automatic Athan announcements, and interior intercom between rooms.",
+    "cta1": "Design My Sound System",
+    "cta2": "View Audio Products",
+    "trust1": "Invisible Audio",
+    "trust2": "AirPlay 2 & Bluetooth",
+    "trust3": "Intercom System",
     "scroll": "Scroll",
     "features": {
-      "title": "Entertainment Features",
-      "heading": "Cinema Experience, Home Comfort",
-      "subheading": "Transform your living room into a home theater with automated lighting, audio, and video control.",
+      "title": "Audio System Features",
+      "heading": "Invisible Speakers, Immersive Sound",
+      "subheading": "Custom in-ceiling and in-wall speakers deliver premium audio throughout your home without compromising aesthetics.",
       "scenes": {
-        "title": "Smart Scenes",
-        "description": "Create custom scenes like 'Movie Time' that dims lights, closes curtains, and powers on your entertainment system - all with one tap.",
-        "check": "Unlimited custom scenes"
+        "title": "Invisible In-Ceiling Speakers",
+        "description": "Flush-mounted speakers blend seamlessly into your ceiling. Premium sound without visible hardware disrupting your interior design.",
+        "check": "Architectural-grade audio"
       },
       "universal": {
-        "title": "Universal Control",
-        "description": "Control TV, sound bar, Apple TV, PlayStation, and more from a single app. No more juggling multiple remotes.",
-        "check": "Works with 10,000+ devices"
+        "title": "Wireless Music Streaming",
+        "description": "Stream from Spotify, Apple Music, Anghami, or any app using AirPlay 2 and Bluetooth. Control volume and zones from your phone.",
+        "check": "Universal compatibility"
       },
       "streaming": {
-        "title": "Smart Streaming",
-        "description": "Launch Netflix, Shahid, or any streaming service with voice commands. \"Hey Siri, play Stranger Things.\"",
-        "check": "All platforms supported"
+        "title": "Room-to-Room Intercom",
+        "description": "Call from the Majlis to the Kitchen or announce dinner from any room. Two-way communication between all zones in your home.",
+        "check": "Whole-home intercom"
       }
     },
     "automation": {
-      "title": "Intelligent Entertainment",
-      "heading1": "Entertainment that adapts",
-      "heading2": "to the moment.",
+      "title": "Intelligent Audio Automation",
+      "heading1": "Sound that adapts",
+      "heading2": "to your life.",
+      "subtext": "Our custom app gives you granular control over every speaker. Group rooms for a party, or play separate audio in the Majlis and Kitchen.",
       "automatic": {
-        "title": "Automatic Scene Triggers",
-        "description": "When you start a movie, lights automatically dim to 20%, curtains close, and AC adjusts for perfect comfort."
+        "title": "Automatic Prayer Time (Athan)",
+        "description": "System plays the Athan through all speakers at prayer times, adjusting volume based on time of day. Fajr plays softer than Dhuhr."
       },
       "paused": {
-        "title": "Pause Detection",
-        "description": "Lights gently brighten to 50% when you pause for bathroom breaks, then dim again when you resume."
+        "title": "Multi-Zone Audio Control",
+        "description": "Play Quran in the Majlis, kids' music in bedrooms, and podcasts in the kitchen—all independently controlled from one app."
       },
       "gaming": {
-        "title": "Gaming Mode",
-        "description": "Optimize display settings and reduce input lag automatically"
+        "title": "Welcome Home Announcements",
+        "description": "System detects when you arrive and plays a custom greeting or starts your favorite playlist automatically."
       },
       "sports": {
-        "title": "Sports Mode",
-        "description": "Brighter lighting and enhanced audio for game day atmosphere"
+        "title": "Smart Volume Adjustment",
+        "description": "Audio automatically lowers when doorbell rings or someone uses the intercom, then resumes after."
       },
       "kids": {
-        "title": "Kids Content Protection",
-        "description": "Auto-pause and alert when kids try to access mature content"
+        "title": "Scheduled Audio Scenes",
+        "description": "Set daily routines: morning Quran at 6 AM, dinner announcement at 7 PM, bedtime music at 9 PM."
       }
     },
     "hardware": {
-      "title": "Premium Hardware",
-      "heading1": "Theater-grade equipment,",
-      "heading2": "Living room design.",
-      "subheading": "Professional AV equipment that integrates seamlessly with your smart home for the ultimate entertainment experience.",
+      "title": "Premium Audio Equipment",
+      "heading1": "Custom-designed speakers,",
+      "heading2": "Engineered for you.",
+      "subheading": "We design and install invisible speaker systems tailored to your home's acoustics and architectural layout.",
       "remotes": {
-        "title": "Smart Universal Remotes",
-        "description": "Elegant touchscreen remotes that control everything. Or use your phone - no additional remote needed."
+        "title": "Whole-Home Amplification",
+        "description": "Central amplifiers power all zones with dedicated volume control per room. Control from wall panels, app, or voice."
       },
       "audio": {
-        "title": "Multi-Room Audio",
-        "description": "Play different music in each room or sync the entire home. Supports Sonos, Bose, and more."
+        "title": "In-Ceiling & In-Wall Speakers",
+        "description": "Premium speakers installed flush with walls and ceilings. Paintable grilles match your interior perfectly."
       },
       "projectors": {
-        "title": "Smart Projectors & Screens",
-        "description": "Motorized projection screens that automatically lower when movie mode activates."
+        "title": "PA System Integration",
+        "description": "Professional public address capabilities for announcements, intercoms, and emergency alerts throughout the property."
       },
-      "browse": "Browse All Entertainment Products"
+      "browse": "Browse All Audio Products"
     },
     "cta": {
-      "badge": "Free Theater Consultation",
-      "heading": "Ready for your home theater?",
-      "subheading": "Our entertainment specialists will design a system that transforms movie nights into cinema experiences.",
-      "quote": "Get Free Entertainment Quote",
+      "badge": "Free Audio Consultation",
+      "heading": "Ready for premium whole-home audio?",
+      "subheading": "Our audio specialists will design an invisible speaker system that delivers exceptional sound in every room.",
+      "quote": "Get Free Audio Quote",
       "chat": "Chat with Specialist"
     }
   },
@@ -868,6 +872,26 @@
       "email": "Email",
       "hours": "Working Hours",
       "hoursValue": "Sun-Thu: 9AM-6PM"
+    }
+  },
+  "gallery": {
+    "badge": "Our Work",
+    "heading1": "Project",
+    "heading2": "Gallery",
+    "subheading": "Explore our portfolio of smart home installations across Saudi Arabia",
+    "backToHome": "Back to Home",
+    "filters": {
+      "all": "All Projects",
+      "residential": "Residential",
+      "commercial": "Commercial"
+    },
+    "viewDetails": "View Details",
+    "noProjects": "No projects found",
+    "tryDifferent": "Try selecting a different category",
+    "cta": {
+      "title": "Ready to Transform Your Space?",
+      "subtitle": "Let us help you create your dream smart home",
+      "button": "Book Consultation"
     }
   }
 }

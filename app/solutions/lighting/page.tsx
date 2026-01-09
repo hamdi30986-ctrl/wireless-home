@@ -11,15 +11,15 @@ import {
   Sparkles,
   Check,
   Sun,
-  Moon,
   Baby,
   Plane,
   Film,
-  Radio,
   Clock,
   Lightbulb,
   ToggleRight,
   ChevronRight,
+  Waves,
+  Calendar,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -267,7 +267,7 @@ export default function SmartLightingPage() {
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-amber-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center flex-shrink-0">
-                  <Moon className="w-7 h-7 text-white" />
+                  <Calendar className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">
@@ -283,7 +283,7 @@ export default function SmartLightingPage() {
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-amber-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
-                  <Radio className="w-7 h-7 text-white" />
+                  <Waves className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">

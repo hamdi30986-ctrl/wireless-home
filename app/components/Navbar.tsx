@@ -150,7 +150,7 @@ export default function Navbar() {
           background: 'linear-gradient(to bottom, transparent 0%, rgba(17, 19, 24, 0.3) 100%)'
         }}
       />
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full" dir="ltr">
         <nav className="flex items-center justify-between h-full">
           {/* Logo */}
           <Link
@@ -281,6 +281,7 @@ export default function Navbar() {
             zIndex: 999999,
             position: 'fixed'
           }}
+          dir="ltr"
         >
           {/* Backdrop */}
           <div

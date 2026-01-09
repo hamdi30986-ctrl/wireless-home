@@ -5,19 +5,20 @@ import { useLanguage } from '../../context/LanguageContext';
 import {
   ArrowRight,
   Sun,
-  Thermometer,
   Shield,
   Sparkles,
   Check,
   Moon,
-  Film,
-  LogOut,
   ChevronRight,
   Blinds,
-  Radio,
   Zap,
+  Smartphone,
+  Hand,
+  Lock,
+  Wind,
+  Sunrise,
+  Settings,
   Clock,
-  Percent,
 } from 'lucide-react';
 
 // --- STATIC VISUAL: Smart Curtain Controller (White Dial) ---
@@ -330,15 +331,15 @@ export default function MotorizedCurtainsPage() {
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <Sun className="w-5 h-5 text-amber-400" />
-                <span>Natural Wake-Up</span>
+                <span>{t.curtains.trust1}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-indigo-400" />
-                <span>One-Tap Privacy</span>
+                <span>{t.curtains.trust2}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-violet-400" />
-                <span>Energy Saving</span>
+                <span>{t.curtains.trust3}</span>
               </div>
             </div>
           </div>
@@ -395,11 +396,11 @@ export default function MotorizedCurtainsPage() {
                 </div>
             </div>
 
-            {/* Card 2: Pre-Cooling Logic */}
+            {/* Card 2: Remote Control */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
 
                 <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20">
-                  <Thermometer className="w-8 h-8 text-indigo-600" />
+                  <Smartphone className="w-8 h-8 text-indigo-600" />
                 </div>
 
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
@@ -416,11 +417,11 @@ export default function MotorizedCurtainsPage() {
                 </div>
             </div>
 
-            {/* Card 3: Majlis Privacy */}
+            {/* Card 3: One-Touch Scenes */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
 
                 <div className="w-16 h-16 rounded-2xl bg-violet-100 flex items-center justify-center mb-6 shadow-lg shadow-violet-500/20">
-                  <Shield className="w-8 h-8 text-violet-600" />
+                  <Hand className="w-8 h-8 text-violet-600" />
                 </div>
 
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
@@ -460,11 +461,11 @@ export default function MotorizedCurtainsPage() {
 
           {/* Main Features */}
           <div className="grid md:grid-cols-2 gap-8 mb-12 max-w-5xl mx-auto">
-            {/* Feature A: Auto-Close on Exit */}
+            {/* Feature A: Temperature Control */}
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-indigo-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center flex-shrink-0">
-                  <LogOut className="w-7 h-7 text-white" />
+                  <Sun className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">
@@ -477,11 +478,11 @@ export default function MotorizedCurtainsPage() {
               </div>
             </div>
 
-            {/* Feature B: Cinema Mode */}
+            {/* Feature B: Smart Privacy Mode */}
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-indigo-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                  <Film className="w-7 h-7 text-white" />
+                  <Lock className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">
@@ -497,10 +498,10 @@ export default function MotorizedCurtainsPage() {
 
           {/* Secondary Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Sun Protection */}
+            {/* Gentle Wake-Up */}
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-indigo-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                <Thermometer className="w-6 h-6 text-amber-400" />
+                <Sunrise className="w-6 h-6 text-amber-400" />
               </div>
               <h4 className="font-semibold text-white mb-2">{t.curtains.automation.morning.title}</h4>
               <p className="text-sm text-gray-500">
@@ -508,7 +509,7 @@ export default function MotorizedCurtainsPage() {
               </p>
             </div>
 
-            {/* Maghrib Routine */}
+            {/* Vacation Mode */}
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-indigo-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-indigo-500/20 flex items-center justify-center">
                 <Moon className="w-6 h-6 text-indigo-400" />
@@ -519,10 +520,10 @@ export default function MotorizedCurtainsPage() {
               </p>
             </div>
 
-            {/* Percentage Control */}
+            {/* Wind Protection */}
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-indigo-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-violet-500/20 flex items-center justify-center">
-                <Percent className="w-6 h-6 text-violet-400" />
+                <Wind className="w-6 h-6 text-violet-400" />
               </div>
               <h4 className="font-semibold text-white mb-2">{t.curtains.automation.wind.title}</h4>
               <p className="text-sm text-gray-500">
@@ -573,7 +574,7 @@ export default function MotorizedCurtainsPage() {
 
                 <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                   <div className="w-12 h-12 rounded-lg bg-violet-100 flex items-center justify-center flex-shrink-0">
-                    <Zap className="w-6 h-6 text-violet-600" />
+                    <Settings className="w-6 h-6 text-violet-600" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.curtains.hardware.tracks.title}</h4>
@@ -585,7 +586,7 @@ export default function MotorizedCurtainsPage() {
 
                 <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                   <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                    <Radio className="w-6 h-6 text-purple-600" />
+                    <Blinds className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.curtains.hardware.blinds.title}</h4>
@@ -659,7 +660,7 @@ export default function MotorizedCurtainsPage() {
             className="text-sm mb-10"
             style={{ color: 'rgba(255,255,255,0.7)' }}
             >
-            Free measurement and compatibility check included.
+            {t.curtains.ctaInfo}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

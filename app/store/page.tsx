@@ -295,7 +295,10 @@ function ProductDetailPanel({
                         <button
                           key={gang.value}
                           type="button"
-                          onClick={() => setSelectedGang(gang.value)}
+                          onClick={() => {
+                            setSelectedGang(gang.value);
+                            setSelectedColor(undefined);
+                          }}
                           style={{
                             padding: '10px 16px', borderRadius: '10px',
                             border: selectedGang === gang.value ? `2px solid ${brand.accentColor}` : '2px solid #e4e4e7',
@@ -325,7 +328,10 @@ function ProductDetailPanel({
                     <button
                       key={color.name}
                       type="button"
-                      onClick={() => setSelectedColor(color.name)}
+                      onClick={() => {
+                        setSelectedColor(color.name);
+                        setSelectedGang(undefined);
+                      }}
                       title={color.name}
                       style={{
                         width: '40px', height: '40px', borderRadius: '10px',

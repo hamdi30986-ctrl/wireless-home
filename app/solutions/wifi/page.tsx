@@ -8,16 +8,18 @@ import {
   Signal,
   Zap,
   Gamepad2,
-  Users,
   ShieldCheck,
   Smartphone,
   Globe,
   QrCode,
-  Clock,
   Layers,
   Router,
-  ChevronRight, // Previously missing
-  Check         // Added: Needed for feature lists
+  ChevronRight,
+  Check,
+  Network,
+  RefreshCw,
+  Users2,
+  Gauge
 } from 'lucide-react';
 
 // --- STATIC VISUAL: Mesh Node Signal ---
@@ -250,15 +252,15 @@ export default function WifiPage() {
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <Signal className="w-5 h-5 text-violet-400" />
-                <span>Zero Dead Zones</span>
+                <span>{t.wifi.trust1}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Gamepad2 className="w-5 h-5 text-fuchsia-400" />
-                <span>Low Ping Gaming</span>
+                <span>{t.wifi.trust2}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-purple-400" />
-                <span>Seamless Roaming</span>
+                <span>{t.wifi.trust3}</span>
               </div>
             </div>
           </div>
@@ -373,7 +375,7 @@ export default function WifiPage() {
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-violet-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center flex-shrink-0">
-                  <Users className="w-7 h-7 text-white" />
+                  <Network className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.wifi.automation.adaptive.title}</h3>
@@ -388,7 +390,7 @@ export default function WifiPage() {
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-violet-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="w-7 h-7 text-white" />
+                  <RefreshCw className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.wifi.automation.healing.title}</h3>
@@ -404,7 +406,7 @@ export default function WifiPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-violet-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-violet-500/20 flex items-center justify-center">
-                <Gamepad2 className="w-6 h-6 text-violet-400" />
+                <Users2 className="w-6 h-6 text-violet-400" />
               </div>
               <h4 className="font-semibold text-white mb-2">{t.wifi.automation.parental.title}</h4>
               <p className="text-sm text-gray-500">{t.wifi.automation.parental.description}</p>
@@ -418,7 +420,7 @@ export default function WifiPage() {
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-violet-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-pink-500/20 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-pink-400" />
+                <Gauge className="w-6 h-6 text-pink-400" />
               </div>
               <h4 className="font-semibold text-white mb-2">{t.wifi.automation.priority.title}</h4>
               <p className="text-sm text-gray-500">{t.wifi.automation.priority.description}</p>

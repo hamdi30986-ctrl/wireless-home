@@ -9,12 +9,13 @@ import {
   AlertTriangle,
   Smartphone,
   Check,
-  TrendingDown,
   BarChart3,
   Waves,
   ShieldAlert,
-  Settings,
-  BellRing
+  BellRing,
+  ShieldCheck,
+  Power,
+  Gauge
 } from 'lucide-react';
 
 // --- STATIC VISUAL: Smart Water Tank Monitor ---
@@ -266,15 +267,15 @@ export default function WaterPage() {
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-cyan-400" />
-                <span>0-100% Accuracy</span>
+                <span>{t.water.trust1}</span>
               </div>
               <div className="flex items-center gap-2">
                 <ShieldAlert className="w-5 h-5 text-blue-400" />
-                <span>Pump Protection</span>
+                <span>{t.water.trust2}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Smartphone className="w-5 h-5 text-sky-400" />
-                <span>Phone Alerts</span>
+                <span>{t.water.trust3}</span>
               </div>
             </div>
           </div>
@@ -331,7 +332,7 @@ export default function WaterPage() {
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
 
                 <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
-                  <Activity className="w-8 h-8 text-blue-600" />
+                  <ShieldCheck className="w-8 h-8 text-blue-600" />
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
                   {t.water.features.shutoff.title}
@@ -388,7 +389,7 @@ export default function WaterPage() {
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-cyan-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                  <Smartphone className="w-7 h-7 text-white" />
+                  <Power className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.water.automation.auto.title}</h3>
@@ -444,7 +445,7 @@ export default function WaterPage() {
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                   <div className="w-12 h-12 rounded-lg bg-cyan-100 flex items-center justify-center flex-shrink-0">
-                    <Settings className="w-6 h-6 text-cyan-600" />
+                    <Gauge className="w-6 h-6 text-cyan-600" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.water.hardware.sensors.title}</h4>
@@ -456,7 +457,7 @@ export default function WaterPage() {
 
                 <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                   <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <TrendingDown className="w-6 h-6 text-blue-600" />
+                    <ShieldCheck className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.water.hardware.valves.title}</h4>
