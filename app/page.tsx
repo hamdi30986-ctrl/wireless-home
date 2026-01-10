@@ -18,6 +18,9 @@ import {
   Check,
   GripVertical,
   Eye,
+  Lightbulb,
+  Droplet,
+  Wind,
 } from 'lucide-react';
 import { useLanguage } from './context/LanguageContext';
 
@@ -220,7 +223,7 @@ export default function HomePage() {
               {t.home.subheading}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/solutions/lighting" className="group flex items-center gap-3 px-8 py-4 bg-[#0066FF] text-white font-semibold rounded-xl hover:bg-[#0052CC] transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5">{t.home.cta1} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
+              <Link href="/solutions" className="group flex items-center gap-3 px-8 py-4 bg-[#0066FF] text-white font-semibold rounded-xl hover:bg-[#0052CC] transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5">{t.home.cta1} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
               <Link href="/store" className="group flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300">{t.home.cta2} <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
             </div>
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500 opacity-60">
@@ -264,15 +267,71 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Before & After Section */}
+      {/* Solutions Section */}
       <section className="py-24 md:py-32 bg-gray-50 overflow-hidden w-full relative">
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block text-sm font-semibold text-[#0066FF] uppercase tracking-wider mb-4">{t.home.transformation.badge}</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">{t.home.transformation.heading}</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.home.transformation.subheading}</p>
+            <span className="inline-block text-sm font-semibold text-[#0066FF] uppercase tracking-wider mb-4">{t.home.solutions.badge}</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">{t.home.solutions.heading}</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.home.solutions.subheading}</p>
           </div>
-          <div className="max-w-4xl mx-auto"><BeforeAfterSlider /></div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Lighting Solution */}
+            <div className="group relative bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
+                  <Lightbulb className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">{t.home.solutions.lighting.title}</h3>
+                <p className="text-white/90 text-sm mb-6 flex-grow">{t.home.solutions.lighting.description}</p>
+                <Link href="/solutions/lighting" className="inline-flex items-center gap-2 text-white font-semibold text-sm group-hover:gap-3 transition-all">
+                  {t.home.solutions.lighting.cta} <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Climate Solution */}
+            <div className="group relative bg-gradient-to-br from-cyan-400 to-teal-500 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
+                  <Wind className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">{t.home.solutions.climate.title}</h3>
+                <p className="text-white/90 text-sm mb-6 flex-grow">{t.home.solutions.climate.description}</p>
+                <Link href="/solutions/climate" className="inline-flex items-center gap-2 text-white font-semibold text-sm group-hover:gap-3 transition-all">
+                  {t.home.solutions.climate.cta} <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Water Solution */}
+            <div className="group relative bg-gradient-to-br from-indigo-400 to-purple-500 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
+                  <Droplet className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">{t.home.solutions.water.title}</h3>
+                <p className="text-white/90 text-sm mb-6 flex-grow">{t.home.solutions.water.description}</p>
+                <Link href="/solutions/water" className="inline-flex items-center gap-2 text-white font-semibold text-sm group-hover:gap-3 transition-all">
+                  {t.home.solutions.water.cta} <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* View More Solutions */}
+            <div className="group relative bg-gradient-to-br from-gray-600 to-gray-800 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+              <Link href="/solutions" className="relative z-10 h-full flex flex-col items-center justify-center text-center">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
+                  <ChevronRight className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">{t.home.solutions.viewMore.title}</h3>
+                <div className="inline-flex items-center gap-2 text-white font-semibold text-sm group-hover:gap-3 transition-all mt-4">
+                  {t.home.solutions.viewMore.cta} <ArrowRight className="w-4 h-4" />
+                </div>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

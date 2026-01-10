@@ -4,7 +4,7 @@
     "solutions": "Solutions",
     "store": "Store",
     "about": "About Us",
-    "book": "Book an Appointment"
+    "book": "Request a Consultation"
   },
   "solutions": {
     "lighting": "Smart Lighting",
@@ -26,6 +26,30 @@
     "trust2": "100% Wireless",
     "trust3": "One App Control",
     "scroll": "Scroll",
+    "solutions": {
+      "badge": "OUR SOLUTIONS",
+      "heading": "Solutions",
+      "subheading": "Discover our smart home solutions designed for modern living",
+      "lighting": {
+        "title": "Lighting",
+        "description": "Control your lights from anywhere with smart switches and automated scenes",
+        "cta": "View More"
+      },
+      "climate": {
+        "title": "Climate",
+        "description": "Smart temperature control for comfort and energy savings",
+        "cta": "View More"
+      },
+      "water": {
+        "title": "Water",
+        "description": "Monitor water usage and prevent leaks with smart sensors",
+        "cta": "View More"
+      },
+      "viewMore": {
+        "title": "View More Solutions",
+        "cta": "Explore All"
+      }
+    },
     "whyUs": {
       "badge": "Why Choose Us",
       "heading": "Smart Home, the Right Way",
@@ -72,7 +96,7 @@
     "heading1": "Lighting That",
     "heading2": "Thinks & Feels.",
     "subheading": "Forget flipping switches. Experience lighting that welcomes you home and sets the perfect mood.",
-    "cta1": "Design Your Lighting",
+    "cta1": "Request a Consultation",
     "cta2": "View Products",
     "trust1": "Circadian Rhythm",
     "trust2": "Energy Efficient",
@@ -103,7 +127,7 @@
       "heading1": "It knows what you need,",
       "heading2": "before you ask.",
       "prayer": {
-        "title": "Synced with Prayer Times",
+        "title": "Synced with Sunrise and Sunset",
         "description": "Lights automatically adjust for Fajr wake-up routines and Maghrib ambiance."
       },
       "presence": {
@@ -146,7 +170,7 @@
       "badge": "Free Consultation",
       "heading": "Ready to light up your home?",
       "subheading": "Our lighting specialists will design a custom solution that transforms every room in your home.",
-      "quote": "Get a Free Lighting Quote",
+      "quote": "Request a Consultation",
       "chat": "Chat with Specialist"
     }
   },
@@ -155,7 +179,7 @@
     "heading1": "Perfect Weather,",
     "heading2": "Inside Your Home.",
     "subheading": "Walk into a cool home every time without wasting energy. Pre-cool from the office, track your bills, and let your home handle the Saudi heat.",
-    "cta1": "Get a Quote",
+    "cta1": "Request a Consultation",
     "cta2": "View Products",
     "trust1": "Pre-Cool Remote",
     "trust2": "Energy Tracking",
@@ -229,16 +253,16 @@
       "badge": "Free Energy Audit",
       "heading": "Ready to beat the heat smartly?",
       "subheading": "Our climate specialists will analyze your current setup and design a solution that keeps you cool while cutting your electricity bills.",
-      "quote": "Get Free Climate Quote",
+      "quote": "Request a Consultation",
       "chat": "Chat with Specialist"
     }
   },
   "security": {
     "badge": "Advanced Security Systems",
     "heading1": "Sleep Soundly.",
-    "heading2": "We're Watching.",
+    "heading2": "System is Protecting.",
     "subheading": "24/7 smart surveillance, instant alerts, and remote access. Know what's happening at home whether you're traveling or just at work.",
-    "cta1": "Secure My Home",
+    "cta1": "Request a Consultation",
     "cta2": "View Systems",
     "trust1": "24/7 Monitoring",
     "trust2": "Instant Alerts",
@@ -293,7 +317,7 @@
     },
     "hardware": {
       "title": "Premium Hardware",
-      "heading1": "Military-grade security,",
+      "heading1": "Highest security,",
       "heading2": "Consumer-friendly.",
       "subheading": "Professional-grade security cameras and sensors designed for Saudi conditions - extreme heat, dust, and bright sunlight.",
       "cameras": {
@@ -314,7 +338,7 @@
       "badge": "Free Security Assessment",
       "heading": "Ready to secure your home?",
       "subheading": "Our security experts will assess your property and design a comprehensive protection system tailored to your needs.",
-      "quote": "Get Free Security Quote",
+      "quote": "Request a Consultation",
       "chat": "Chat with Specialist"
     }
   },
@@ -323,7 +347,7 @@
     "heading1": "Wake Up to Sunshine.",
     "heading2": "Automated.",
     "subheading": "Schedule your curtains to open with sunrise or close for movie time. Control light and privacy without leaving your bed.",
-    "cta1": "Get a Quote",
+    "cta1": "Request a Consultation",
     "cta2": "View Options",
     "trust1": "Natural Wake-Up",
     "trust2": "One-Tap Privacy",
@@ -332,7 +356,7 @@
     "ctaInfo": "Free measurement and compatibility check included.",
     "features": {
       "title": "Smart Curtain Features",
-      "heading": "Effortless Light Control",
+      "heading": "Effortless Day-Light Control",
       "subheading": "Automated window treatments that transform how natural light flows through your Saudi home.",
       "schedule": {
         "title": "Sunrise & Sunset Sync",
@@ -398,16 +422,16 @@
       "badge": "Free Home Consultation",
       "heading": "Ready to automate your windows?",
       "subheading": "Our window treatment experts will measure your windows and design a custom motorized solution for every room.",
-      "quote": "Get Free Curtain Quote",
+      "quote": "Request a Consultation",
       "chat": "Chat with Specialist"
     }
   },
   "water": {
     "badge": "Smart Water Management",
     "heading1": "Never Worry About",
-    "heading2": "Water Leaks Again.",
+    "heading2": "Running out of Water Again.",
     "subheading": "Detect leaks instantly, shut off valves remotely, and monitor usage. Protect your home from water damage 24/7.",
-    "cta1": "Protect My Home",
+    "cta1": "Request a Consultation",
     "cta2": "View Sensors",
     "trust1": "0-100% Accuracy",
     "trust2": "Pump Protection",
@@ -479,9 +503,9 @@
     },
     "cta": {
       "badge": "Free Water Assessment",
-      "heading": "Ready to protect your home from water damage?",
+      "heading": "Ready to monitor your water tanks?",
       "subheading": "Our water protection specialists will assess your home's vulnerable areas and design a comprehensive monitoring system.",
-      "quote": "Get Free Water Protection Quote",
+      "quote": "Request a Consultation",
       "chat": "Chat with Specialist"
     }
   },
@@ -490,7 +514,7 @@
     "heading1": "Full Bars in",
     "heading2": "Every Corner.",
     "subheading": "Eliminate dead zones in your Mulhaq or Basement. Get enterprise-grade speeds that penetrate Saudi concrete walls.",
-    "cta1": "Boost My Wi-Fi",
+    "cta1": "Request a Consultation",
     "cta2": "View Mesh Systems",
     "trust1": "Zero Dead Zones",
     "trust2": "Low Ping Gaming",
@@ -564,7 +588,7 @@
       "badge": "Free Network Assessment",
       "heading": "Ready for whole-home Wi-Fi?",
       "subheading": "Our network specialists will survey your home and design a mesh system that delivers strong Wi-Fi in every corner.",
-      "quote": "Get Free Network Quote",
+      "quote": "Request a Consultation",
       "chat": "Chat with Specialist"
     }
   },
@@ -573,7 +597,7 @@
     "heading1": "Premium Sound,",
     "heading2": "Every Room.",
     "subheading": "Whole-home audio with AirPlay 2, Bluetooth streaming, automatic Athan announcements, and interior intercom between rooms.",
-    "cta1": "Design My Sound System",
+    "cta1": "Request a Consultation",
     "cta2": "View Audio Products",
     "trust1": "Invisible Audio",
     "trust2": "AirPlay 2 & Bluetooth",
@@ -648,7 +672,7 @@
       "badge": "Free Audio Consultation",
       "heading": "Ready for premium whole-home audio?",
       "subheading": "Our audio specialists will design an invisible speaker system that delivers exceptional sound in every room.",
-      "quote": "Get Free Audio Quote",
+      "quote": "Request a Consultation",
       "chat": "Chat with Specialist"
     }
   },
@@ -772,8 +796,8 @@
       "description": "We don't settle for off-the-shelf solutions. Our partnerships with world-class manufacturers ensure every component meets our exacting standards.",
       "italian": {
         "badge": "Audio Systems",
-        "title": "Italian Engineering",
-        "description": "Our whole-home audio systems are custom-built by Italian artisans in the same factories that supply Europe's finest hotels. Crystal-clear sound in every room.",
+        "title": "Saudi Engineering",
+        "description": "Our whole-home audio systems are custom-built by factories that supply Europe's finest hotels. Crystal-clear sound in every room.",
         "check1": "Hi-Fi Grade",
         "check2": "Multi-Room"
       },
@@ -891,7 +915,7 @@
     "cta": {
       "title": "Ready to Transform Your Space?",
       "subtitle": "Let us help you create your dream smart home",
-      "button": "Book Consultation"
+      "button": "Request a Consultation"
     }
   },
   "faq": {
@@ -1075,7 +1099,7 @@
       "about": "About Us",
       "store": "Store",
       "gallery": "Gallery",
-      "book": "Book Appointment"
+      "book": "Request a Consultation"
     },
     "solutions": {
       "title": "Solutions"
@@ -1092,6 +1116,56 @@
       "whatsapp": "WhatsApp",
       "email": "Email",
       "location": "Office Location"
+    }
+  },
+  "solutionsPage": {
+    "hero": {
+      "heading1": "Smart Home",
+      "heading2": "Solutions",
+      "subheading": "Discover comprehensive smart home solutions tailored for modern living"
+    },
+    "cards": {
+      "lighting": {
+        "title": "Lighting",
+        "description": "Control your lights from anywhere with smart switches and automated scenes for the perfect ambiance",
+        "cta": "View More Info"
+      },
+      "climate": {
+        "title": "Climate",
+        "description": "Smart temperature control for comfort and energy savings with automated climate management",
+        "cta": "View More Info"
+      },
+      "water": {
+        "title": "Water",
+        "description": "Monitor water usage and prevent leaks with smart sensors and automated shutoff valves",
+        "cta": "View More Info"
+      },
+      "wifi": {
+        "title": "Wi-Fi",
+        "description": "Reliable whole-home coverage with mesh networking for seamless connectivity everywhere",
+        "cta": "View More Info"
+      },
+      "entertainment": {
+        "title": "Entertainment",
+        "description": "Integrated smart home entertainment with automated scenes and voice control",
+        "cta": "View More Info"
+      },
+      "security": {
+        "title": "Security",
+        "description": "Complete home security with smart locks, cameras, and automated monitoring",
+        "cta": "View More Info"
+      },
+      "curtains": {
+        "title": "Curtains",
+        "description": "Automated curtain control for privacy, comfort, and energy efficiency",
+        "cta": "View More Info"
+      }
+    },
+    "cta": {
+      "heading": "Ready to Get Started?",
+      "subheading": "Let us help you choose the perfect solution for your home",
+      "button1": "Request a Consultation",
+      "button2": "Browse Products"
     }
   }
 }
