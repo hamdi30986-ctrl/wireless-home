@@ -159,7 +159,7 @@ export default function Navbar() {
           >
             <div className="relative w-12 h-12 flex-shrink-0">
               <Image
-                src="/wireless_logo.png"
+                src="/images/w.jpg"
                 alt="Wireless Home Logo"
                 width={48}
                 height={48}
