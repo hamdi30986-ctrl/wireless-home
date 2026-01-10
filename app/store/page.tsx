@@ -82,12 +82,17 @@ function ProductDetailPanel({
 
   useEffect(() => {
     if (product) {
-      setSelectedColor(product.colors?.[0]?.name);
       setSelectedType(product.types?.[0]?.value);
-      // Singular 'gang' check for DB compatibility
-      const productAny = product as any;
-      const gangData = productAny.gang || product.gang;
-      setSelectedGang(gangData?.[0]?.value); 
+      // Type A: Standalone colors (no gang)
+      if (product.colors && product.colors.length > 0) {
+        setSelectedColor(product.colors[0].name);
+        setSelectedGang(undefined);
+      }
+      // Type B: Gang with colors
+      else if (product.gang && product.gang.length > 0) {
+        setSelectedGang(product.gang[0].value);
+        setSelectedColor(product.gang[0].colors?.[0]?.name);
+      }
     }
   }, [product]);
 
@@ -153,18 +158,31 @@ function ProductDetailPanel({
 
                  {/* Product Image Logic */}
                   {(() => {
-                    const productAny = product as any;
-                    const gangData = productAny.gang || product.gang;
-                    const selectedGangObj = gangData?.find((g: any) => g.value === selectedGang);
-                    const selectedTypeObj = product.types?.find(t => t.value === selectedType);
-                    const selectedColorObj = product.colors?.find(c => c.name === selectedColor);
-                    
-                    const currentImage = selectedGangObj?.image || selectedColorObj?.image || selectedTypeObj?.image || (product.images && product.images[activeImageIndex]);
-                    
+                    let currentImage = product.images?.[activeImageIndex];
+
+                    // Type B: Gang with colors
+                    if (product.gang && selectedGang) {
+                      const selectedGangObj = product.gang.find(g => g.value === selectedGang);
+                      if (selectedGangObj && selectedColor) {
+                        const gangColorObj = selectedGangObj.colors?.find(c => c.name === selectedColor);
+                        currentImage = gangColorObj?.image || currentImage;
+                      }
+                    }
+                    // Type A: Standalone colors
+                    else if (product.colors && selectedColor) {
+                      const colorObj = product.colors.find(c => c.name === selectedColor);
+                      currentImage = colorObj?.image || currentImage;
+                    }
+                    // Type override
+                    if (product.types && selectedType) {
+                      const typeObj = product.types.find(t => t.value === selectedType);
+                      currentImage = typeObj?.image || currentImage;
+                    }
+
                     return (
-                      <img 
+                      <img
                         key={currentImage}
-                        src={currentImage} 
+                        src={currentImage}
                         alt={product.name}
                         style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '20px', position: 'relative', zIndex: 1 }}
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -282,22 +300,20 @@ function ProductDetailPanel({
             
             {/* Gang Selector */}
             {(() => {
-               const productAny = product as any;
-               const gangData = productAny.gang || product.gang;
-               if (gangData && gangData.length > 0) {
+               if (product.gang && product.gang.length > 0) {
                  return (
                   <div style={{ padding: '0 24px 16px 24px' }}>
                     <p style={{ fontSize: '12px', fontWeight: 600, color: '#71717a', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       {t.store.configuration}
                     </p>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                      {gangData.map((gang: any) => (
+                      {product.gang.map((gang) => (
                         <button
                           key={gang.value}
                           type="button"
                           onClick={() => {
                             setSelectedGang(gang.value);
-                            setSelectedColor(undefined);
+                            setSelectedColor(gang.colors[0]?.name);
                           }}
                           style={{
                             padding: '10px 16px', borderRadius: '10px',
@@ -317,34 +333,47 @@ function ProductDetailPanel({
                }
             })()}
 
-            {/* Color Selector */}
-            {product.colors && product.colors.length > 0 && (
-              <div style={{ padding: '0 24px 16px 24px' }}>
-                <p style={{ fontSize: '12px', fontWeight: 600, color: '#71717a', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {t.store.color}: {selectedColor}
-                </p>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  {product.colors.map((color) => (
-                    <button
-                      key={color.name}
-                      type="button"
-                      onClick={() => {
-                        setSelectedColor(color.name);
-                        setSelectedGang(undefined);
-                      }}
-                      title={color.name}
-                      style={{
-                        width: '40px', height: '40px', borderRadius: '10px',
-                        border: selectedColor === color.name ? `3px solid ${brand.accentColor}` : '2px solid #e4e4e7',
-                        backgroundColor: color.hex, cursor: 'pointer',
-                        boxShadow: color.hex.toLowerCase() === '#ffffff' ? 'inset 0 0 0 1px #e4e4e7' : 'none',
-                        transition: 'all 0.2s',
-                      }}
-                    />
-                  ))}
+            {/* Color Selector - Works for both Type A and Type B */}
+            {(() => {
+              let availableColors: Array<{name: string, hex: string, image?: string}> = [];
+
+              // Type B: Get colors from selected gang
+              if (product.gang && selectedGang) {
+                const selectedGangObj = product.gang.find(g => g.value === selectedGang);
+                availableColors = selectedGangObj?.colors || [];
+              }
+              // Type A: Get standalone colors
+              else if (product.colors) {
+                availableColors = product.colors;
+              }
+
+              if (availableColors.length === 0) return null;
+
+              return (
+                <div style={{ padding: '0 24px 16px 24px' }}>
+                  <p style={{ fontSize: '12px', fontWeight: 600, color: '#71717a', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {t.store.color}: {selectedColor}
+                  </p>
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    {availableColors.map((color) => (
+                      <button
+                        key={color.name}
+                        type="button"
+                        onClick={() => setSelectedColor(color.name)}
+                        title={color.name}
+                        style={{
+                          width: '40px', height: '40px', borderRadius: '10px',
+                          border: selectedColor === color.name ? `3px solid ${brand.accentColor}` : '2px solid #e4e4e7',
+                          backgroundColor: color.hex, cursor: 'pointer',
+                          boxShadow: color.hex.toLowerCase() === '#ffffff' ? 'inset 0 0 0 1px #e4e4e7' : 'none',
+                          transition: 'all 0.2s',
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Type Selector */}
             {product.types && product.types.length > 0 && (
@@ -463,12 +492,28 @@ function InquiryPanel({
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <div style={{ width: '56px', height: '56px', borderRadius: '12px', overflow: 'hidden', position: 'relative', background: 'white', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.05)' }}>
                      {(() => {
-                        const productAny = product as any;
-                        const gangData = productAny.gang || product.gang;
-                        const gangImg = gangData?.find((g:any) => g.value === item.selectedGang)?.image;
-                        const colorImg = product.colors?.find((c:any) => c.name === item.selectedColor)?.image;
-                        const typeImg = product.types?.find((t:any) => t.value === item.selectedType)?.image;
-                        return <img src={gangImg || colorImg || typeImg || (product.images && product.images[0]) || ''} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
+                        let itemImage = product.images?.[0] || '';
+
+                        // Type B: Gang + Color
+                        if (product.gang && item.selectedGang) {
+                          const gangObj = product.gang.find((g: any) => g.value === item.selectedGang);
+                          if (gangObj && item.selectedColor) {
+                            const gangColorImg = gangObj.colors?.find((c: any) => c.name === item.selectedColor)?.image;
+                            itemImage = gangColorImg || itemImage;
+                          }
+                        }
+                        // Type A: Standalone color
+                        else if (product.colors && item.selectedColor) {
+                          const colorImg = product.colors.find((c: any) => c.name === item.selectedColor)?.image;
+                          itemImage = colorImg || itemImage;
+                        }
+                        // Type
+                        if (product.types && item.selectedType) {
+                          const typeImg = product.types.find((t: any) => t.value === item.selectedType)?.image;
+                          itemImage = typeImg || itemImage;
+                        }
+
+                        return <img src={itemImage} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />;
                      })()}
                   </div>
                   <div style={{ flex: 1 }}>

@@ -13,11 +13,18 @@ export type ProductType = {
   image?: string;
 };
 
-// NEW: Added this definition so 'gang' in Product doesn't error
+// Gang color variant (colors nested inside gang)
+export type GangColorVariant = {
+  name: string;
+  hex: string;
+  image: string;
+};
+
+// Gang with nested colors
 export type ProductGang = {
   name: string;
   value: string;
-  image?: string;
+  colors: GangColorVariant[];  // Each gang has its own colors
 };
 
 export type Product = {

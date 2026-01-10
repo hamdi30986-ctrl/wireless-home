@@ -7,7 +7,8 @@ import { X, Save, Loader2, Plus, Trash2, UploadCloud, Palette, Layers, LayoutGri
 // --- TYPES ---
 type ProductColor = { name: string; hex: string; image: string };
 type ProductType = { name: string; value: string; image: string };
-type ProductGang = { name: string; value: string; image: string }; // NEW
+type GangColorVariant = { name: string; hex: string; image: string };
+type ProductGang = { name: string; value: string; colors: GangColorVariant[] };
 
 type Product = {
   id?: string;
@@ -96,8 +97,8 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit }:
     }
   };
 
-  const uploadVariantImage = async (file: File, index: number, variantType: 'color' | 'type' | 'gang') => {
-    const variantId = `${variantType}-${index}`;
+  const uploadVariantImage = async (file: File, index: number, variantType: 'color' | 'type', gangIndex?: number) => {
+    const variantId = gangIndex !== undefined ? `gang-${gangIndex}-color-${index}` : `${variantType}-${index}`;
     setUploadingVariantId(variantId);
     try {
       const fileExt = file.name.split('.').pop();
@@ -114,11 +115,27 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit }:
         const newItems = [...formData.types];
         newItems[index].image = publicUrl;
         setFormData(prev => ({ ...prev, types: newItems }));
-      } else if (variantType === 'gang') { // NEW
-        const newItems = [...formData.gang];
-        newItems[index].image = publicUrl;
-        setFormData(prev => ({ ...prev, gang: newItems }));
       }
+    } catch (error: any) {
+      alert('Error: ' + error.message);
+    } finally {
+      setUploadingVariantId(null);
+    }
+  };
+
+  const uploadGangColorImage = async (file: File, gangIndex: number, colorIndex: number) => {
+    const variantId = `gang-${gangIndex}-color-${colorIndex}`;
+    setUploadingVariantId(variantId);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `variant-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage.from('products').upload(fileName, file);
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from('products').getPublicUrl(fileName);
+
+      const newGang = [...formData.gang];
+      newGang[gangIndex].colors[colorIndex].image = publicUrl;
+      setFormData(prev => ({ ...prev, gang: newGang }));
     } catch (error: any) {
       alert('Error: ' + error.message);
     } finally {
@@ -147,14 +164,42 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit }:
     const newTypes = [...formData.types]; (newTypes[i] as any)[field] = val; setFormData({...formData, types: newTypes});
   };
 
-  // NEW: Gang Handlers
-  const addGang = () => setFormData({ ...formData, gang: [...formData.gang, { name: '', value: '', image: '' }] });
-  const updateGang = (i: number, field: keyof ProductGang, val: string) => {
-    const newGang = [...formData.gang]; (newGang[i] as any)[field] = val; setFormData({...formData, gang: newGang});
+  // Gang Handlers
+  const addGang = () => setFormData({ ...formData, gang: [...formData.gang, { name: '', value: '', colors: [] }] });
+  const updateGang = (i: number, field: 'name' | 'value', val: string) => {
+    const newGang = [...formData.gang];
+    newGang[i][field] = val;
+    setFormData({...formData, gang: newGang});
+  };
+
+  const addColorToGang = (gangIndex: number) => {
+    const newGang = [...formData.gang];
+    newGang[gangIndex].colors.push({ name: '', hex: '#000000', image: '' });
+    setFormData({ ...formData, gang: newGang });
+  };
+
+  const updateGangColor = (gangIndex: number, colorIndex: number, field: 'name' | 'hex' | 'image', val: string) => {
+    const newGang = [...formData.gang];
+    newGang[gangIndex].colors[colorIndex][field] = val;
+    setFormData({ ...formData, gang: newGang });
+  };
+
+  const removeColorFromGang = (gangIndex: number, colorIndex: number) => {
+    const newGang = [...formData.gang];
+    newGang[gangIndex].colors = newGang[gangIndex].colors.filter((_, idx) => idx !== colorIndex);
+    setFormData({ ...formData, gang: newGang });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation: Check if any gang has 0 colors
+    const gangWithNoColors = formData.gang.find(g => g.colors.length === 0);
+    if (gangWithNoColors) {
+      alert(`Gang "${gangWithNoColors.name || 'Unnamed'}" must have at least one color. Please add colors or remove the gang.`);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const payload = { ...formData };
@@ -270,7 +315,7 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit }:
 
             <hr className="border-gray-100" />
 
-            {/* NEW: Gang Variants (Configuration) */}
+            {/* Gang Variants with Nested Colors */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase">
@@ -280,23 +325,60 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit }:
                   <Plus className="w-3 h-3" /> Add Gang
                 </button>
               </div>
-              {formData.gang.map((gang, i) => (
-                <div key={i} className="flex gap-4 items-center bg-gray-50 p-4 rounded-xl border border-gray-200">
-                  <input type="text" placeholder="Name (e.g. 2 Gang)" className="flex-1 px-4 py-2 bg-white border rounded-lg text-sm"
-                    value={gang.name} onChange={e => { updateGang(i, 'name', e.target.value); updateGang(i, 'value', e.target.value); }} />
-                  <div className="relative w-12 h-12 shrink-0">
-                    {uploadingVariantId === `gang-${i}` ? (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg"><Loader2 className="w-5 h-5 animate-spin text-gray-500"/></div>
-                    ) : gang.image ? (
-                      <img src={gang.image} className="w-full h-full object-cover rounded-lg border border-gray-300" />
-                    ) : (
-                      <label className="w-full h-full flex items-center justify-center bg-white border border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                        <UploadCloud className="w-5 h-5 text-gray-400" />
-                        <input type="file" className="hidden" accept="image/*" onChange={e => e.target.files?.[0] && uploadVariantImage(e.target.files[0], i, 'gang')} />
-                      </label>
-                    )}
+              {formData.gang.map((gang, gangIdx) => (
+                <div key={gangIdx} className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border-2 border-blue-200">
+                  {/* Gang Name */}
+                  <div className="flex gap-4 items-center mb-4">
+                    <input type="text" placeholder="Gang Name (e.g. 2 Gang)" className="flex-1 px-4 py-2 bg-white border-2 border-blue-300 rounded-lg text-sm font-semibold"
+                      value={gang.name} onChange={e => { updateGang(gangIdx, 'name', e.target.value); updateGang(gangIdx, 'value', e.target.value); }} />
+                    <button type="button" onClick={() => setFormData({...formData, gang: formData.gang.filter((_, idx) => idx !== gangIdx)})}
+                      className="p-2 text-red-500 hover:bg-red-100 rounded-lg">
+                      <Trash2 className="w-5 h-5" />
+                    </button>
                   </div>
-                  <button type="button" onClick={() => setFormData({...formData, gang: formData.gang.filter((_, idx) => idx !== i)})} className="p-2 text-red-400 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+
+                  {/* Colors for this Gang */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <label className="text-xs font-bold text-blue-700 uppercase">Colors for {gang.name || 'this gang'}</label>
+                      <button type="button" onClick={() => addColorToGang(gangIdx)}
+                        className="text-xs font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 flex gap-1 items-center">
+                        <Plus className="w-3 h-3" /> Add Color
+                      </button>
+                    </div>
+
+                    {gang.colors.length === 0 && (
+                      <p className="text-xs text-gray-500 italic py-2">No colors yet. Add at least one color for this gang.</p>
+                    )}
+
+                    {gang.colors.map((color, colorIdx) => (
+                      <div key={colorIdx} className="flex gap-3 items-center bg-white p-3 rounded-lg border border-blue-200">
+                        <input type="color" className="w-10 h-10 rounded cursor-pointer border-none bg-transparent"
+                          value={color.hex} onChange={e => updateGangColor(gangIdx, colorIdx, 'hex', e.target.value)} />
+                        <input type="text" placeholder="Color Name" className="flex-1 px-3 py-2 bg-gray-50 border rounded-lg text-sm"
+                          value={color.name} onChange={e => updateGangColor(gangIdx, colorIdx, 'name', e.target.value)} />
+                        <div className="relative w-12 h-12 shrink-0">
+                          {uploadingVariantId === `gang-${gangIdx}-color-${colorIdx}` ? (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg">
+                              <Loader2 className="w-5 h-5 animate-spin text-gray-500"/>
+                            </div>
+                          ) : color.image ? (
+                            <img src={color.image} className="w-full h-full object-cover rounded-lg border border-gray-300" />
+                          ) : (
+                            <label className="w-full h-full flex items-center justify-center bg-white border border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                              <UploadCloud className="w-4 h-4 text-gray-400" />
+                              <input type="file" className="hidden" accept="image/*"
+                                onChange={e => e.target.files?.[0] && uploadGangColorImage(e.target.files[0], gangIdx, colorIdx)} />
+                            </label>
+                          )}
+                        </div>
+                        <button type="button" onClick={() => removeColorFromGang(gangIdx, colorIdx)}
+                          className="p-2 text-red-400 hover:bg-red-50 rounded-lg">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>

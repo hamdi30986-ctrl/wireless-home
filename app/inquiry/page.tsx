@@ -23,6 +23,7 @@ type InquiryItem = {
   quantity: number;
   selectedColor?: string;
   selectedType?: string;
+  selectedGang?: string;
 };
 
 type ProductColor = {
@@ -37,73 +38,38 @@ type ProductType = {
   image?: string;
 };
 
+type GangColorVariant = {
+  name: string;
+  hex: string;
+  image: string;
+};
+
+type ProductGang = {
+  name: string;
+  value: string;
+  colors: GangColorVariant[];
+};
+
 type Product = {
   id: string;
   name: string;
+  brand_name: string;
   category: string;
   images: string[];
   colors?: ProductColor[];
   types?: ProductType[];
+  gang?: ProductGang[];
 };
 
 // ============================================
-// BRAND DATA (Preserved your existing data)
+// BRAND ACCENT COLORS
 // ============================================
-const brandData: Record<string, { displayName: string; accentColor: string; products: Product[] }> = {
-  aqara: {
-    displayName: 'Aqara',
-    accentColor: '#c97e36',
-    products: [
-      { id: 'aq-1', name: 'Smart Switch H1 Pro', category: 'Switches', images: ['/images/products/aq-switch-1.jpg'], colors: [{ name: 'White', hex: '#FFFFFF', image: '/images/products/aq-switch-white.jpg' }, { name: 'Black', hex: '#1a1a1a', image: '/images/products/aq-switch-black.jpg' }, { name: 'Gold', hex: '#D4AF37', image: '/images/products/aq-switch-gold.jpg' }], types: [{ name: '1 Gang', value: '1-gang', image: '/images/products/aq-switch-1gang.jpg' }, { name: '2 Gang', value: '2-gang', image: '/images/products/aq-switch-2gang.jpg' }, { name: '3 Gang', value: '3-gang', image: '/images/products/aq-switch-3gang.jpg' }] },
-      { id: 'aq-2', name: 'Motion Sensor P1', category: 'Sensors', images: ['/images/products/aq-motion-1.jpg'] },
-      { id: 'aq-3', name: 'Hub M3', category: 'Hubs', images: ['/images/products/aq-hub-1.jpg'] },
-      { id: 'aq-4', name: 'Curtain Driver E1', category: 'Curtains', images: ['/images/products/aq-curtain-1.jpg'], types: [{ name: 'Rod Mount', value: 'rod', image: '/images/products/aq-curtain-rod.jpg' }, { name: 'Track Mount', value: 'track', image: '/images/products/aq-curtain-track.jpg' }] },
-      { id: 'aq-5', name: 'Door Sensor P2', category: 'Sensors', images: ['/images/products/aq-door-1.jpg'] },
-      { id: 'aq-6', name: 'Smart Lock U100', category: 'Security', images: ['/images/products/aq-lock-1.jpg'], colors: [{ name: 'Silver', hex: '#C0C0C0', image: '/images/products/aq-lock-silver.jpg' }, { name: 'Black', hex: '#1a1a1a', image: '/images/products/aq-lock-black.jpg' }, { name: 'Bronze', hex: '#CD7F32', image: '/images/products/aq-lock-bronze.jpg' }] },
-      { id: 'aq-7', name: 'Temperature Sensor', category: 'Climate', images: ['/images/products/aq-temp-1.jpg'] },
-      { id: 'aq-8', name: 'Cube T1 Pro', category: 'Controllers', images: ['/images/products/aq-cube-1.jpg'] },
-    ],
-  },
-  wirelesshome: {
-    displayName: 'WirelessHome',
-    accentColor: '#3b82f6',
-    products: [
-      { id: 'wh-1', name: 'Tank Level Sensor', category: 'Sensors', images: ['/images/products/wh-tank-1.jpg'] },
-      { id: 'wh-2', name: 'Villa Mesh Node', category: 'Networking', images: ['/images/products/wh-mesh-1.jpg'] },
-      { id: 'wh-3', name: 'IR Blaster Pro', category: 'Controllers', images: ['/images/products/wh-ir-1.jpg'] },
-      { id: 'wh-4', name: 'Outdoor Climate', category: 'Climate', images: ['/images/products/wh-outdoor-1.jpg'] },
-      { id: 'wh-5', name: 'Zone Audio Hub', category: 'Audio', images: ['/images/products/wh-audio-1.jpg'] },
-      { id: 'wh-6', name: 'Water Valve Controller', category: 'Water', images: ['/images/products/wh-valve-1.jpg'] },
-    ],
-  },
-  shelly: {
-    displayName: 'Shelly',
-    accentColor: '#4aa3df',
-    products: [
-      { id: 'sh-1', name: 'Shelly Plus 1', category: 'Relays', images: ['/images/products/sh-plus1-1.jpg'] },
-      { id: 'sh-2', name: 'Shelly Pro 4PM', category: 'Relays', images: ['/images/products/sh-pro4-1.jpg'] },
-    ],
-  },
-  tuya: {
-    displayName: 'Tuya',
-    accentColor: '#ff6b35',
-    products: [
-      { id: 'ty-1', name: 'Smart Plug Mini', category: 'Plugs', images: ['/images/products/ty-plug-1.jpg'] },
-      { id: 'ty-2', name: 'LED Strip Controller', category: 'Lighting', images: ['/images/products/ty-led-1.jpg'] },
-    ],
-  },
+const brandColors: Record<string, string> = {
+  'Aqara': '#c97e36',
+  'WirelessHome': '#3b82f6',
+  'Shelly': '#4aa3df',
+  'Tuya': '#ff6b35',
 };
-
-// ============================================
-// GET PRODUCT BY ID
-// ============================================
-function getProductById(id: string): (Product & { brandName: string; brandColor: string }) | null {
-  for (const brand of Object.values(brandData)) {
-    const product = brand.products.find((p) => p.id === id);
-    if (product) return { ...product, brandName: brand.displayName, brandColor: brand.accentColor };
-  }
-  return null;
-}
 
 // ============================================
 // INQUIRY PAGE
@@ -111,9 +77,10 @@ function getProductById(id: string): (Product & { brandName: string; brandColor:
 export default function InquiryPage() {
   const router = useRouter();
   const [items, setItems] = useState<InquiryItem[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -132,6 +99,30 @@ export default function InquiryPage() {
       }
     }
   }, []);
+
+  // Fetch products from database
+  useEffect(() => {
+    async function fetchProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching products:', error);
+      } else if (data) {
+        setProducts(data);
+      }
+    }
+
+    if (items.length > 0) {
+      fetchProducts();
+    }
+  }, [items]);
+
+  // Get product by ID
+  const getProductById = (id: string): Product | null => {
+    return products.find(p => p.id === id) || null;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -322,11 +313,17 @@ export default function InquiryPage() {
                 {items.map((item) => {
                   const product = getProductById(item.productId);
                   if (!product) return null;
-                  
-                  const typeLabel = item.selectedType 
+
+                  const brandColor = brandColors[product.brand_name] || '#3b82f6';
+
+                  const typeLabel = item.selectedType
                     ? product.types?.find(t => t.value === item.selectedType)?.name || item.selectedType
                     : null;
-                  
+
+                  const gangLabel = item.selectedGang
+                    ? product.gang?.find(g => g.value === item.selectedGang)?.name || item.selectedGang
+                    : null;
+
                   return (
                     <div
                       key={item.productId}
@@ -353,24 +350,39 @@ export default function InquiryPage() {
                           position: 'relative',
                         }}
                       >
-                        <Package style={{ width: '24px', height: '24px', color: product.brandColor, position: 'absolute', zIndex: 0 }} />
+                        <Package style={{ width: '24px', height: '24px', color: brandColor, position: 'absolute', zIndex: 0 }} />
                         {(() => {
-                          // Determine which image to show based on selection
-                          const selectedTypeObj = product.types?.find(t => t.value === item.selectedType);
-                          const selectedColorObj = product.colors?.find(c => c.name === item.selectedColor);
-                          
-                          // Priority: Type image > Color image > Default image
-                          const currentImage = selectedTypeObj?.image || selectedColorObj?.image || product.images[0];
-                          
+                          let itemImage = product.images?.[0] || '';
+
+                          // Type B: Gang + Color
+                          if (product.gang && item.selectedGang) {
+                            const gangObj = product.gang.find(g => g.value === item.selectedGang);
+                            if (gangObj && item.selectedColor) {
+                              const gangColorImg = gangObj.colors?.find(c => c.name === item.selectedColor)?.image;
+                              itemImage = gangColorImg || itemImage;
+                            }
+                          }
+                          // Type A: Standalone color
+                          else if (product.colors && item.selectedColor) {
+                            const colorImg = product.colors.find(c => c.name === item.selectedColor)?.image;
+                            itemImage = colorImg || itemImage;
+                          }
+                          // Type
+                          if (product.types && item.selectedType) {
+                            const typeImg = product.types.find(t => t.value === item.selectedType)?.image;
+                            itemImage = typeImg || itemImage;
+                          }
+
                           return (
-                            <img 
-                              key={currentImage}
-                              src={currentImage} 
+                            <img
+                              key={itemImage}
+                              src={itemImage}
                               alt={product.name}
-                              style={{ 
-                                width: '100%', 
-                                height: '100%', 
-                                objectFit: 'cover',
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                padding: '4px',
                                 position: 'relative',
                                 zIndex: 1,
                               }}
@@ -381,15 +393,31 @@ export default function InquiryPage() {
                           );
                         })()}
                       </div>
-                      
+
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: '14px', fontWeight: 600, color: '#18181b', margin: 0 }}>
                           {product.name}
                         </p>
                         <p style={{ fontSize: '12px', color: '#71717a', margin: '2px 0 0' }}>
-                          {product.brandName}
+                          {product.brand_name}
                         </p>
                         <div style={{ display: 'flex', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
+                          {gangLabel && (
+                            <span
+                              style={{
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                color: '#52525b',
+                                backgroundColor: '#e4e4e7',
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                              }}
+                            >
+                              {gangLabel}
+                            </span>
+                          )}
                           {item.selectedColor && (
                             <span
                               style={{
@@ -408,7 +436,14 @@ export default function InquiryPage() {
                                   width: '10px',
                                   height: '10px',
                                   borderRadius: '3px',
-                                  backgroundColor: product.colors?.find(c => c.name === item.selectedColor)?.hex || '#ccc',
+                                  backgroundColor: (() => {
+                                    // Get color hex from gang colors or standalone colors
+                                    if (product.gang && item.selectedGang) {
+                                      const gangObj = product.gang.find(g => g.value === item.selectedGang);
+                                      return gangObj?.colors?.find(c => c.name === item.selectedColor)?.hex || '#ccc';
+                                    }
+                                    return product.colors?.find(c => c.name === item.selectedColor)?.hex || '#ccc';
+                                  })(),
                                   border: '1px solid #e4e4e7',
                                 }}
                               />
@@ -430,7 +465,7 @@ export default function InquiryPage() {
                           )}
                         </div>
                       </div>
-                      
+
                       <div
                         style={{
                           backgroundColor: '#ffffff',
