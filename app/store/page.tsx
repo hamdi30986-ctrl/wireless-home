@@ -132,10 +132,10 @@ function ProductDetailPanel({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            style={{ 
-              position: 'absolute', right: 0, top: 0, bottom: 0, backgroundColor: '#ffffff',
+            style={{
+              position: 'absolute', right: 0, top: 60, bottom: 0, backgroundColor: '#ffffff',
               width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column',
-              boxShadow: '-4px 0 20px rgba(0,0,0,0.1)',
+              boxShadow: '-4px 0 20px rgba(0,0,0,0.1)', borderTopLeftRadius: '16px',
             }}
           >
             <button
