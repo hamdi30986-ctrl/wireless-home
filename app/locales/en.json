@@ -802,12 +802,12 @@
       "subheading": "The future of Saudi home automation",
       "location": {
         "title": "Based in Jeddah, Serving All of KSA",
-        "description": "From Riyadh villas to Dammam compounds, we bring smart home excellence to every corner of the Kingdom."
+        "description": "We bring smart home excellence to every corner of the Kingdom."
       }
     },
     "challenge": {
       "badge": "The Challenge",
-      "heading1": "Saudi Walls Are",
+      "heading1": "Thick Concrete Walls Are",
       "heading2": "Signal Killers.",
       "description": "Traditional Saudi architecture uses thick reinforced concrete and superior thermal insulation. While great for keeping homes cool, these materials block Wi-Fi and smart home signals like a Faraday cage.",
       "problem": {
@@ -856,7 +856,7 @@
       },
       "globalSourcing": {
         "title": "Global Sourcing",
-        "description": "We partner with the best manufacturers worldwide — Aqara from China, Bang & Olufsen-grade audio from Italy, and precision sensors from Germany."
+        "description": "We use the products of best manufacturers worldwide — Aqara, Highest Quality audio Speakers from Italian Exclusive provider, and precision sensors from our Special exclusive manufacture in China that meets the Saudi Standards."
       },
       "localEngineering": {
         "title": "Local Engineering",
@@ -874,7 +874,7 @@
         "support": "Support Available"
       },
       "certs": {
-        "aqara": "Aqara Certified Integrators",
+        "aqara": "Aqara Technology",
         "homeassistant": "Home Assistant Experts",
         "homekit": "Apple HomeKit Specialists"
       }
