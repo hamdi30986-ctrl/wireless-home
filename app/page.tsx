@@ -2,29 +2,167 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Wifi,
   Smartphone,
   Shield,
   Thermometer,
-  Sun,
   ChevronRight,
-  Play,
   Sparkles,
-  Home,
-  Building2,
   Tv,
   Check,
   GripVertical,
-  Eye,
   Lightbulb,
   Droplet,
   Wind,
 } from 'lucide-react';
 import { useLanguage } from './context/LanguageContext';
 
-// --- SUB-COMPONENTS (Kept exactly as they were) ---
+// --- SUB-COMPONENTS ---
+
+function VibrantHeroBackground() {
+  const [nodes, setNodes] = useState<Array<{id: number, x: number, y: number, delay: number}>>([]);
+  const [icons, setIcons] = useState<Array<{id: number, icon: any, x: number, y: number, delay: number, color: string, duration: number}>>([]);
+
+  useEffect(() => {
+    const nodeArray = [];
+    for (let i = 0; i < 30; i++) {
+      nodeArray.push({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 3,
+      });
+    }
+    setNodes(nodeArray);
+
+    const iconArray = [
+      { icon: Lightbulb, color: '#FFB800' },
+      { icon: Thermometer, color: '#00B5AD' },
+      { icon: Shield, color: '#FF6B6B' },
+      { icon: Wifi, color: '#0066FF' },
+      { icon: Tv, color: '#A855F7' },
+      { icon: Droplet, color: '#3B82F6' },
+      { icon: Wind, color: '#14B8A6' },
+      { icon: Smartphone, color: '#F59E0B' },
+    ];
+
+    const floatingIcons = [];
+    for (let i = 0; i < 8; i++) {
+      floatingIcons.push({
+        id: i,
+        icon: iconArray[i].icon,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 5,
+        color: iconArray[i].color,
+        duration: 15 + Math.random() * 10,
+      });
+    }
+    setIcons(floatingIcons);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <svg className="absolute inset-0 w-full h-full opacity-[0.05]">
+        <defs>
+          <pattern id="vibrant-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00B5AD" strokeWidth="1"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#vibrant-grid)" />
+      </svg>
+
+      {nodes.map((node) => (
+        <motion.div
+          key={node.id}
+          className="absolute w-2 h-2 rounded-full bg-[#00B5AD]"
+          style={{
+            left: `${node.x.toFixed(2)}%`,
+            top: `${node.y.toFixed(2)}%`,
+            boxShadow: '0 0 10px rgba(0, 181, 173, 0.8)',
+          }}
+          animate={{
+            scale: [1, 1.8, 1],
+            opacity: [0.4, 0.8, 0.4],
+          }}
+          transition={{
+            duration: 2,
+            delay: node.delay,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
+
+      {icons.map((item) => {
+        const Icon = item.icon;
+        return (
+          <motion.div
+            key={item.id}
+            className="absolute"
+            style={{
+              left: `${item.x}%`,
+              top: `${item.y}%`,
+              filter: 'blur(1px)',
+            }}
+            animate={{
+              y: [0, -50, 0],
+              x: [0, Math.random() * 30 - 15, 0],
+              opacity: [0.25, 0.45, 0.25],
+              rotate: [0, 10, -10, 0],
+            }}
+            transition={{
+              duration: item.duration,
+              delay: item.delay,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <div
+              className="w-12 h-12 flex items-center justify-center rounded-full"
+              style={{
+                backgroundColor: `${item.color}30`,
+                boxShadow: `0 0 25px ${item.color}50`,
+              }}
+            >
+              <Icon className="w-6 h-6" style={{ color: item.color }} />
+            </div>
+          </motion.div>
+        );
+      })}
+
+      <svg className="absolute inset-0 w-full h-full">
+        {icons.map((icon, i) => {
+          if (i >= icons.length - 1) return null;
+          const nextIcon = icons[i + 1];
+          return (
+            <motion.line
+              key={`line-${i}`}
+              x1={`${icon.x}%`}
+              y1={`${icon.y}%`}
+              x2={`${nextIcon.x}%`}
+              y2={`${nextIcon.y}%`}
+              stroke="#00B5AD"
+              strokeWidth="1"
+              opacity="0.1"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: [0, 1, 0] }}
+              transition={{
+                duration: 3,
+                delay: i * 0.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
 
 function BeforeAfterSlider() {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -164,68 +302,74 @@ function BundleCard({ icon, title, subtitle, price, features, featured, color }:
   );
 }
 
-function GalleryImage({ index, label }: { index: number; label: string }) {
-  const gradients = ['from-blue-400 to-blue-600', 'from-cyan-400 to-teal-500', 'from-indigo-400 to-purple-500', 'from-gray-600 to-gray-800'];
-  const icons = [<Tv key="tv" className="w-8 h-8" />, <Sun key="sun" className="w-8 h-8" />, <Home key="home" className="w-8 h-8" />, <Building2 key="building" className="w-8 h-8" />];
-  return (
-    <div className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer">
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradients[index]}`} />
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-        {icons[index]}
-        <span className="mt-2 text-sm font-medium opacity-80">{label}</span>
-      </div>
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-        <div className="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300">
-          <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/50">
-            <Eye className="w-6 h-6 text-white" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// --- MAIN PAGE LAYOUT ---
-
 export default function HomePage() {
   const { t } = useLanguage();
 
   return (
     <>
-      {/* Hero Section - UPDATED: Deep Slate Charcoal with Beige & Teal Mesh */}
-      <section
-        className="relative min-h-screen flex items-center overflow-hidden w-full bg-[#111318]"
-      >
-        {/* Glowing Mesh Blobs (WiFi Style) */}
+      <section className="relative min-h-screen flex items-center overflow-hidden w-full bg-[#111318]">
+        <VibrantHeroBackground />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Top Left: Deep Teal Accent */}
-            <div className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-[#00B5AD] opacity-[0.12] blur-[140px]" />
-            {/* Center Right: Warm Matte Beige Glow */}
-            <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#D4C3A1] opacity-[0.08] blur-[120px]" />
-            {/* Bottom Left: Subtle Blue Wash */}
-            <div className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] rounded-full bg-[#0066FF] opacity-[0.07] blur-[130px]" />
+            <motion.div
+              className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-[#00B5AD] opacity-[0.12] blur-[140px]"
+              animate={{ scale: [1, 1.1, 1], opacity: [0.12, 0.15, 0.12] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#D4C3A1] opacity-[0.08] blur-[120px]"
+              animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.12, 0.08] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
+            <motion.div
+              className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] rounded-full bg-[#0066FF] opacity-[0.07] blur-[130px]"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.07, 0.1, 0.07] }}
+              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            />
         </div>
 
         <div className="relative z-10 py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/80 mb-8">
+            <motion.div
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/80 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
               <Sparkles className="w-4 h-4 text-[#D4C3A1]" />
               <span>{t.home.badge}</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight">
+            </motion.div>
+
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
               {t.home.heading1}
               <br />
               <span className="bg-gradient-to-r from-[#D4C3A1] via-white to-[#00B5AD] bg-clip-text text-transparent">
                 {t.home.heading2}
               </span>
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+            </motion.h1>
+
+            <motion.p
+              className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
               {t.home.subheading}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            </motion.p>
+
+            <motion.div
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
               <Link href="/solutions" className="group flex items-center gap-3 px-8 py-4 bg-[#0066FF] text-white font-semibold rounded-xl hover:bg-[#0052CC] transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5">{t.home.cta1} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
-              <Link href="/store" className="group flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300">{t.home.cta2} <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
-            </div>
+              <Link href="/store" className="group flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/10 hover:border-white/20 transition-colors duration-300">{t.home.cta2} <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
+            </motion.div>
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500 opacity-60">
               <div className="flex items-center gap-2"><Shield className="w-5 h-5 text-green-400" /><span>{t.home.trust1}</span></div>
               <div className="flex items-center gap-2"><Wifi className="w-5 h-5 text-[#0066FF]" /><span>{t.home.trust2}</span></div>
@@ -233,52 +377,84 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        {/* Surgical fix: No heavy bottom shade overlay */}
       </section>
 
-      {/* Why Us Section */}
       <section className="py-24 md:py-32 bg-white relative overflow-hidden w-full">
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-[#0066FF] uppercase tracking-wider mb-4">{t.home.whyUs.badge}</span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">{t.home.whyUs.heading}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.home.whyUs.subheading}</p>
-          </div>
+          </motion.div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30"><Shield className="w-8 h-8 text-white" /></div>
               <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.home.whyUs.retrofit.title}</h3>
               <p className="text-gray-600 leading-relaxed mb-6">{t.home.whyUs.retrofit.description}</p>
               <div className="flex items-center gap-2 text-sm font-medium text-emerald-600"><Check className="w-4 h-4" /><span>{t.home.whyUs.retrofit.check}</span></div>
-            </div>
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
+            </motion.div>
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0066FF] to-[#0052CC] flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30"><Smartphone className="w-8 h-8 text-white" /></div>
               <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.home.whyUs.oneApp.title}</h3>
               <p className="text-gray-600 leading-relaxed mb-6">{t.home.whyUs.oneApp.description}</p>
               <div className="flex items-center gap-2 text-sm font-medium text-[#0066FF]"><Check className="w-4 h-4" /><span>{t.home.whyUs.oneApp.check}</span></div>
-            </div>
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
+            </motion.div>
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mb-6 shadow-lg shadow-orange-500/30"><Thermometer className="w-8 h-8 text-white" /></div>
               <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.home.whyUs.climate.title}</h3>
               <p className="text-gray-600 leading-relaxed mb-6">{t.home.whyUs.climate.description}</p>
               <div className="flex items-center gap-2 text-sm font-medium text-amber-600"><Check className="w-4 h-4" /><span>{t.home.whyUs.climate.check}</span></div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Solutions Section */}
       <section className="py-24 md:py-32 bg-gray-50 overflow-hidden w-full relative">
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-[#0066FF] uppercase tracking-wider mb-4">{t.home.solutions.badge}</span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">{t.home.solutions.heading}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t.home.solutions.subheading}</p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Lighting Solution */}
-            <div className="group relative bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+            <motion.div
+              className="group relative bg-gradient-to-br from-blue-400 to-blue-600 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
               <div className="relative z-10 h-full flex flex-col">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
                   <Lightbulb className="w-8 h-8 text-white" />
@@ -289,10 +465,15 @@ export default function HomePage() {
                   {t.home.solutions.lighting.cta} <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Climate Solution */}
-            <div className="group relative bg-gradient-to-br from-cyan-400 to-teal-500 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+            <motion.div
+              className="group relative bg-gradient-to-br from-cyan-400 to-teal-500 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <div className="relative z-10 h-full flex flex-col">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
                   <Wind className="w-8 h-8 text-white" />
@@ -303,10 +484,15 @@ export default function HomePage() {
                   {t.home.solutions.climate.cta} <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Water Solution */}
-            <div className="group relative bg-gradient-to-br from-indigo-400 to-purple-500 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+            <motion.div
+              className="group relative bg-gradient-to-br from-indigo-400 to-purple-500 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
               <div className="relative z-10 h-full flex flex-col">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
                   <Droplet className="w-8 h-8 text-white" />
@@ -317,10 +503,15 @@ export default function HomePage() {
                   {t.home.solutions.water.cta} <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
-            {/* View More Solutions */}
-            <div className="group relative bg-gradient-to-br from-gray-600 to-gray-800 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+            <motion.div
+              className="group relative bg-gradient-to-br from-gray-600 to-gray-800 rounded-3xl p-8 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
               <Link href="/solutions" className="relative z-10 h-full flex flex-col items-center justify-center text-center">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
                   <ChevronRight className="w-8 h-8 text-white" />
@@ -330,33 +521,189 @@ export default function HomePage() {
                   {t.home.solutions.viewMore.cta} <ArrowRight className="w-4 h-4" />
                 </div>
               </Link>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Portfolio Section */}
+      {/* FIXED: What Makes Us Unique Section */}
       <section className="py-24 md:py-32 bg-gray-900 overflow-hidden w-full relative">
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-            <div>
-              <span className="inline-block text-sm font-semibold text-[#00B5AD] uppercase tracking-wider mb-4">{t.home.portfolio.badge}</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">{t.home.portfolio.heading}</h2>
-            </div>
-            <Link href="/gallery" className="group flex items-center gap-3 px-6 py-3 bg-white/5 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300 w-fit"><Play className="w-5 h-5" />{t.home.portfolio.cta} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <GalleryImage index={0} label={t.home.portfolio.livingRoom} />
-            <GalleryImage index={1} label={t.home.portfolio.kitchen} />
-            <GalleryImage index={2} label={t.home.portfolio.bedroom} />
-            <GalleryImage index={3} label={t.home.portfolio.office} />
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-block text-sm font-semibold text-[#00B5AD] uppercase tracking-wider mb-4">{t.home.unique.badge}</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">{t.home.unique.heading}</h2>
+            <p className="text-lg text-gray-400 max-w-3xl mx-auto">{t.home.unique.subheading}</p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* NO KNX */}
+            <motion.div
+              className="relative group rounded-2xl p-8 transition-transform duration-300 hover:scale-[1.03] overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1)]"
+              style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              {/* Buffer pseudo-background to hide sub-pixel gaps */}
+              <div className="absolute inset-[0.5px] bg-white/5 backdrop-blur-md rounded-[inherit] -z-10" />
+              
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{t.home.unique.noKnx.title}</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">{t.home.unique.noKnx.description}</p>
+              <div className="text-sm text-red-400">❌ {t.home.unique.noKnx.points}</div>
+            </motion.div>
+
+            {/* Premium Quality */}
+            <motion.div
+              className="relative group rounded-2xl p-8 transition-transform duration-300 hover:scale-[1.03] overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1)]"
+              style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="absolute inset-[0.5px] bg-white/5 backdrop-blur-md rounded-[inherit] -z-10" />
+              
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{t.home.unique.quality.title}</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">{t.home.unique.quality.description}</p>
+              <div className="text-sm text-amber-400">✓ {t.home.unique.quality.points}</div>
+            </motion.div>
+
+            {/* Industrial Water Sensors */}
+            <motion.div
+              className="relative group rounded-2xl p-8 transition-transform duration-300 hover:scale-[1.03] overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1)]"
+              style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="absolute inset-[0.5px] bg-white/5 backdrop-blur-md rounded-[inherit] -z-10" />
+              
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-6">
+                <Droplet className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{t.home.unique.sensors.title}</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">{t.home.unique.sensors.description}</p>
+              <div className="text-sm text-blue-400">✓ {t.home.unique.sensors.points}</div>
+            </motion.div>
+
+            {/* Reinvented Sound System */}
+            <motion.div
+              className="relative group rounded-2xl p-8 transition-transform duration-300 hover:scale-[1.03] overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1)]"
+              style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="absolute inset-[0.5px] bg-white/5 backdrop-blur-md rounded-[inherit] -z-10" />
+              
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{t.home.unique.audio.title}</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">{t.home.unique.audio.description}</p>
+              <div className="text-sm text-purple-400">✓ {t.home.unique.audio.points}</div>
+            </motion.div>
+
+            {/* One App */}
+            <motion.div
+              className="relative group rounded-2xl p-8 transition-transform duration-300 hover:scale-[1.03] overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1)]"
+              style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <div className="absolute inset-[0.5px] bg-white/5 backdrop-blur-md rounded-[inherit] -z-10" />
+              
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center mb-6">
+                <Smartphone className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{t.home.unique.app.title}</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">{t.home.unique.app.description}</p>
+              <div className="text-sm text-teal-400">✓ {t.home.unique.app.points}</div>
+            </motion.div>
+
+            {/* Real Privacy */}
+            <motion.div
+              className="relative group rounded-2xl p-8 transition-transform duration-300 hover:scale-[1.03] overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1)]"
+              style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <div className="absolute inset-[0.5px] bg-white/5 backdrop-blur-md rounded-[inherit] -z-10" />
+              
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-6">
+                <Shield className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{t.home.unique.privacy.title}</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">{t.home.unique.privacy.description}</p>
+              <div className="text-sm text-green-400">✓ {t.home.unique.privacy.points}</div>
+            </motion.div>
+
+            {/* Support Wide Card */}
+            <motion.div
+              className="relative group rounded-2xl p-8 transition-transform duration-300 hover:scale-[1.03] overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.1)] md:col-span-2 lg:col-span-3"
+              style={{ transformStyle: 'preserve-3d', backfaceVisibility: 'hidden', transform: 'translateZ(0)' }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+            >
+              <div className="absolute inset-[0.5px] bg-white/5 backdrop-blur-md rounded-[inherit] -z-10" />
+              
+              <div className="flex flex-col md:flex-row items-start gap-6">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#0066FF] to-[#0052CC] flex items-center justify-center flex-shrink-0">
+                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-white mb-3">{t.home.unique.support.title}</h3>
+                  <p className="text-gray-400 leading-relaxed mb-4">{t.home.unique.support.description}</p>
+                  <div className="flex flex-wrap gap-3">
+                    <span className="text-sm text-blue-400">✓ {t.home.unique.support.points.updates}</span>
+                    <span className="text-sm text-blue-400">✓ {t.home.unique.support.points.features}</span>
+                    <span className="text-sm text-blue-400">✓ {t.home.unique.support.points.support}</span>
+                    <span className="text-sm text-blue-400">✓ {t.home.unique.support.points.improving}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-24 md:py-32 bg-gradient-to-br from-[#0066FF] to-[#0052CC] overflow-hidden w-full relative">
-        <div className="relative text-center w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          className="relative text-center w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">{t.home.finalCta.heading}</h2>
           <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">{t.home.finalCta.subheading}</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -366,7 +713,7 @@ export default function HomePage() {
               {t.home.finalCta.button2}
             </a>
           </div>
-        </div>
+        </motion.div>
       </section>
     </>
   );

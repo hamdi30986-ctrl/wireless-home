@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   ArrowRight,
@@ -8,7 +9,6 @@ import {
   Signal,
   Zap,
   Gamepad2,
-  ShieldCheck,
   Smartphone,
   Globe,
   QrCode,
@@ -25,7 +25,6 @@ import {
 // --- STATIC VISUAL: Mesh Node Signal ---
 function StaticMeshVisual() {
   return (
-    // Explicit container to prevent layout collapse
     <div
       style={{
         position: 'relative',
@@ -97,19 +96,16 @@ function StaticMeshVisual() {
           zIndex: 10,
         }}
       >
-        {/* Status LED */}
         <div 
           style={{
             width: '8px',
             height: '8px',
             borderRadius: '50%',
-            backgroundColor: '#8b5cf6', // Violet-500
+            backgroundColor: '#8b5cf6',
             boxShadow: '0 0 10px #8b5cf6',
             marginBottom: '40px'
           }} 
         />
-        
-        {/* Branding Line */}
         <div style={{ width: '40px', height: '2px', backgroundColor: '#e5e7eb' }} />
       </div>
 
@@ -129,57 +125,12 @@ function StaticMeshVisual() {
           border: '1px solid #f3f4f6',
         }}
       >
-        <div
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '8px',
-            backgroundColor: '#f3e8ff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#f3e8ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Zap style={{ width: '14px', height: '14px', color: '#9333ea' }} />
         </div>
         <div>
           <span style={{ display: 'block', fontSize: '10px', fontWeight: 700, color: '#6b21a8', lineHeight: 1 }}>SPEED</span>
           <span style={{ fontSize: '10px', fontWeight: 500, color: '#7e22ce' }}>1.2 Gbps</span>
-        </div>
-      </div>
-
-      {/* Floating Badge: Ping */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '40px',
-          left: '0px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 12px',
-          backgroundColor: '#ffffff',
-          borderRadius: '12px',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-          border: '1px solid #f3f4f6',
-        }}
-      >
-        <div
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '8px',
-            backgroundColor: '#fae8ff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Gamepad2 style={{ width: '14px', height: '14px', color: '#c026d3' }} />
-        </div>
-        <div>
-          <span style={{ display: 'block', fontSize: '10px', fontWeight: 700, color: '#86198f', lineHeight: 1 }}>PING</span>
-          <span style={{ fontSize: '10px', fontWeight: 500, color: '#a21caf' }}>4ms Low</span>
         </div>
       </div>
     </div>
@@ -193,7 +144,6 @@ export default function WifiPage() {
     <>
       {/* HERO SECTION */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-gray-950 w-full">
-        {/* Animated Background */}
         <div className="absolute inset-0">
           <div
             className="absolute inset-0 opacity-[0.03]"
@@ -203,20 +153,23 @@ export default function WifiPage() {
               backgroundSize: '60px 60px',
             }}
           />
-          {/* Violet/Fuchsia Gradients for Speed/Gaming */}
           <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-violet-600 opacity-20 rounded-full blur-[120px]" />
           <div className="absolute -bottom-32 left-1/4 w-[400px] h-[400px] bg-fuchsia-600 opacity-15 rounded-full blur-[100px]" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Badge */}
+          {/* FIXED: Switched to animate for mount reliability */}
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          >
             <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/90 mb-8">
               <Wifi className="w-4 h-4 text-violet-400" />
               <span>{t.wifi.badge}</span>
             </div>
 
-            {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight">
               {t.wifi.heading1} <br />
               <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-purple-500 bg-clip-text text-transparent">
@@ -224,12 +177,10 @@ export default function WifiPage() {
               </span>
             </h1>
 
-            {/* Subheadline */}
             <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
               {t.wifi.subheading}
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/book"
@@ -248,7 +199,6 @@ export default function WifiPage() {
               </Link>
             </div>
 
-            {/* Trust indicators */}
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <Signal className="w-5 h-5 text-violet-400" />
@@ -263,10 +213,9 @@ export default function WifiPage() {
                 <span>{t.wifi.trust3}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
           <span className="text-xs uppercase tracking-widest">Scroll</span>
           <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center pt-2">
@@ -276,13 +225,18 @@ export default function WifiPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 md:py-32 bg-white overflow-hidden w-full">
-        {/* Vibrant Violet Glows */}
+      <section className="py-24 md:py-32 bg-white overflow-hidden w-full relative">
         <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-violet-400 opacity-[0.08] rounded-full blur-[100px]" />
         <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-fuchsia-400 opacity-[0.08] rounded-full blur-[80px]" />
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-violet-500 uppercase tracking-wider mb-4">
               {t.wifi.features.title}
             </span>
@@ -292,57 +246,39 @@ export default function WifiPage() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t.wifi.features.subheading}
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Card 1: Concrete Walls */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
-
                 <div className="w-16 h-16 rounded-2xl bg-violet-100 flex items-center justify-center mb-6 shadow-lg shadow-violet-500/20">
                   <Layers className="w-8 h-8 text-violet-600" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
-                  {t.wifi.features.coverage.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {t.wifi.features.coverage.description}
-                </p>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.wifi.features.coverage.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">{t.wifi.features.coverage.description}</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-violet-600">
                   <Check className="w-4 h-4" />
                   <span>{t.wifi.features.coverage.check}</span>
                 </div>
             </div>
 
-            {/* Card 2: Mulhaq Coverage */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
-
                 <div className="w-16 h-16 rounded-2xl bg-fuchsia-100 flex items-center justify-center mb-6 shadow-lg shadow-fuchsia-500/20">
                   <Signal className="w-8 h-8 text-fuchsia-600" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
-                  {t.wifi.features.speed.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {t.wifi.features.speed.description}
-                </p>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.wifi.features.speed.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">{t.wifi.features.speed.description}</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-fuchsia-600">
                   <Check className="w-4 h-4" />
                   <span>{t.wifi.features.speed.check}</span>
                 </div>
             </div>
 
-            {/* Card 3: Seamless Roaming */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
-
                 <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/20">
                   <Smartphone className="w-8 h-8 text-purple-600" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
-                  {t.wifi.features.management.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {t.wifi.features.management.description}
-                </p>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.wifi.features.management.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">{t.wifi.features.management.description}</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-purple-600">
                   <Check className="w-4 h-4" />
                   <span>{t.wifi.features.management.check}</span>
@@ -352,9 +288,8 @@ export default function WifiPage() {
         </div>
       </section>
 
-      {/* Automation Section - Dark Background */}
-      <section className="py-24 md:py-32 bg-gray-900 overflow-hidden w-full">
-        {/* Background elements */}
+      {/* Automation Section */}
+      <section className="py-24 md:py-32 bg-gray-900 overflow-hidden w-full relative">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-600 opacity-15 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-fuchsia-600 opacity-15 rounded-full blur-[100px]" />
@@ -371,7 +306,6 @@ export default function WifiPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-8">
-            {/* Logic 1 */}
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-violet-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center flex-shrink-0">
@@ -379,14 +313,11 @@ export default function WifiPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.wifi.automation.adaptive.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {t.wifi.automation.adaptive.description}
-                  </p>
+                  <p className="text-gray-400 leading-relaxed">{t.wifi.automation.adaptive.description}</p>
                 </div>
               </div>
             </div>
 
-            {/* Logic 2 */}
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-violet-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-500 flex items-center justify-center flex-shrink-0">
@@ -394,15 +325,12 @@ export default function WifiPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.wifi.automation.healing.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {t.wifi.automation.healing.description}
-                  </p>
+                  <p className="text-gray-400 leading-relaxed">{t.wifi.automation.healing.description}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Secondary Features */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-violet-500/20 transition-all duration-300 text-center">
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-violet-500/20 flex items-center justify-center">
@@ -430,14 +358,12 @@ export default function WifiPage() {
       </section>
 
       {/* Hardware Section */}
-      <section className="py-24 md:py-32 bg-gray-50 w-full overflow-hidden">
-        {/* Vibrant Glows */}
+      <section className="py-24 md:py-32 bg-gray-50 w-full overflow-hidden relative">
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-violet-400 opacity-[0.1] rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-fuchsia-400 opacity-[0.08] rounded-full blur-[80px] pointer-events-none" />
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left: Content */}
             <div>
               <span className="inline-block text-sm font-semibold text-violet-600 uppercase tracking-wider mb-4">
                 {t.wifi.hardware.title}
@@ -446,9 +372,7 @@ export default function WifiPage() {
                 <span className="block">{t.wifi.hardware.heading1}</span>
                 <span className="block text-violet-600">{t.wifi.hardware.heading2}</span>
               </h2>
-              <p className="text-lg text-gray-600 mb-10 leading-relaxed">
-                {t.wifi.hardware.subheading}
-              </p>
+              <p className="text-lg text-gray-600 mb-10 leading-relaxed">{t.wifi.hardware.subheading}</p>
 
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -457,9 +381,7 @@ export default function WifiPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.wifi.hardware.mesh.title}</h4>
-                    <p className="text-sm text-gray-600">
-                      {t.wifi.hardware.mesh.description}
-                    </p>
+                    <p className="text-sm text-gray-600">{t.wifi.hardware.mesh.description}</p>
                   </div>
                 </div>
 
@@ -469,9 +391,7 @@ export default function WifiPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.wifi.hardware.routers.title}</h4>
-                    <p className="text-sm text-gray-600">
-                      {t.wifi.hardware.routers.description}
-                    </p>
+                    <p className="text-sm text-gray-600">{t.wifi.hardware.routers.description}</p>
                   </div>
                 </div>
               </div>
@@ -487,7 +407,6 @@ export default function WifiPage() {
               </div>
             </div>
 
-            {/* Right: Visual */}
             <div className="flex justify-center lg:justify-end">
               <StaticMeshVisual />
             </div>
@@ -495,19 +414,15 @@ export default function WifiPage() {
         </div>
       </section>
 
-      {/* CTA Section - Hardcoded Background for safety */}
+      {/* CTA Section */}
       <section 
-        className="py-24 md:py-32 bg-violet-900 bg-gradient-to-br from-violet-600 to-fuchsia-600 relative overflow-hidden w-full text-center"
-        style={{
-          background: 'linear-gradient(135deg, #7c3aed 0%, #c026d3 100%)'
-        }}
+        className="py-24 md:py-32 relative overflow-hidden w-full text-center"
+        style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #c026d3 100%)' }}
       >
         <div className="absolute inset-0 opacity-10">
           <div
             className="w-full h-full"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}
           />
         </div>
 
@@ -517,12 +432,8 @@ export default function WifiPage() {
             <span>{t.wifi.cta.badge}</span>
           </div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-            {t.wifi.cta.heading}
-          </h2>
-          <p className="text-xl text-white/80 mb-4 max-w-2xl mx-auto">
-            {t.wifi.cta.subheading}
-          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">{t.wifi.cta.heading}</h2>
+          <p className="text-xl text-white/80 mb-4 max-w-2xl mx-auto">{t.wifi.cta.subheading}</p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -534,7 +445,7 @@ export default function WifiPage() {
             </Link>
 
             <a
-              href="https://wa.me/966500000000"
+              href="https://wa.me/966598904919"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/30 hover:bg-white/20 transition-all duration-300"

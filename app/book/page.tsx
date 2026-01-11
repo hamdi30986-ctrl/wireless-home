@@ -8,6 +8,7 @@ import {
   ChevronDown, Sparkles, Shield, Calendar, ArrowRight, Star,
   Home, Building, HardHat, ChevronRight, Check
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 
 // --- CONFIGURATION ---
@@ -96,16 +97,28 @@ export default function BookingPage() {
             {/* Pattern Overlay */}
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
             
-            <div className="relative z-10">
+            <motion.div
+              className="relative z-10"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full text-sm mb-8">
                 <Sparkles className="w-4 h-4 text-white" />
                 <span>{t.book.badge}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">{t.book.heading}</h1>
               <p className="text-white/80 text-lg mb-8 max-w-md">{t.book.subheading}</p>
-            </div>
+            </motion.div>
             
-            <div className="grid grid-cols-3 gap-4 border-t border-white/20 pt-8 mt-12 relative z-10">
+            <motion.div
+              className="grid grid-cols-3 gap-4 border-t border-white/20 pt-8 mt-12 relative z-10"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
               <div className="text-center">
                 <div className="text-2xl font-bold">500+</div>
                 <div className="text-xs text-white/60 mt-1 uppercase">Projects</div>
@@ -118,11 +131,17 @@ export default function BookingPage() {
                 <div className="text-2xl font-bold">24h</div>
                 <div className="text-xs text-white/60 mt-1 uppercase">Reply</div>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Right Side: Form */}
-          <div className="p-10 md:p-14 lg:p-16 bg-white">
+          <motion.div
+            className="p-10 md:p-14 lg:p-16 bg-white"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.book.heading}</h2>
             <p className="text-gray-500 mb-8 italic">{t.book.subheading}</p>
 
@@ -137,7 +156,13 @@ export default function BookingPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-4">
+              <motion.div
+                className="grid md:grid-cols-2 gap-4"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input type="text" name="name" required value={formData.name} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl outline-none" placeholder={t.book.form.name} />
@@ -146,14 +171,26 @@ export default function BookingPage() {
                   <div className="px-4 flex items-center bg-gray-100 border border-r-0 border-gray-200 rounded-l-xl text-gray-500 font-medium">+966</div>
                   <input type="tel" name="phone" required maxLength={9} value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-r-xl outline-none" placeholder={t.book.form.phone} />
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="relative">
+              <motion.div
+                className="relative"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl outline-none" placeholder={t.book.form.email} />
-              </div>
+              </motion.div>
 
-              <div className="relative">
+              <motion.div
+                className="relative"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
                 <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="w-full flex items-center justify-between px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-left">
                   <div className="flex items-center gap-3">
                     {selectedProject ? <><selectedProject.icon className="w-5 h-5 text-[#0066FF]" /><span>{selectedProject.label}</span></> : <><Building2 className="w-5 h-5 text-gray-400" /><span>{t.book.form.selectProject}</span></>}
@@ -170,9 +207,15 @@ export default function BookingPage() {
                     ))}
                   </div>
                 )}
-              </div>
+              </motion.div>
 
-              <div className="space-y-2">
+              <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+              >
                 <label className="text-sm font-semibold text-gray-700 flex justify-between">{t.book.form.projectType} {formData.lat && <span className="text-emerald-500 text-[10px]">PIN DROPPED ✓</span>}</label>
                 <div className="relative aspect-square w-full bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden">
                   {isLoaded ? (
@@ -187,13 +230,21 @@ export default function BookingPage() {
                   )}
                 </div>
                 <p className="text-[10px] text-gray-400 text-center uppercase tracking-widest">{t.book.form.location}</p>
-              </div>
+              </motion.div>
 
-              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-[#0066FF] text-white font-bold rounded-xl shadow-lg hover:bg-[#0052CC] transition-all disabled:opacity-50">
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 bg-[#0066FF] text-white font-bold rounded-xl shadow-lg hover:bg-[#0052CC] transition-all disabled:opacity-50"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+              >
                 {isSubmitting ? t.book.form.submitting : t.book.form.submit}
-              </button>
+              </motion.button>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

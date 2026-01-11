@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   ArrowRight,
@@ -296,20 +297,23 @@ export default function ClimateControlPage() {
 
   return (
     <>
-      {/* Hero Section - UPDATED with Cyan/Sky Mesh Shades */}
+      {/* Hero Section */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0a0e27] w-full">
-        {/* Glowing Mesh blobs for "alive" feel */}
+        {/* Glowing Mesh blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Top Right: Intense Cyan Glow */}
             <div className="absolute top-[-5%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-500 opacity-[0.15] blur-[140px]" />
-            {/* Center Left: Sky Blue Glow */}
             <div className="absolute top-[30%] left-[-5%] w-[50%] h-[50%] rounded-full bg-sky-600 opacity-[0.1] blur-[120px]" />
-            {/* Bottom Right: Indigo Wash */}
             <div className="absolute bottom-[-15%] right-[10%] w-[45%] h-[45%] rounded-full bg-blue-700 opacity-[0.08] blur-[130px]" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="max-w-4xl mx-auto text-center">
+          {/* FIXED: Removed whileInView and added explicit animate for immediate reliability */}
+          <motion.div 
+            className="max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          >
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/80 mb-8">
               <Snowflake className="w-4 h-4 text-cyan-400" />
@@ -364,7 +368,7 @@ export default function ClimateControlPage() {
                 <span>{t.climate.trust3}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Scroll indicator */}
@@ -378,12 +382,17 @@ export default function ClimateControlPage() {
 
       {/* Features Grid */}
       <section className="py-24 md:py-32 bg-white overflow-hidden relative">
-        {/* Subtle Cyan Glows */}
         <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-cyan-400 opacity-[0.05] rounded-full blur-[100px]" />
         <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-sky-400 opacity-[0.05] rounded-full blur-[80px]" />
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-cyan-500 uppercase tracking-wider mb-4">
               {t.climate.features.title}
             </span>
@@ -393,10 +402,9 @@ export default function ClimateControlPage() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t.climate.features.subheading}
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Card 1 */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/30">
                 <Smartphone className="w-8 h-8 text-white" />
@@ -411,7 +419,6 @@ export default function ClimateControlPage() {
               </div>
             </div>
 
-            {/* Card 2 */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
                 <Zap className="w-8 h-8 text-white" />
@@ -426,7 +433,6 @@ export default function ClimateControlPage() {
               </div>
             </div>
 
-            {/* Card 3 */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30">
                 <Thermometer className="w-8 h-8 text-white" />
@@ -444,7 +450,7 @@ export default function ClimateControlPage() {
         </div>
       </section>
 
-      {/* Automation Section - Dark Background */}
+      {/* Automation Section */}
       <section className="py-24 md:py-32 bg-gray-900 overflow-hidden relative">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500 opacity-10 rounded-full blur-[100px]" />
@@ -452,7 +458,13 @@ export default function ClimateControlPage() {
         </div>
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-4">
               {t.climate.automation.title}
             </span>
@@ -461,7 +473,7 @@ export default function ClimateControlPage() {
               <br />
               <span className="text-gray-400">{t.climate.automation.heading2}</span>
             </h2>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-12 max-w-5xl mx-auto">
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-cyan-500/30 transition-all duration-500">
@@ -515,7 +527,6 @@ export default function ClimateControlPage() {
 
       {/* Hardware Section */}
       <section className="py-24 md:py-32 bg-gray-50 relative overflow-hidden">
-        {/* Vibrant Cyan Glows */}
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-cyan-400 opacity-[0.1] rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-sky-400 opacity-[0.08] rounded-full blur-[80px] pointer-events-none" />
 

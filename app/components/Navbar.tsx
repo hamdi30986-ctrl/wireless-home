@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '@/app/context/storecontext';
 import {
   ChevronDown,
@@ -36,7 +37,7 @@ const solutions: SolutionItem[] = [
   },
   {
     name: 'Climate Control',
-    nameAr: 'التحكم في المناخ',
+    nameAr: 'المكيفات الذكية',
     href: '/solutions/climate',
     icon: <Thermometer className="w-5 h-5" />,
   },
@@ -273,28 +274,38 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu using Portal - renders at body level */}
-      {mounted && isMobileMenuOpen && createPortal(
-        <div
-          className="mobile-menu-overlay fixed inset-0 lg:hidden"
-          style={{
-            top: 'var(--header-height)',
-            zIndex: 999999,
-            position: 'fixed'
-          }}
-          dir="ltr"
-        >
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
-            onClick={() => setIsMobileMenuOpen(false)}
-            style={{ zIndex: 999998 }}
-          />
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <div
+              className="mobile-menu-overlay fixed inset-0 lg:hidden"
+              style={{
+                top: 'var(--header-height)',
+                zIndex: 999999,
+                position: 'fixed'
+              }}
+              dir="ltr"
+            >
+              {/* Backdrop */}
+              <motion.div
+                className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{ zIndex: 999998 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
 
-          {/* Menu Panel */}
-          <div
-            className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white shadow-2xl overflow-y-auto border-l border-gray-200"
-            style={{ zIndex: 999999 }}
-          >
+              {/* Menu Panel - Slide from Right */}
+              <motion.div
+                className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white shadow-2xl overflow-y-auto border-l border-gray-200"
+                style={{ zIndex: 999999 }}
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+              >
             <div className="p-6 space-y-2">
               <Link
                 href="/"
@@ -359,8 +370,10 @@ export default function Navbar() {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>,
+          </motion.div>
+        </div>
+          )}
+        </AnimatePresence>,
         document.body
       )}
     </header>

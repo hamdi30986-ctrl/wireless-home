@@ -101,20 +101,23 @@ export default function SmartLightingPage() {
 
   return (
     <>
-      {/* Hero Section - UPDATED with Amber/Orange Mesh Shades */}
+      {/* Hero Section */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0a0e27] w-full">
-        {/* Glowing Mesh Blobs for "Alive" feel */}
+        {/* Glowing Mesh Blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Top Right Amber Glow */}
             <div className="absolute top-[-5%] right-[-10%] w-[65%] h-[60%] rounded-full bg-amber-500 opacity-[0.12] blur-[140px]" />
-            {/* Center Orange Glow */}
             <div className="absolute top-[25%] left-[-5%] w-[50%] h-[50%] rounded-full bg-orange-600 opacity-[0.08] blur-[120px]" />
-            {/* Bottom Yellow/Amber Glow */}
             <div className="absolute bottom-[-10%] right-[15%] w-[45%] h-[40%] rounded-full bg-yellow-500 opacity-[0.07] blur-[130px]" />
         </div>
 
         <div className="relative z-10 py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
+          {/* FIXED: Removed whileInView and added explicit animate for immediate reliability */}
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          >
             <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/80 mb-8">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span>{t.lighting.badge}</span>
@@ -164,7 +167,7 @@ export default function SmartLightingPage() {
                 <span>{t.lighting.trust3}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
@@ -178,9 +181,14 @@ export default function SmartLightingPage() {
       {/* Features Grid */}
       <section className="py-24 md:py-32 bg-white overflow-hidden w-full relative">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-amber-50/50 to-transparent" />
-
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-amber-500 uppercase tracking-wider mb-4">
               {t.lighting.features.title}
             </span>
@@ -190,7 +198,7 @@ export default function SmartLightingPage() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t.lighting.features.subheading}
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
@@ -252,7 +260,13 @@ export default function SmartLightingPage() {
         </div>
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-amber-400 uppercase tracking-wider mb-4">
               {t.lighting.automation.title}
             </span>
@@ -261,7 +275,7 @@ export default function SmartLightingPage() {
               <br />
               <span className="text-gray-400">{t.lighting.automation.heading2}</span>
             </h2>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-amber-500/30 transition-all duration-500">

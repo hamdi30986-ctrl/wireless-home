@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   ArrowRight,
@@ -15,16 +16,15 @@ import {
   BellRing,
   ShieldCheck,
   Power,
-  Gauge
+  Gauge,
+  ChevronRight
 } from 'lucide-react';
 
 // --- STATIC VISUAL: Smart Water Tank Monitor ---
 function StaticWaterTankVisual() {
-  // Simulating a tank at 35% capacity
   const waterLevel = 35;
   
   return (
-    // Explicit container to prevent layout collapse
     <div
       style={{
         position: 'relative',
@@ -49,7 +49,7 @@ function StaticWaterTankVisual() {
         }}
       />
 
-      {/* Tank Body (Glass Effect) */}
+      {/* Tank Body */}
       <div
         style={{
           position: 'relative',
@@ -66,7 +66,6 @@ function StaticWaterTankVisual() {
           justifyContent: 'flex-end',
         }}
       >
-        {/* Measurement Lines */}
         <div className="absolute right-0 top-0 bottom-0 w-8 flex flex-col justify-between py-6 px-2 z-20">
           <div className="w-full h-[1px] bg-white/30" />
           <div className="w-full h-[1px] bg-white/30" />
@@ -75,7 +74,6 @@ function StaticWaterTankVisual() {
           <div className="w-full h-[1px] bg-white/30" />
         </div>
 
-        {/* Water Liquid Gradient */}
         <div
           style={{
             width: '100%',
@@ -86,7 +84,6 @@ function StaticWaterTankVisual() {
             transition: 'height 1s ease',
           }}
         >
-          {/* Surface Line */}
           <div 
             style={{
               position: 'absolute',
@@ -97,14 +94,10 @@ function StaticWaterTankVisual() {
               background: 'rgba(255,255,255,0.4)',
             }} 
           />
-          
-          {/* Bubbles Decoration */}
           <div className="absolute bottom-4 left-4 w-2 h-2 bg-white/30 rounded-full" />
           <div className="absolute bottom-8 right-8 w-3 h-3 bg-white/20 rounded-full" />
-          <div className="absolute top-4 left-10 w-1 h-1 bg-white/40 rounded-full" />
         </div>
 
-        {/* Floating Percentage Label */}
         <div
           style={{
             position: 'absolute',
@@ -119,7 +112,7 @@ function StaticWaterTankVisual() {
             style={{ 
               fontSize: '42px', 
               fontWeight: 800, 
-              color: '#0e7490', // Cyan-700
+              color: '#0e7490', 
               textShadow: '0 2px 4px rgba(255,255,255,0.5)'
             }}
           >
@@ -128,7 +121,7 @@ function StaticWaterTankVisual() {
         </div>
       </div>
 
-      {/* Status Badge: Critical Level */}
+      {/* Status Badges */}
       <div
         style={{
           position: 'absolute',
@@ -144,57 +137,12 @@ function StaticWaterTankVisual() {
           border: '1px solid #fee2e2',
         }}
       >
-        <div
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '8px',
-            backgroundColor: '#fee2e2',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <AlertTriangle style={{ width: '14px', height: '14px', color: '#ef4444' }} />
         </div>
         <div>
           <span style={{ display: 'block', fontSize: '10px', fontWeight: 700, color: '#991b1b', lineHeight: 1 }}>LOW LEVEL</span>
           <span style={{ fontSize: '10px', fontWeight: 500, color: '#ef4444' }}>Order Water</span>
-        </div>
-      </div>
-
-      {/* Status Badge: Pump Status */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '40px',
-          left: '-20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 12px',
-          backgroundColor: '#fff',
-          borderRadius: '12px',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-          border: '1px solid #f3f4f6',
-        }}
-      >
-        <div
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '8px',
-            backgroundColor: '#ecfeff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Activity style={{ width: '14px', height: '14px', color: '#06b6d4' }} />
-        </div>
-        <div>
-          <span style={{ display: 'block', fontSize: '10px', fontWeight: 700, color: '#155e75', lineHeight: 1 }}>PUMP</span>
-          <span style={{ fontSize: '10px', fontWeight: 500, color: '#0891b2' }}>Monitoring</span>
         </div>
       </div>
     </div>
@@ -208,7 +156,6 @@ export default function WaterPage() {
     <>
       {/* HERO SECTION */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-gray-950 w-full">
-        {/* Animated Background */}
         <div className="absolute inset-0">
           <div
             className="absolute inset-0 opacity-[0.03]"
@@ -218,13 +165,18 @@ export default function WaterPage() {
               backgroundSize: '60px 60px',
             }}
           />
-          {/* Cyan/Blue Gradients for Water Theme */}
           <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-cyan-600 opacity-20 rounded-full blur-[120px]" />
           <div className="absolute -bottom-32 left-1/4 w-[400px] h-[400px] bg-blue-600 opacity-15 rounded-full blur-[100px]" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="max-w-4xl mx-auto text-center">
+          {/* FIXED: Removed whileInView and added explicit animate for load reliability */}
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          >
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/90 mb-8">
               <Droplets className="w-4 h-4 text-cyan-400" />
@@ -248,7 +200,7 @@ export default function WaterPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/book"
-                className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 hover:-translate-y-0.5"
+                className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:-translate-y-0.5"
               >
                 {t.water.cta1}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
@@ -278,10 +230,9 @@ export default function WaterPage() {
                 <span>{t.water.trust3}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
           <span className="text-xs uppercase tracking-widest">Scroll</span>
           <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center pt-2">
@@ -291,13 +242,18 @@ export default function WaterPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 md:py-32 bg-white overflow-hidden w-full">
-        {/* Vibrant Cyan Glows */}
+      <section className="py-24 md:py-32 bg-white overflow-hidden w-full relative">
         <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-cyan-400 opacity-[0.08] rounded-full blur-[100px]" />
         <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-blue-400 opacity-[0.08] rounded-full blur-[80px]" />
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-cyan-500 uppercase tracking-wider mb-4">
               {t.water.features.title}
             </span>
@@ -307,57 +263,39 @@ export default function WaterPage() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t.water.features.subheading}
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Card 1: Precise Level */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
-
                 <div className="w-16 h-16 rounded-2xl bg-cyan-100 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/20">
                   <Waves className="w-8 h-8 text-cyan-600" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
-                  {t.water.features.detection.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {t.water.features.detection.description}
-                </p>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.water.features.detection.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">{t.water.features.detection.description}</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-cyan-600">
                   <Check className="w-4 h-4" />
                   <span>{t.water.features.detection.check}</span>
                 </div>
             </div>
 
-            {/* Card 2: Save Your Pump */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
-
                 <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
                   <ShieldCheck className="w-8 h-8 text-blue-600" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
-                  {t.water.features.shutoff.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {t.water.features.shutoff.description}
-                </p>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.water.features.shutoff.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">{t.water.features.shutoff.description}</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
                   <Check className="w-4 h-4" />
                   <span>{t.water.features.shutoff.check}</span>
                 </div>
             </div>
 
-            {/* Card 3: Wayit Alert */}
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
-
                 <div className="w-16 h-16 rounded-2xl bg-sky-100 flex items-center justify-center mb-6 shadow-lg shadow-sky-500/20">
                   <BellRing className="w-8 h-8 text-sky-600" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
-                  {t.water.features.monitoring.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {t.water.features.monitoring.description}
-                </p>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">{t.water.features.monitoring.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">{t.water.features.monitoring.description}</p>
                 <div className="flex items-center gap-2 text-sm font-medium text-sky-600">
                   <Check className="w-4 h-4" />
                   <span>{t.water.features.monitoring.check}</span>
@@ -367,8 +305,8 @@ export default function WaterPage() {
         </div>
       </section>
 
-      {/* Automation Section - Dark Background */}
-      <section className="py-24 md:py-32 bg-gray-900 overflow-hidden w-full">
+      {/* Automation Section */}
+      <section className="py-24 md:py-32 bg-gray-900 overflow-hidden w-full relative">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-600 opacity-15 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600 opacity-15 rounded-full blur-[100px]" />
@@ -385,7 +323,6 @@ export default function WaterPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-8">
-            {/* Logic 1 */}
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-cyan-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0">
@@ -393,14 +330,11 @@ export default function WaterPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.water.automation.auto.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {t.water.automation.auto.description}
-                  </p>
+                  <p className="text-gray-400 leading-relaxed">{t.water.automation.auto.description}</p>
                 </div>
               </div>
             </div>
 
-            {/* Logic 2 */}
             <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-cyan-500/30 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center flex-shrink-0">
@@ -408,9 +342,7 @@ export default function WaterPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white mb-2">{t.water.automation.vacation.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {t.water.automation.vacation.description}
-                  </p>
+                  <p className="text-gray-400 leading-relaxed">{t.water.automation.vacation.description}</p>
                 </div>
               </div>
             </div>
@@ -419,28 +351,23 @@ export default function WaterPage() {
       </section>
 
       {/* Hardware Section */}
-      <section className="py-24 md:py-32 bg-gray-50 w-full overflow-hidden">
-        {/* Vibrant Glows */}
+      <section className="py-24 md:py-32 bg-gray-50 w-full overflow-hidden relative">
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-cyan-400 opacity-[0.1] rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-blue-400 opacity-[0.08] rounded-full blur-[80px] pointer-events-none" />
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left: Content */}
             <div>
               <span className="inline-block text-sm font-semibold text-cyan-600 uppercase tracking-wider mb-4">
                 {t.water.hardware.title}
               </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                {t.water.hardware.heading1}
-                <br />
+                {t.water.hardware.heading1} <br />
                 <span className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
                   {t.water.hardware.heading2}
                 </span>
               </h2>
-              <p className="text-lg text-gray-600 mb-10 leading-relaxed">
-                {t.water.hardware.subheading}
-              </p>
+              <p className="text-lg text-gray-600 mb-10 leading-relaxed">{t.water.hardware.subheading}</p>
 
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -449,9 +376,7 @@ export default function WaterPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.water.hardware.sensors.title}</h4>
-                    <p className="text-sm text-gray-600">
-                      {t.water.hardware.sensors.description}
-                    </p>
+                    <p className="text-sm text-gray-600">{t.water.hardware.sensors.description}</p>
                   </div>
                 </div>
 
@@ -461,9 +386,7 @@ export default function WaterPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1">{t.water.hardware.valves.title}</h4>
-                    <p className="text-sm text-gray-600">
-                      {t.water.hardware.valves.description}
-                    </p>
+                    <p className="text-sm text-gray-600">{t.water.hardware.valves.description}</p>
                   </div>
                 </div>
               </div>
@@ -479,7 +402,6 @@ export default function WaterPage() {
               </div>
             </div>
 
-            {/* Right: Tank Visual */}
             <div className="flex justify-center lg:justify-end">
               <StaticWaterTankVisual />
             </div>
@@ -489,14 +411,13 @@ export default function WaterPage() {
 
       {/* CTA Section */}
       <section 
-        className="py-24 md:py-32 bg-cyan-900 bg-gradient-to-br from-cyan-600 to-blue-600 relative overflow-hidden w-full text-center"
+        className="py-24 md:py-32 relative overflow-hidden w-full text-center"
+        style={{ background: 'linear-gradient(135deg, #0891b2 0%, #2563eb 100%)' }}
       >
         <div className="absolute inset-0 opacity-10">
           <div
             className="w-full h-full"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}
           />
         </div>
 
@@ -506,12 +427,8 @@ export default function WaterPage() {
             <span>{t.water.cta.badge}</span>
           </div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-            {t.water.cta.heading}
-          </h2>
-          <p className="text-xl text-white/80 mb-4 max-w-2xl mx-auto">
-            {t.water.cta.subheading}
-          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">{t.water.cta.heading}</h2>
+          <p className="text-xl text-white/80 mb-4 max-w-2xl mx-auto">{t.water.cta.subheading}</p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link

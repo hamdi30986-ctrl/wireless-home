@@ -75,14 +75,50 @@
       "heading": "See the Difference",
       "subheading": "Drag the slider to compare a traditional wired setup with our wireless smart home solution."
     },
-    "portfolio": {
-      "badge": "Our Portfolio",
-      "heading": "Smart Homes We've Built",
-      "cta": "View Our Work",
-      "livingRoom": "Living Room",
-      "kitchen": "Kitchen",
-      "bedroom": "Bedroom",
-      "office": "Office"
+    "unique": {
+      "badge": "What Makes Us Different",
+      "heading": "Why Choose Wireless Home?",
+      "subheading": "We don't just install smart homes. We build the future of living with cutting-edge technology and uncompromising quality.",
+      "noKnx": {
+        "title": "No Outdated KNX System",
+        "description": "We've moved beyond KNX, the expensive, complex, and inflexible system from the 1990s. KNX requires a lot of maintenance, costly modifications, and lacks modern features like OTA updates.",
+        "points": "Expensive • Complex • No Updates"
+      },
+      "quality": {
+        "title": "Premium Quality Only",
+        "description": "Zero plastic junk. Every device is industrial-grade, built to last decades. We source only from top-tier manufacturers who share our commitment to excellence.",
+        "points": "Industrial Grade • Built to Last • No Compromises"
+      },
+      "sensors": {
+        "title": "Saudi-Ready Sensors",
+        "description": "Custom industrial water sensors engineered specifically for Saudi Arabia's extreme heat and humidity. Not off-the-shelf imports - fully integrated systems designed for our weather.",
+        "points": "Heat Resistant • Humidity Proof • Saudi-Engineered"
+      },
+      "audio": {
+        "title": "Revolutionary Audio",
+        "description": "Beyond standard multi-room audio. Our custom-built sound system delivers studio-quality acoustics with innovative features you won't find anywhere else. Built by audiophiles, for audiophiles.",
+        "points": "Custom-Built • Studio Quality • Innovative Features"
+      },
+      "app": {
+        "title": "One App.!",
+        "description": "No white-labeled clones. No clunky interfaces. One professionally-designed app controls everything - even without internet. Fast, intuitive, and actually smart.",
+        "points": "No Internet Required • Lightning Fast • Beautiful Design"
+      },
+      "privacy": {
+        "title": "True Local Privacy",
+        "description": "Your data never leaves your home. Unlike others who route everything through cloud servers, we keep it 100% local inside your home. Full functionality with or without internet - just WiFi needed.",
+        "points": "No Cloud Dependency • 100% Local • Always Works"
+      },
+      "support": {
+        "title": "We're In This Together",
+        "description": "We don't just install and disappear. Regular app updates, new features, ongoing support - we're constantly improving your smart home. This isn't a product, it's a partnership.",
+        "points": {
+          "updates": "Regular Updates",
+          "features": "New Features",
+          "support": "Ongoing Support",
+          "improving": "Always Improving"
+        }
+      }
     },
     "finalCta": {
       "heading": "Ready to Transform Your Home?",

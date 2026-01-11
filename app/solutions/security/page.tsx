@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   ArrowRight,
@@ -31,7 +32,7 @@ function SmartLockVisual() {
   return (
     <div className="relative w-[320px] h-[320px] flex items-center justify-center my-8 lg:my-0">
       
-      {/* Background Glow (Changes color based on state) */}
+      {/* Background Glow */}
       <div 
         className={`absolute inset-0 rounded-full blur-[60px] transition-all duration-1000 ${
           isLocked ? 'bg-emerald-500/20' : 'bg-blue-500/20'
@@ -90,20 +91,23 @@ export default function SecurityPage() {
 
   return (
     <>
-      {/* HERO SECTION - UPDATED with Emerald/Teal Mesh Shades */}
+      {/* HERO SECTION - Pattern Removed */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[#0a0e27] w-full">
-        {/* Glowing Mesh blobs for "alive" feel */}
+        {/* Glowing Mesh blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Top Right: Deep Emerald Glow */}
             <div className="absolute top-[-5%] right-[-10%] w-[65%] h-[60%] rounded-full bg-emerald-600 opacity-[0.15] blur-[140px]" />
-            {/* Center Left: Teal Glow */}
             <div className="absolute top-[25%] left-[-5%] w-[55%] h-[50%] rounded-full bg-teal-500 opacity-[0.1] blur-[120px]" />
-            {/* Bottom Left: Subtle Green Wash */}
             <div className="absolute bottom-[-10%] left-[15%] w-[40%] h-[40%] rounded-full bg-green-500 opacity-[0.07] blur-[130px]" />
         </div>
 
         <div className="relative z-10 py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
+          {/* FIXED: Using explicit animate instead of whileInView for Hero load reliability */}
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          >
             <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/80 mb-8">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>{t.security.badge}</span>
@@ -152,7 +156,7 @@ export default function SecurityPage() {
                 <span>{t.security.trust3}</span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
@@ -165,13 +169,18 @@ export default function SecurityPage() {
 
       {/* FEATURES GRID */}
       <section className="py-24 md:py-32 bg-white overflow-hidden w-full relative">
-        {/* Subtle Background Glows */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-emerald-50/30 to-transparent pointer-events-none" />
         <div className="absolute top-20 -left-20 w-[500px] h-[500px] bg-emerald-400/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-teal-400/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
             <span className="inline-block text-sm font-semibold text-emerald-600 uppercase tracking-wider mb-4">
               {t.security.features.title}
             </span>
@@ -181,10 +190,16 @@ export default function SecurityPage() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t.security.features.subheading}
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/20">
                 <UserCheck className="w-8 h-8 text-emerald-600" />
               </div>
@@ -196,9 +211,15 @@ export default function SecurityPage() {
                 <Check className="w-4 h-4" />
                 <span>{t.security.features.live.check}</span>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-100 to-green-100 flex items-center justify-center mb-6 shadow-lg shadow-teal-500/20">
                 <Eye className="w-8 h-8 text-teal-600" />
               </div>
@@ -210,9 +231,15 @@ export default function SecurityPage() {
                 <Check className="w-4 h-4" />
                 <span>{t.security.features.ai.check}</span>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md">
+            <motion.div
+              className="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-md"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center mb-6 shadow-lg shadow-green-500/20">
                 <Glasses className="w-8 h-8 text-green-600" />
               </div>
@@ -224,7 +251,7 @@ export default function SecurityPage() {
                 <Check className="w-4 h-4" />
                 <span>{t.security.features.night.check}</span>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -314,7 +341,6 @@ export default function SecurityPage() {
 
       {/* HARDWARE SECTION */}
       <section className="py-24 md:py-32 bg-gray-50 overflow-hidden w-full relative">
-        {/* Vibrant Mesh Shades */}
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-emerald-400 opacity-[0.1] rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-teal-400 opacity-[0.08] rounded-full blur-[80px] pointer-events-none" />
 
@@ -385,17 +411,8 @@ export default function SecurityPage() {
         </div>
       </section>
 
-      {/* CTA SECTION */}
+      {/* CTA SECTION - Pattern Removed */}
       <section className="py-24 md:py-32 bg-gradient-to-br from-emerald-500 to-teal-600 overflow-hidden w-full relative">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div
-            className="w-full h-full"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
-
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm text-white mb-8">
             <Lock className="w-4 h-4" />
