@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
-  Wifi,
   MapPin,
   Mail,
   MessageCircle,
@@ -46,9 +46,13 @@ export default function Footer() {
               href="/"
               className="flex items-center gap-3 text-white font-extrabold text-xl tracking-tight"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0066FF] to-[#0052CC] flex items-center justify-center">
-                <Wifi className="w-5 h-5 text-white" />
-              </div>
+              <Image
+                src="/images/w.jpg"
+                alt="Wireless Home"
+                width={40}
+                height={40}
+                className="rounded-xl object-cover"
+              />
               <span>Wireless Home</span>
             </Link>
             
