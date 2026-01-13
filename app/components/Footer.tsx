@@ -6,21 +6,11 @@ import {
   MapPin,
   Mail,
   MessageCircle,
-  Instagram,
-  Twitter,
-  Facebook,
-  Linkedin,
-  Youtube,
   ArrowUpRight,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const socialLinks = [
-  { name: 'Instagram', href: 'https://instagram.com/wirelesshome.sa', icon: Instagram },
-  { name: 'Twitter', href: 'https://twitter.com/wirelesshome_sa', icon: Twitter },
-  { name: 'Facebook', href: 'https://facebook.com/wirelesshome.sa', icon: Facebook },
-  { name: 'LinkedIn', href: 'https://linkedin.com/company/wirelesshome', icon: Linkedin },
-  { name: 'YouTube', href: 'https://youtube.com/@wirelesshome', icon: Youtube },
 ];
 
 const supportLinks = [
@@ -173,7 +163,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Legal */}
+{/* Column 4: Legal */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-6">
               {t.footer.legal.title}
@@ -183,11 +173,25 @@ export default function Footer() {
                 <div className="space-y-3">
                   <div>
                     <span className="text-xs text-gray-500 uppercase tracking-wider">{t.footer.legal.cr}</span>
-                    <p className="text-white font-mono font-medium mt-1">CR: 1010XXXXXX</p>
-                  </div>
-                  <div className="pt-3 border-t border-gray-700/50">
-                    <span className="text-xs text-gray-500 uppercase tracking-wider">{t.footer.legal.vat}</span>
-                    <p className="text-white font-mono font-medium mt-1">VAT: 3XXXXXXXXXXX003</p>
+                    <p className="text-white font-mono font-medium mt-1">CR: 7053332230</p>
+                    
+                    {/* QR Code with Link */}
+                    <div className="mt-4">
+                      <a 
+                        href="https://qr.saudibusiness.gov.sa/viewcr?nCrNumber=6X2XA48Xcv2KrSuPLqL7VA=="
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block transition-opacity hover:opacity-80"
+                        title="Verify Commercial Registration"
+                      >
+                        <img 
+                          src="/images/qr.png" 
+                          alt="Commercial Registration QR" 
+                          className="w-24 h-auto bg-white p-1 rounded-lg shadow-sm cursor-pointer"
+                        />
+                      </a>
+                    </div>
+
                   </div>
                 </div>
               </div>
