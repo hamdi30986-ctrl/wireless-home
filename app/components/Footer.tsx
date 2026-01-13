@@ -38,12 +38,12 @@ export default function Footer() {
             >
               <Image
                 src="/images/w.jpg"
-                alt="Casa-Smart"
+                alt="Casa Smart"
                 width={40}
                 height={40}
                 className="rounded-xl object-cover"
               />
-              <span>Casa-Smart</span>
+              <span>Casa Smart</span>
             </Link>
             
             <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
@@ -209,7 +209,7 @@ export default function Footer() {
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-gray-500">
-              © {currentYear} Casa-Smart. {t.footer.bottom.rights}.
+              © {currentYear} Casa Smart. {t.footer.bottom.rights}.
             </p>
 
             <div className="flex items-center gap-6">

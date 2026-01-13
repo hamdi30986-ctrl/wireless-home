@@ -161,14 +161,14 @@ export default function Navbar() {
             <div className="relative w-12 h-12 flex-shrink-0">
               <Image
                 src="/images/w.jpg"
-                alt="Casa-Smart Logo"
+                alt="Casa Smart Logo"
                 width={48}
                 height={48}
                 className="object-contain"
                 priority
               />
             </div>
-            <span className="inline">Casa-Smart</span>
+            <span className="inline">Casa Smart</span>
           </Link>
 
           {/* Desktop Navigation */}
