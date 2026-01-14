@@ -99,7 +99,7 @@ export default function Footer() {
               
               <li>
                 <a
-                  href="mailto:info@wireless.sa"
+                  href="mailto:info@casasmart.sa"
                   className="text-sm text-gray-400 hover:text-[#0066FF] transition-colors duration-200 inline-flex items-center gap-3 group"
                 >
                   <span className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center group-hover:bg-[#0066FF]/10 transition-colors duration-200">
@@ -107,7 +107,7 @@ export default function Footer() {
                   </span>
                   <span>
                     <span className="block text-white font-medium">{t.footer.contact.email}</span>
-                    <span>info@wireless.sa</span>
+                    <span>info@casasmart.sa</span>
                   </span>
                 </a>
               </li>
