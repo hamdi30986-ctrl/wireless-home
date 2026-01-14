@@ -20,10 +20,11 @@ const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://wireless.sa'),
+  // Updated to your new domain
+  metadataBase: new URL('https://casasmart.sa'),
   title: {
-    default: 'Wireless Home | Smart Home Solutions in Saudi Arabia',
-    template: '%s | Wireless Home',
+    default: 'Casa Smart | Smart Home Solutions in Saudi Arabia',
+    template: '%s | Casa Smart',
   },
   description:
     'Transform your home with premium smart home solutions. Expert installation of smart lighting, climate control, security systems, motorized curtains, and more across Saudi Arabia.',
@@ -41,10 +42,11 @@ export const metadata: Metadata = {
     'smart home installation',
     'منزل ذكي',
     'أتمتة المنزل',
+    'Casa Smart', // Added new brand keyword
   ],
-  authors: [{ name: 'Wireless Home', url: 'https://wireless.sa' }],
-  creator: 'Wireless Home',
-  publisher: 'Wireless Home',
+  authors: [{ name: 'Casa Smart', url: 'https://casasmart.sa' }],
+  creator: 'Casa Smart',
+  publisher: 'Casa Smart',
   formatDetection: {
     email: false,
     address: false,
@@ -54,9 +56,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     alternateLocale: 'ar_SA',
-    url: 'https://wireless.sa',
-    siteName: 'Wireless Home',
-    title: 'Wireless Home | Smart Home Solutions in Saudi Arabia',
+    url: 'https://casasmart.sa',
+    siteName: 'Casa Smart',
+    title: 'Casa Smart | Smart Home Solutions in Saudi Arabia',
     description:
       'Transform your home with premium smart home solutions. Expert installation of smart lighting, climate control, security systems, and more.',
     images: [
@@ -64,17 +66,17 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Wireless Home - Smart Home Solutions',
+        alt: 'Casa Smart - Smart Home Solutions',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wireless Home | Smart Home Solutions in Saudi Arabia',
+    title: 'Casa Smart | Smart Home Solutions in Saudi Arabia',
     description:
       'Transform your home with premium smart home solutions. Expert installation across Saudi Arabia.',
     images: ['/og-image.jpg'],
-    creator: '@wirelesshome_sa',
+    creator: '@casasmart_sa', // Updated handle placeholder
   },
   robots: {
     index: true,
