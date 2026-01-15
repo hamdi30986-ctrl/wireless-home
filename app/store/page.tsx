@@ -426,7 +426,30 @@ function ProductDetailPanel({
 // ============================================
 // PRODUCT CARD COMPONENT
 // ============================================
-function ProductCard({ product, brandColor, isInInquiry, onClick }: any) {
+function ProductCard({ product, brandColor, isInInquiry, quantity, onClick, onQuickAdd, onUpdateQuantity, onRemove }: any) {
+    const { t } = useLanguage();
+
+    const handleQuickAdd = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!isInInquiry) {
+        onQuickAdd(product.id, product);
+      }
+    };
+
+    const handleIncrement = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onUpdateQuantity(product.id, 1);
+    };
+
+    const handleDecrement = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (quantity <= 1) {
+        onRemove(product.id);
+      } else {
+        onUpdateQuantity(product.id, -1);
+      }
+    };
+
     return (
         <motion.div layout onClick={onClick} className="group cursor-pointer">
             <div className="rounded-3xl p-5 hover:shadow-xl transition-all" style={{ backgroundColor: '#f7f7f8', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
@@ -435,19 +458,93 @@ function ProductCard({ product, brandColor, isInInquiry, onClick }: any) {
                         <Package style={{ width: '64px', height: '64px', color: '#d4d4d8' }} />
                     </div>
                     {product.images && product.images.length > 0 && (
-                      <img 
-                          src={product.images[0]} 
+                      <img
+                          src={product.images[0]}
                           alt={product.name}
-                          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '16px', zIndex: 1 }} 
+                          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '16px', zIndex: 1 }}
                           onError={(e) => { e.currentTarget.style.display = 'none'; }}
                       />
                     )}
-                    {isInInquiry && <div style={{ position: 'absolute', top: 8, right: 8, width: 24, height: 24, borderRadius: '50%', backgroundColor: brandColor, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}><Check color='white' size={14} /></div>}
                 </div>
-                {/* SURGICAL FIX: Added Padding (Pads) around the text */}
-                <div style={{ padding: '0 8px 12px 8px' }}>
-                  <p style={{ fontSize: '10px', fontWeight: 600, color: brandColor, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>{product.category}</p>
-                  <h3 style={{ fontSize: '14px', fontWeight: 500, lineHeight: 1.4, color: '#18181b', margin: 0 }}>{product.name}</h3>
+                {/* Text + Quick Add / Quantity Controls Row */}
+                <div style={{ padding: '0 8px 12px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '8px' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: '10px', fontWeight: 600, color: brandColor, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>{product.category}</p>
+                    <h3 style={{ fontSize: '14px', fontWeight: 500, lineHeight: 1.4, color: '#18181b', margin: 0 }}>{product.name}</h3>
+                  </div>
+
+                  {/* Quantity Controls or Add Button */}
+                  {isInInquiry ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                      <button
+                        onClick={handleDecrement}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: '8px',
+                          backgroundColor: '#f4f4f5',
+                          border: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                        className="hover:bg-gray-200"
+                      >
+                        <Minus color="#71717a" size={16} strokeWidth={2} />
+                      </button>
+                      <span style={{
+                        minWidth: '24px',
+                        textAlign: 'center',
+                        fontWeight: 600,
+                        fontSize: '14px',
+                        color: '#18181b'
+                      }}>
+                        {quantity}
+                      </span>
+                      <button
+                        onClick={handleIncrement}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: '8px',
+                          backgroundColor: brandColor,
+                          border: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                        className="hover:opacity-90"
+                      >
+                        <Plus color="#ffffff" size={16} strokeWidth={2} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleQuickAdd}
+                      title={t.store.addToInquiry}
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: '10px',
+                        backgroundColor: '#ffffff',
+                        border: `2px solid ${brandColor}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        flexShrink: 0,
+                      }}
+                      className="hover:scale-110"
+                    >
+                      <Plus color={brandColor} size={18} strokeWidth={2.5} />
+                    </button>
+                  )}
                 </div>
             </div>
         </motion.div>
@@ -473,7 +570,7 @@ function InquiryPanel({
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 90 }}>
       <div onClick={onClose} style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} />
-      <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '100%', maxWidth: '450px', backgroundColor: '#ffffff', display: 'flex', flexDirection: 'column', boxShadow: '-4px 0 20px rgba(0,0,0,0.1)' }}>
+      <div style={{ position: 'absolute', right: 0, top: 80, bottom: 0, width: '100%', maxWidth: '450px', backgroundColor: '#ffffff', display: 'flex', flexDirection: 'column', boxShadow: '-4px 0 20px rgba(0,0,0,0.1)', borderTopLeftRadius: '16px' }}>
         <div style={{ padding: '24px', borderBottom: '1px solid #f4f4f5' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
@@ -596,6 +693,11 @@ export default function StorePage() {
 
   const isInInquiry = (productId: string) => {
     return inquiryItems.some(item => item.productId === productId);
+  };
+
+  const getItemQuantity = (productId: string) => {
+    const item = inquiryItems.find(item => item.productId === productId);
+    return item?.quantity || 0;
   };
 
   const addToInquiry = (productId: string, product: Product, options?: { selectedColor?: string; selectedType?: string; selectedGang?: string }) => {
@@ -754,7 +856,16 @@ export default function StorePage() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {currentBrand.products.map((product, index) => (
                     <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }}>
-                      <ProductCard product={product} brandColor={currentBrand.accentColor} isInInquiry={isInInquiry(product.id)} onClick={() => handleProductClick(product)} />
+                      <ProductCard
+                        product={product}
+                        brandColor={currentBrand.accentColor}
+                        isInInquiry={isInInquiry(product.id)}
+                        quantity={getItemQuantity(product.id)}
+                        onClick={() => handleProductClick(product)}
+                        onQuickAdd={(productId: string, prod: Product) => addToInquiry(productId, prod)}
+                        onUpdateQuantity={updateQuantity}
+                        onRemove={removeFromInquiry}
+                      />
                     </motion.div>
                   ))}
                 </div>
