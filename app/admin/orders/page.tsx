@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { 
   ArrowLeft, 
   Package, 
@@ -85,11 +86,26 @@ export default function AdminOrders() {
     };
   };
 
-  // 3. Update Status
+  // 3. Update Status (Robust Version)
   const updateStatus = async (id: string, newStatus: string) => {
-    const { error } = await supabase.from('orders').update({ status: newStatus }).eq('id', id);
-    if (!error) {
+    console.log(`Attempting to update order ${id} to ${newStatus}...`);
+
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status: newStatus })
+      .eq('id', id)
+      .select(); // Crucial: Returns the updated row to confirm success
+
+    if (error) {
+      console.error("Supabase Update Error:", error);
+      alert(`Error updating status: ${error.message}`);
+    } else {
+      console.log("Update success:", data);
+      
+      // Update local state immediately so you don't have to refresh
       setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
+      
+      // Update the selected view if it's currently open
       if (selectedOrder?.id === id) {
         setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
       }
@@ -103,54 +119,46 @@ export default function AdminOrders() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans text-slate-900">
-      
-      {/* ================= HEADER ================= */}
-      <nav className="fixed top-0 left-0 right-0 h-20 bg-black border-b border-gray-800 z-40 shadow-xl flex items-center">
-        <div className="w-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-          
-          {/* Back Button & Title */}
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => router.push('/admin')}
-              className="group flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-            >
-              <div className="w-10 h-10 rounded-full border border-gray-700 group-hover:border-white flex items-center justify-center transition-all">
-                <ArrowLeft className="w-5 h-5" />
-              </div>
-              <span className="hidden md:inline font-medium text-sm">Back to Admin</span>
-            </button>
-
-            <div className="h-8 w-px bg-gray-800 hidden md:block"></div>
-
-            <div>
-              <h1 className="font-bold text-xl tracking-tight text-white">Incoming Orders</h1>
-              <p className="text-xs text-gray-500 font-bold tracking-widest uppercase mt-0.5">Sales Dashboard</p>
-            </div>
-          </div>
-
-          {/* Notification Badge */}
-          <div className="flex items-center">
-             {orders.filter(o => o.status === 'pending').length > 0 && (
-               <div className="flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 px-4 py-2 rounded-full">
-                 <span className="relative flex h-3 w-3">
-                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                   <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-                 </span>
-                 <span className="text-blue-400 text-xs font-bold uppercase tracking-wider">
-                   {orders.filter(o => o.status === 'pending').length} New Pending
-                 </span>
-               </div>
-             )}
-          </div>
-        </div>
-      </nav>
-
-      {/* ================= MAIN CONTENT ================= */}
-      <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+    <div className="min-h-screen bg-gray-50 font-sans text-slate-900 p-8 pt-24">
+      <div className="max-w-7xl mx-auto">
         
+        {/* --- BACK BUTTON --- */}
+        <div className="mb-6">
+          <Link 
+            href="/admin" 
+            className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors text-sm font-medium group"
+          >
+            <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center group-hover:border-gray-300 transition-colors">
+              <ArrowLeft className="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
+            </div>
+            Back to Dashboard
+          </Link>
+        </div>
+
+        {/* --- PAGE HEADER --- */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Incoming Orders</h1>
+            <p className="text-gray-500 text-sm mt-1">Manage customer orders and status.</p>
+          </div>
+          
+          {/* Notification Badge */}
+          {orders.filter(o => o.status === 'pending').length > 0 && (
+             <div className="bg-blue-50 border border-blue-100 px-4 py-2 rounded-lg flex items-center gap-2">
+               <span className="relative flex h-2.5 w-2.5">
+                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+               </span>
+               <span className="text-blue-600 text-xs font-bold uppercase tracking-wider">
+                 {orders.filter(o => o.status === 'pending').length} New Pending
+               </span>
+             </div>
+           )}
+        </div>
+
+        {/* --- MAIN CONTENT --- */}
         {isLoading ? (
-           <div className="flex flex-col items-center justify-center h-[60vh]">
+           <div className="flex flex-col items-center justify-center h-[50vh]">
              <Loader2 className="w-10 h-10 animate-spin text-gray-400 mb-4" />
              <p className="text-gray-500 font-medium">Loading Orders...</p>
            </div>
@@ -192,7 +200,7 @@ export default function AdminOrders() {
                     </div>
                     
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         order.status === 'pending' ? 'bg-blue-100 text-blue-700' :
                         order.status === 'completed' ? 'bg-green-100 text-green-700' :
                         'bg-gray-100 text-gray-600'
@@ -268,15 +276,15 @@ export default function AdminOrders() {
                   {/* Order Content */}
                   <div className="p-8 bg-white min-h-[400px]">
                     
-                    {/* Notes (FIXED PADDING HERE) */}
+                    {/* Notes */}
                     {selectedOrder.items.customer_notes && (
                       <div className="mb-8">
-                         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                           <MessageSquare className="w-3 h-3" /> Customer Notes
-                         </h3>
-                         <div className="p-6 bg-yellow-50 border border-yellow-100 rounded-2xl text-sm text-yellow-800 font-medium leading-relaxed shadow-sm">
-                           "{selectedOrder.items.customer_notes}"
-                         </div>
+                          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <MessageSquare className="w-3 h-3" /> Customer Notes
+                          </h3>
+                          <div className="p-6 bg-yellow-50 border border-yellow-100 rounded-2xl text-sm text-yellow-800 font-medium leading-relaxed shadow-sm">
+                            "{selectedOrder.items.customer_notes}"
+                          </div>
                       </div>
                     )}
 
@@ -333,7 +341,7 @@ export default function AdminOrders() {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-gray-400 bg-white rounded-3xl border-2 border-dashed border-gray-200 min-h-[500px]">
                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                     <Eye className="w-8 h-8 text-gray-300" />
+                      <Eye className="w-8 h-8 text-gray-300" />
                   </div>
                   <p className="font-medium text-lg text-gray-500">Select an order from the list</p>
                 </div>
@@ -341,7 +349,7 @@ export default function AdminOrders() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

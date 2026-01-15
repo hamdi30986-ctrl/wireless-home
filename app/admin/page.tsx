@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation'; // For redirecting
+import { useRouter } from 'next/navigation';
 import ProductModal from '@/app/components/ProductModal';
 import { 
   Package, 
@@ -25,7 +25,7 @@ type Product = {
   stock: number;
   images: string[];
   description: string;
-  brand: string; // <--- Changed to mandatory to please the Modal
+  brand: string;
   colors?: { name: string; hex: string; image?: string }[];
   types?: { name: string; value: string; image?: string }[];
   gang?: string;
@@ -36,7 +36,7 @@ type Product = {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Security Check
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,16 +47,15 @@ export default function AdminDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
 
-  // 1. SECURITY CHECK (Run this first!)
+  // 1. SECURITY CHECK
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        // Not logged in? Kick them out.
         router.push('/login');
       } else {
         setIsAuthenticated(true);
-        fetchProducts(); // Only fetch data if logged in
+        fetchProducts();
       }
     };
     checkUser();
@@ -108,12 +107,11 @@ export default function AdminDashboard() {
     fetchProducts();
   };
 
-const filteredProducts = products.filter(p =>
-  p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  (p.brand || '').toLowerCase().includes(searchQuery.toLowerCase())
-);
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.brand || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // If checking security, show a simple loading screen (prevents flashing content)
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f4f4f5]">
@@ -143,13 +141,25 @@ const filteredProducts = products.filter(p =>
               <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
               Secure Session Active
             </div>
+
+            {/* --- VIEW ORDERS BUTTON --- */}
             <button 
                 onClick={() => router.push('/admin/orders')}
-                className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white mr-6"
+                className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors"
                 >
-                <div className="w-2 h-2 rounded-full bg-blue-500" />
+                <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
                 View Orders
-                </button>
+            </button>
+
+            {/* --- VIEW BOOKINGS BUTTON (ADDED) --- */}
+            <button 
+                onClick={() => router.push('/admin/booking')}
+                className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors mr-6"
+                >
+                <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+                View Bookings
+            </button>
+
             <button 
               onClick={handleSignOut}
               className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-medium"
