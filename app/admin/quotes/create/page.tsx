@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Trash2, Calculator, Search, ArrowLeft, Save, Loader2 } from 'lucide-react';
@@ -21,7 +21,8 @@ type QuoteItem = {
   total: number;
 };
 
-export default function CreateQuotePage() {
+// --- INNER COMPONENT (Contains all your original logic) ---
+function QuoteFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit');
@@ -354,7 +355,7 @@ export default function CreateQuotePage() {
                     />
                   </td>
                   <td className="px-4 py-3">
-                     <input 
+                      <input 
                       type="number" 
                       value={item.unit_price}
                       onChange={(e) => updateItem(item.id, 'unit_price', Number(e.target.value))}
@@ -412,25 +413,41 @@ export default function CreateQuotePage() {
           </div>
 
           <div className="w-full lg:w-96 bg-white p-8 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center space-y-4">
-             <div className="flex justify-between text-gray-600 text-sm">
-               <span>Subtotal</span>
-               <span className="font-bold text-gray-900">{subTotal.toLocaleString()} SAR</span>
-             </div>
-             <div className="flex justify-between text-gray-600 text-sm">
-               <span>VAT (15%)</span>
-               <span className="font-bold text-gray-900">{vatAmount.toLocaleString()} SAR</span>
-             </div>
-             <div className="h-px bg-gray-100 my-2"></div>
-             <div className="flex justify-between items-baseline">
-               <span className="text-lg font-bold text-gray-900">Total</span>
-               <span className="text-3xl font-black text-slate-900 tracking-tight">
-                 {grandTotal.toLocaleString()} <span className="text-sm font-bold text-gray-400">SAR</span>
-               </span>
-             </div>
+              <div className="flex justify-between text-gray-600 text-sm">
+                <span>Subtotal</span>
+                <span className="font-bold text-gray-900">{subTotal.toLocaleString()} SAR</span>
+              </div>
+              <div className="flex justify-between text-gray-600 text-sm">
+                <span>VAT (15%)</span>
+                <span className="font-bold text-gray-900">{vatAmount.toLocaleString()} SAR</span>
+              </div>
+              <div className="h-px bg-gray-100 my-2"></div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-lg font-bold text-gray-900">Total</span>
+                <span className="text-3xl font-black text-slate-900 tracking-tight">
+                  {grandTotal.toLocaleString()} <span className="text-sm font-bold text-gray-400">SAR</span>
+                </span>
+              </div>
           </div>
         </div>
 
       </div>
     </div>
+  );
+}
+
+// --- OUTER COMPONENT: WRAPS CONTENT IN SUSPENSE FOR BUILD SAFETY ---
+export default function CreateQuotePage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen w-full flex items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+          <p className="text-sm font-medium text-gray-500">Loading editor...</p>
+        </div>
+      </div>
+    }>
+      <QuoteFormContent />
+    </Suspense>
   );
 }
