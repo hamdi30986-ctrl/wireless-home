@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import {
-  Loader2, FileText, ArrowLeft, ChevronRight, LogOut
+  Loader2, FileText, ArrowLeft, ChevronRight, LogOut, Clock
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -114,45 +114,57 @@ export default function ProposalsPage() {
                 <p className="text-gray-500 text-sm">No quotations found</p>
             </div>
           ) : (
-            quotes.map((quote) => (
-              <Link
-                key={quote.id}
-                href={`/dashboard/proposals/${quote.id}`}
-                className="group block bg-white p-5 rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                      <FileText className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold text-slate-900">{quote.project_name || 'Smart Home System'}</h3>
-                        <span className={`px-2 py-0.5 rounded text-xs font-medium capitalize ${
-                          quote.status === 'accepted' ? 'bg-green-100 text-green-700' :
-                          quote.status === 'draft' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {quote.status}
-                        </span>
+            quotes.map((quote) => {
+              const isExpired = quote.expiry_date && new Date(quote.expiry_date) < new Date() && quote.status !== 'accepted';
+              return (
+                <Link
+                  key={quote.id}
+                  href={`/dashboard/proposals/${quote.id}`}
+                  className={`group block bg-white p-5 rounded-2xl border transition-all ${isExpired ? 'border-orange-200 opacity-70' : 'border-gray-200 hover:border-gray-300 hover:shadow-md'}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isExpired ? 'bg-orange-100 text-orange-500' : 'bg-gray-100 group-hover:bg-slate-900 group-hover:text-white'}`}>
+                        {isExpired ? <Clock className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
                       </div>
-                      <p className="text-sm text-gray-500 mt-0.5">
-                        {quote.property_type || 'Residential'} • {new Date(quote.created_at).toLocaleDateString()}
-                      </p>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className={`text-base font-semibold ${isExpired ? 'text-gray-500' : 'text-slate-900'}`}>{quote.project_name || 'Smart Home System'}</h3>
+                          {isExpired ? (
+                            <span className="px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-700">
+                              Expired
+                            </span>
+                          ) : (
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium capitalize ${
+                              quote.status === 'accepted' ? 'bg-green-100 text-green-700' :
+                              quote.status === 'draft' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {quote.status}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500 mt-0.5">
+                          {quote.property_type || 'Residential'} • {new Date(quote.created_at).toLocaleDateString()}
+                          {quote.expiry_date && !isExpired && quote.status !== 'accepted' && (
+                            <span className="text-gray-400"> • Expires {new Date(quote.expiry_date).toLocaleDateString()}</span>
+                          )}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-6">
-                    <div className="text-right">
-                      <div className="text-lg font-semibold text-slate-900">
-                        {Math.round(quote.grand_total).toLocaleString()}
-                        <span className="text-xs font-medium text-gray-500 ml-1">SAR</span>
+                    <div className="flex items-center gap-6">
+                      <div className="text-right">
+                        <div className={`text-lg font-semibold ${isExpired ? 'text-gray-400' : 'text-slate-900'}`}>
+                          {Math.round(quote.grand_total).toLocaleString()}
+                          <span className="text-xs font-medium text-gray-500 ml-1">SAR</span>
+                        </div>
                       </div>
+                      <ChevronRight className={`w-5 h-5 transition-colors ${isExpired ? 'text-gray-300' : 'text-gray-400 group-hover:text-slate-900'}`} />
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-slate-900 transition-colors" />
                   </div>
-                </div>
-              </Link>
-            ))
+                </Link>
+              );
+            })
           )}
         </div>
 

@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { 
-  ArrowLeft, FileText, CheckCircle, Clock, 
-  Download, DollarSign, TrendingUp, AlertCircle, X, Plus 
+import {
+  ArrowLeft, FileText, CheckCircle, Clock,
+  Download, DollarSign, TrendingUp, AlertCircle, X, Plus, Pencil
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -23,6 +23,8 @@ export default function InvoicesPage() {
   const [stats, setStats] = useState({ collected: 0, pending: 0 });
   const [paymentModal, setPaymentModal] = useState<{ open: boolean, invoice: any | null }>({ open: false, invoice: null });
   const [paymentAmount, setPaymentAmount] = useState('');
+  const [editModal, setEditModal] = useState<{ open: boolean, invoice: any | null }>({ open: false, invoice: null });
+  const [editForm, setEditForm] = useState({ amount: '', amount_paid: '' });
 
   useEffect(() => { fetchInvoices(); }, []);
 
@@ -42,6 +44,34 @@ export default function InvoicesPage() {
   };
 
   const openPaymentModal = (invoice: any) => { setPaymentModal({ open: true, invoice }); setPaymentAmount(''); };
+
+  const openEditModal = (invoice: any) => {
+    setEditModal({ open: true, invoice });
+    setEditForm({ amount: String(invoice.amount || 0), amount_paid: String(invoice.amount_paid || 0) });
+  };
+
+  const submitEdit = async () => {
+    if (!editModal.invoice) return;
+    const newAmount = Number(editForm.amount);
+    const newAmountPaid = Number(editForm.amount_paid);
+
+    if (newAmount <= 0) return alert("Amount must be greater than 0.");
+    if (newAmountPaid < 0) return alert("Amount paid cannot be negative.");
+    if (newAmountPaid > newAmount) return alert("Amount paid cannot exceed total amount.");
+
+    let newStatus = 'unpaid';
+    if (newAmountPaid >= newAmount) newStatus = 'paid';
+    else if (newAmountPaid > 0) newStatus = 'partial';
+
+    const updatedInvoices = invoices.map(inv =>
+      inv.id === editModal.invoice.id ? { ...inv, amount: newAmount, amount_paid: newAmountPaid, status: newStatus } : inv
+    );
+    setInvoices(updatedInvoices);
+    calculateStats(updatedInvoices);
+
+    await supabase.from('invoices').update({ amount: newAmount, amount_paid: newAmountPaid, status: newStatus }).eq('id', editModal.invoice.id);
+    setEditModal({ open: false, invoice: null });
+  };
   
   const submitPayment = async () => {
     if (!paymentModal.invoice) return;
@@ -158,7 +188,7 @@ export default function InvoicesPage() {
             {isLoading ? <div className="p-12 text-center text-gray-400">Loading financials...</div> : invoices.length === 0 ? <div className="p-12 text-center text-gray-400 italic">No invoices issued yet.</div> : (
                 <table className="w-full text-left text-sm">
                     <thead className="bg-gray-50 text-gray-500 font-bold text-xs uppercase border-b border-gray-100"><tr><th className="px-6 py-4">Invoice #</th><th className="px-6 py-4">Customer</th><th className="px-6 py-4">Milestone</th><th className="px-6 py-4 w-48">Payment Progress</th><th className="px-6 py-4 text-center">Status</th><th className="px-6 py-4 text-right">Actions</th></tr></thead>
-                    <tbody className="divide-y divide-gray-50">{invoices.map((inv) => { const percent = Math.min(100, Math.round((inv.amount_paid / inv.amount) * 100)); return (<tr key={inv.id} className="hover:bg-gray-50 group"><td className="px-6 py-4 font-mono text-xs text-gray-500">{inv.invoice_ref}</td><td className="px-6 py-4"><div className="font-bold text-gray-900">{inv.projects?.customer_name || 'Unknown'}</div><div className="text-[10px] text-gray-400 uppercase">{inv.projects?.project_type}</div></td><td className="px-6 py-4 capitalize text-gray-600">{inv.type.replace('_', ' ')}</td><td className="px-6 py-4"><div className="flex justify-between text-[10px] mb-1 font-bold text-gray-500"><span>{Number(inv.amount_paid).toLocaleString()}</span><span>{Number(inv.amount).toLocaleString()} SAR</span></div><div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden"><div className={`h-full rounded-full ${percent === 100 ? 'bg-green-500' : 'bg-orange-400'}`} style={{ width: `${percent}%` }}></div></div></td><td className="px-6 py-4 text-center"><span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${inv.status === 'paid' ? 'bg-green-100 text-green-700' : inv.status === 'partial' ? 'bg-orange-100 text-orange-700' : 'bg-red-50 text-red-600'}`}>{inv.status}</span></td><td className="px-6 py-4 text-right flex justify-end gap-2">{inv.status !== 'paid' && (<button onClick={() => openPaymentModal(inv)} className="p-1.5 text-green-600 hover:bg-green-50 rounded border border-transparent hover:border-green-200" title="Record Payment"><Plus className="w-4 h-4" /></button>)}<button onClick={() => generateInvoicePDF(inv)} className="p-1.5 text-gray-400 hover:text-black" title="Download PDF"><Download className="w-4 h-4" /></button></td></tr>)})}</tbody>
+                    <tbody className="divide-y divide-gray-50">{invoices.map((inv) => { const percent = Math.min(100, Math.round((inv.amount_paid / inv.amount) * 100)); return (<tr key={inv.id} className="hover:bg-gray-50 group"><td className="px-6 py-4 font-mono text-xs text-gray-500">{inv.invoice_ref}</td><td className="px-6 py-4"><div className="font-bold text-gray-900">{inv.projects?.customer_name || 'Unknown'}</div><div className="text-[10px] text-gray-400 uppercase">{inv.projects?.project_type}</div></td><td className="px-6 py-4 capitalize text-gray-600">{inv.type.replace('_', ' ')}</td><td className="px-6 py-4"><div className="flex justify-between text-[10px] mb-1 font-bold text-gray-500"><span>{Number(inv.amount_paid).toLocaleString()}</span><span>{Number(inv.amount).toLocaleString()} SAR</span></div><div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden"><div className={`h-full rounded-full ${percent === 100 ? 'bg-green-500' : 'bg-orange-400'}`} style={{ width: `${percent}%` }}></div></div></td><td className="px-6 py-4 text-center"><span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${inv.status === 'paid' ? 'bg-green-100 text-green-700' : inv.status === 'partial' ? 'bg-orange-100 text-orange-700' : 'bg-red-50 text-red-600'}`}>{inv.status}</span></td><td className="px-6 py-4 text-right flex justify-end gap-2"><button onClick={() => openEditModal(inv)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded border border-transparent hover:border-blue-200" title="Edit Invoice"><Pencil className="w-4 h-4" /></button>{inv.status !== 'paid' && (<button onClick={() => openPaymentModal(inv)} className="p-1.5 text-green-600 hover:bg-green-50 rounded border border-transparent hover:border-green-200" title="Record Payment"><Plus className="w-4 h-4" /></button>)}<button onClick={() => generateInvoicePDF(inv)} className="p-1.5 text-gray-400 hover:text-black" title="Download PDF"><Download className="w-4 h-4" /></button></td></tr>)})}</tbody>
                 </table>
             )}
         </div>
@@ -168,6 +198,48 @@ export default function InvoicesPage() {
                 <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden">
                     <div className="p-4 border-b flex justify-between items-center bg-gray-50"><h3 className="font-bold">Record Payment</h3><button onClick={() => setPaymentModal({ open: false, invoice: null })}><X className="w-5 h-5 text-gray-400" /></button></div>
                     <div className="p-6"><div className="mb-4 text-sm text-center text-gray-500">Ref: {paymentModal.invoice.invoice_ref}<br/>Remaining: <span className="font-bold text-black">{(paymentModal.invoice.amount - paymentModal.invoice.amount_paid).toLocaleString()} SAR</span></div><label className="block text-xs font-bold text-gray-500 mb-1">Amount Received (SAR)</label><input type="number" autoFocus className="w-full p-3 border rounded-lg font-bold text-lg mb-4 focus:ring-2 focus:ring-green-500 outline-none" placeholder="0.00" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} /><button onClick={submitPayment} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all">Confirm Collection</button></div>
+                </div>
+            </div>
+        )}
+
+        {editModal.open && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
+                <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="p-4 border-b flex justify-between items-center bg-gray-50">
+                      <h3 className="font-bold">Edit Invoice</h3>
+                      <button onClick={() => setEditModal({ open: false, invoice: null })}><X className="w-5 h-5 text-gray-400" /></button>
+                    </div>
+                    <div className="p-6">
+                      <div className="mb-4 text-sm text-center text-gray-500">
+                        Ref: <span className="font-mono font-bold text-black">{editModal.invoice?.invoice_ref}</span>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Total Amount (SAR)</label>
+                          <input
+                            type="number"
+                            autoFocus
+                            className="w-full p-3 border rounded-lg font-bold text-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            placeholder="0.00"
+                            value={editForm.amount}
+                            onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-500 mb-1">Amount Paid (SAR)</label>
+                          <input
+                            type="number"
+                            className="w-full p-3 border rounded-lg font-bold text-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            placeholder="0.00"
+                            value={editForm.amount_paid}
+                            onChange={(e) => setEditForm({ ...editForm, amount_paid: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <button onClick={submitEdit} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all mt-6">
+                        Save Changes
+                      </button>
+                    </div>
                 </div>
             </div>
         )}

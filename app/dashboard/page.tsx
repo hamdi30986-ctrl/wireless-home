@@ -4,8 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import {
-  Loader2, Home, FileText, Shield, ChevronRight, LogOut, Briefcase, CheckCircle2, 
-  Clock, Info, X, AlertCircle, MessageSquare, CalendarCheck, User
+  Loader2, Home, FileText, Shield, ChevronRight, LogOut, Briefcase, CheckCircle2,
+  Clock, Info, X, AlertCircle, CalendarCheck, User, ChevronLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -19,8 +19,10 @@ export default function ClientDashboard() {
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState('');
   const [project, setProject] = useState<any>(null);
+  const [completedProjects, setCompletedProjects] = useState<any[]>([]);
   const [latestInquiry, setLatestInquiry] = useState<any>(null);
   const [showWarrantyTerms, setShowWarrantyTerms] = useState(false);
+  const [warrantyIndex, setWarrantyIndex] = useState(0);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   
   const signOutRef = useRef<HTMLDivElement>(null);
@@ -36,6 +38,7 @@ export default function ClientDashboard() {
       const userPhone = user.user_metadata?.phone || user.phone;
 
       if (userPhone) {
+        // Fetch the latest project (for progress display)
         const { data: projects } = await supabase
           .from('projects')
           .select('*, invoices(*)')
@@ -46,6 +49,19 @@ export default function ClientDashboard() {
         if (projects && projects.length > 0) {
           const currentProject = projects[0];
           setProject(currentProject);
+        }
+
+        // Fetch ALL completed projects for warranty carousel
+        const { data: completed } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('customer_phone', userPhone)
+          .in('status', ['completed', 'handover'])
+          .not('date_completed', 'is', null)
+          .order('date_completed', { ascending: false });
+
+        if (completed && completed.length > 0) {
+          setCompletedProjects(completed);
         }
 
         const [bookings, orders] = await Promise.all([
@@ -82,21 +98,42 @@ export default function ClientDashboard() {
     router.push('/login');
   };
 
-  const getWarrantyData = () => {
-    if (!project?.date_completed) return { status: 'pending', daysLeft: 0 };
-    const completed = new Date(project.date_completed);
+  const getWarrantyData = (proj: any) => {
+    if (!proj?.date_completed) return { status: 'pending', daysLeft: 0, expiryDate: '', projectName: proj?.project_type || 'Project' };
+    const completed = new Date(proj.date_completed);
     const expiry = new Date(completed);
     expiry.setFullYear(expiry.getFullYear() + 2);
     const today = new Date();
     const diffDays = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    return { status: diffDays > 0 ? 'active' : 'expired', daysLeft: diffDays, expiryDate: expiry.toLocaleDateString() };
+    return {
+      status: diffDays > 0 ? 'active' : 'expired',
+      daysLeft: diffDays,
+      expiryDate: expiry.toLocaleDateString(),
+      projectName: proj?.project_type || 'Project',
+      customerName: proj?.customer_name || ''
+    };
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-[#f4f4f5]"><Loader2 className="w-8 h-8 animate-spin text-gray-400" /></div>;
 
   const currentStage = project ? (STAGE_MAP[project.status.toLowerCase()] || 1) : 0;
   const progressPercent = (currentStage / 5) * 100;
-  const warranty = getWarrantyData();
+
+  // Get warranty data for current carousel item
+  const currentWarrantyProject = completedProjects.length > 0 ? completedProjects[warrantyIndex] : project;
+  const warranty = getWarrantyData(currentWarrantyProject);
+
+  const nextWarranty = () => {
+    if (completedProjects.length > 1) {
+      setWarrantyIndex((prev) => (prev + 1) % completedProjects.length);
+    }
+  };
+
+  const prevWarranty = () => {
+    if (completedProjects.length > 1) {
+      setWarrantyIndex((prev) => (prev - 1 + completedProjects.length) % completedProjects.length);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f4f4f5]">
@@ -180,21 +217,87 @@ export default function ClientDashboard() {
                 <p className="text-sm text-gray-500 leading-snug">View and manage your account details.</p>
               </Link>
 
+              {/* Warranty Carousel */}
               <div className="group bg-white p-6 rounded-2xl border border-gray-200 shadow-sm relative overflow-hidden transition-all hover:shadow-md hover:border-gray-300">
                 <div className="flex justify-between items-start mb-4">
-                  <div className={`w-10 h-10 ${warranty.status === 'active' ? 'bg-blue-600' : 'bg-red-600'} text-white rounded-xl flex items-center justify-center`}><Clock className="w-5 h-5" /></div>
-                  <button onClick={() => setShowWarrantyTerms(!showWarrantyTerms)} className="text-gray-400 hover:text-slate-900 transition-colors"><Info className="w-4 h-4" /></button>
+                  <div className={`w-10 h-10 ${warranty.status === 'active' ? 'bg-blue-600' : warranty.status === 'expired' ? 'bg-red-600' : 'bg-gray-400'} text-white rounded-xl flex items-center justify-center`}>
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {completedProjects.length > 1 && (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={prevWarranty}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        >
+                          <ChevronLeft className="w-4 h-4 text-gray-400" />
+                        </button>
+                        <span className="text-[10px] text-gray-400 font-medium">
+                          {warrantyIndex + 1}/{completedProjects.length}
+                        </span>
+                        <button
+                          onClick={nextWarranty}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        >
+                          <ChevronRight className="w-4 h-4 text-gray-400" />
+                        </button>
+                      </div>
+                    )}
+                    <button onClick={() => setShowWarrantyTerms(!showWarrantyTerms)} className="text-gray-400 hover:text-slate-900 transition-colors">
+                      <Info className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                <h3 className="text-base font-semibold text-slate-900 mb-1">Warranty & Care</h3>
-                {warranty.status === 'active' ? (
-                  <div className="space-y-1"><p className="text-xs text-gray-500">Coverage ends {warranty.expiryDate}</p><p className="text-lg font-bold text-slate-900">{warranty.daysLeft} <span className="text-xs font-medium text-gray-400">Days Left</span></p></div>
-                ) : warranty.status === 'expired' ? (
-                  <div className="space-y-3"><p className="text-xs text-red-500 font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> Protection Expired</p><button className="w-full bg-slate-900 text-white py-2 rounded-lg text-xs font-semibold hover:bg-slate-800 transition-all">Renew for 400 SAR</button></div>
-                ) : <p className="text-xs text-gray-400 italic">Pending completion</p>}
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={warrantyIndex}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <h3 className="text-base font-semibold text-slate-900 mb-1">Warranty & Care</h3>
+                    {completedProjects.length > 0 && (
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-2">
+                        {warranty.projectName} {warranty.customerName && `• ${warranty.customerName}`}
+                      </p>
+                    )}
+                    {warranty.status === 'active' ? (
+                      <div className="space-y-1">
+                        <p className="text-xs text-gray-500">Coverage ends {warranty.expiryDate}</p>
+                        <p className="text-lg font-bold text-slate-900">
+                          {warranty.daysLeft} <span className="text-xs font-medium text-gray-400">Days Left</span>
+                        </p>
+                      </div>
+                    ) : warranty.status === 'expired' ? (
+                      <div className="space-y-3">
+                        <p className="text-xs text-red-500 font-medium flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" /> Protection Expired
+                        </p>
+                        <button className="w-full bg-slate-900 text-white py-2 rounded-lg text-xs font-semibold hover:bg-slate-800 transition-all">
+                          Renew for 400 SAR
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-400 italic">Pending completion</p>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+
                 {showWarrantyTerms && (
                   <div className="absolute inset-0 bg-white p-6 z-20 border-t-2 border-blue-600">
-                    <div className="flex justify-between items-center mb-3"><h4 className="text-[10px] font-bold uppercase text-slate-900">Warranty Rules</h4><button onClick={() => setShowWarrantyTerms(false)}><X className="w-4 h-4 text-gray-400" /></button></div>
-                    <ul className="text-[9px] text-gray-600 space-y-2 leading-tight"><li>1. 2-Year Warranty: Covers hardware & software stability.</li><li>2. Void Conditions: Void if opened or due to misuse.</li><li>3. Scope: No unauthorized user configuration corruption.</li></ul>
+                    <div className="flex justify-between items-center mb-3">
+                      <h4 className="text-[10px] font-bold uppercase text-slate-900">Warranty Rules</h4>
+                      <button onClick={() => setShowWarrantyTerms(false)}>
+                        <X className="w-4 h-4 text-gray-400" />
+                      </button>
+                    </div>
+                    <ul className="text-[9px] text-gray-600 space-y-2 leading-tight">
+                      <li>1. 2-Year Warranty: Covers hardware & software stability.</li>
+                      <li>2. Void Conditions: Void if opened or due to misuse.</li>
+                      <li>3. Scope: No unauthorized user configuration corruption.</li>
+                    </ul>
                   </div>
                 )}
               </div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter, useParams } from 'next/navigation';
 import {
-  Loader2, ArrowLeft, CheckCircle, Download, ShieldCheck, LogOut, Check, X
+  Loader2, ArrowLeft, CheckCircle, Download, ShieldCheck, LogOut, Check, X, Clock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -19,6 +19,9 @@ export default function ProposalDetailPage() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showAcceptConfirm, setShowAcceptConfirm] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
+  const [showRejectConfirm, setShowRejectConfirm] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   useEffect(() => {
     async function loadQuote() {
@@ -120,7 +123,34 @@ export default function ProposalDetailPage() {
     }
   };
 
+  const handleRejectQuote = async () => {
+    if (!rejectionReason.trim()) {
+      alert('Please provide a reason for rejection.');
+      return;
+    }
+    setIsRejecting(true);
+    try {
+      const { error } = await supabase
+        .from('quotes')
+        .update({ status: 'rejected', rejection_reason: rejectionReason.trim() })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setQuote({ ...quote, status: 'rejected', rejection_reason: rejectionReason.trim() });
+      setShowRejectConfirm(false);
+      setRejectionReason('');
+    } catch (error) {
+      console.error('Error rejecting quote:', error);
+      alert('Failed to reject quotation. Please try again.');
+    } finally {
+      setIsRejecting(false);
+    }
+  };
+
   if (loading) return <div className="h-screen flex items-center justify-center bg-[#f4f4f5]"><Loader2 className="w-8 h-8 animate-spin text-gray-400" /></div>;
+
+  const isExpired = quote?.expiry_date && new Date(quote.expiry_date) < new Date() && quote.status !== 'accepted';
 
   return (
     <div className="min-h-screen bg-[#f4f4f5]">
@@ -209,26 +239,56 @@ export default function ProposalDetailPage() {
         {/* --- RIGHT: PRICING SIDEBAR --- */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl p-6 border border-gray-200 sticky top-6">
-            <p className="text-xs font-medium text-green-600 mb-1">Investment Total</p>
-            <div className="flex items-baseline gap-1.5 mb-6">
-                <h2 className="text-3xl font-semibold text-slate-900">
+            <p className={`text-xs font-medium mb-1 ${isExpired ? 'text-orange-500' : 'text-green-600'}`}>
+              {isExpired ? 'Quotation Expired' : 'Investment Total'}
+            </p>
+            <div className="flex items-baseline gap-1.5 mb-4">
+                <h2 className={`text-3xl font-semibold ${isExpired ? 'text-gray-400' : 'text-slate-900'}`}>
                     {Math.round(quote.grand_total).toLocaleString()}
                 </h2>
                 <span className="text-sm text-gray-500">SAR</span>
             </div>
+
+            {/* Expiry Notice */}
+            {quote.expiry_date && quote.status !== 'accepted' && (
+              <div className={`mb-4 p-3 rounded-xl text-sm flex items-center gap-2 ${isExpired ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-gray-50 text-gray-600 border border-gray-200'}`}>
+                <Clock className="w-4 h-4 flex-shrink-0" />
+                {isExpired ? (
+                  <span>This quotation expired on {new Date(quote.expiry_date).toLocaleDateString()}</span>
+                ) : (
+                  <span>Valid until {new Date(quote.expiry_date).toLocaleDateString()}</span>
+                )}
+              </div>
+            )}
 
             <div className="space-y-3">
                 {quote.status === 'accepted' ? (
                   <div className="w-full bg-green-50 text-green-700 py-3 rounded-xl font-medium flex items-center justify-center gap-2 text-sm border border-green-200">
                       <CheckCircle className="w-4 h-4" /> Proposal Accepted
                   </div>
+                ) : quote.status === 'rejected' ? (
+                  <div className="w-full bg-red-50 text-red-700 py-3 rounded-xl font-medium flex items-center justify-center gap-2 text-sm border border-red-200">
+                      <X className="w-4 h-4" /> Proposal Rejected
+                  </div>
+                ) : isExpired ? (
+                  <div className="w-full bg-orange-50 text-orange-700 py-3 rounded-xl font-medium flex items-center justify-center gap-2 text-sm border border-orange-200">
+                      <Clock className="w-4 h-4" /> Quotation Expired
+                  </div>
                 ) : (
-                  <button
-                    onClick={() => setShowAcceptConfirm(true)}
-                    className="w-full bg-green-600 text-white py-3 rounded-xl font-medium hover:bg-green-700 transition-all text-sm flex items-center justify-center gap-2"
-                  >
-                      <Check className="w-4 h-4" /> Accept Quotation
-                  </button>
+                  <>
+                    <button
+                      onClick={() => setShowAcceptConfirm(true)}
+                      className="w-full bg-green-600 text-white py-3 rounded-xl font-medium hover:bg-green-700 transition-all text-sm flex items-center justify-center gap-2"
+                    >
+                        <Check className="w-4 h-4" /> Accept Quotation
+                    </button>
+                    <button
+                      onClick={() => setShowRejectConfirm(true)}
+                      className="w-full bg-white text-red-600 py-3 rounded-xl font-medium hover:bg-red-50 transition-all text-sm flex items-center justify-center gap-2 border border-red-200"
+                    >
+                        <X className="w-4 h-4" /> Reject Quotation
+                    </button>
+                  </>
                 )}
 
                 <button
@@ -282,6 +342,58 @@ export default function ProposalDetailPage() {
                       >
                         {isAccepting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                         {isAccepting ? 'Accepting...' : 'Confirm'}
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Reject Confirmation Modal */}
+            <AnimatePresence>
+              {showRejectConfirm && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                  onClick={() => setShowRejectConfirm(false)}
+                >
+                  <motion.div
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.95, opacity: 0 }}
+                    className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <X className="w-6 h-6 text-red-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 text-center mb-2">Reject Quotation?</h3>
+                    <p className="text-sm text-gray-500 text-center mb-4">
+                      Please let us know why you're declining this proposal so we can improve our offerings.
+                    </p>
+                    <textarea
+                      value={rejectionReason}
+                      onChange={(e) => setRejectionReason(e.target.value)}
+                      placeholder="Please provide a reason for rejection..."
+                      className="w-full p-3 border border-gray-200 rounded-xl text-sm mb-4 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none resize-none"
+                      rows={3}
+                    />
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => { setShowRejectConfirm(false); setRejectionReason(''); }}
+                        className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all text-sm flex items-center justify-center gap-2"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleRejectQuote}
+                        disabled={isRejecting || !rejectionReason.trim()}
+                        className="flex-1 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                      >
+                        {isRejecting ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+                        {isRejecting ? 'Rejecting...' : 'Reject'}
                       </button>
                     </div>
                   </motion.div>

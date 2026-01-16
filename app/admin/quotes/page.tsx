@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { 
-  ArrowLeft, Plus, FileText, Loader2, Calendar, 
-  MoreVertical, CheckCircle, XCircle, ChevronDown, ChevronUp, RotateCcw, Filter, Download 
+import {
+  ArrowLeft, Plus, FileText, Loader2, Calendar,
+  MoreVertical, CheckCircle, XCircle, ChevronDown, ChevronUp, RotateCcw, Download, Pencil, Clock
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -22,20 +22,38 @@ export default function QuotesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [expandedQuote, setExpandedQuote] = useState<string | null>(null);
-  const [showArchived, setShowArchived] = useState(false); 
+  const [filterMode, setFilterMode] = useState<'active' | 'accepted' | 'expired'>('active');
 
-  useEffect(() => { fetchQuotes(); }, [showArchived]); 
+  useEffect(() => { fetchQuotes(); }, [filterMode]);
 
   const fetchQuotes = async () => {
     setIsLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push('/login'); return; }
     if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
+
     let query = supabase.from('quotes').select('*').order('created_at', { ascending: false });
-    if (showArchived) query = query.eq('status', 'accepted');
-    else query = query.neq('status', 'accepted');
+
+    if (filterMode === 'accepted') {
+      query = query.eq('status', 'accepted');
+    } else if (filterMode === 'expired') {
+      // Fetch quotes that are expired (expiry_date in past) and not accepted
+      query = query.neq('status', 'accepted').lt('expiry_date', new Date().toISOString());
+    } else {
+      // Active: not accepted and not expired (expiry_date is null or in future)
+      query = query.neq('status', 'accepted');
+    }
+
     const { data, error } = await query;
-    if (!error) setQuotes(data || []);
+
+    // For active filter, additionally filter out expired quotes on client side
+    let filteredData = data || [];
+    if (filterMode === 'active') {
+      const now = new Date();
+      filteredData = filteredData.filter(q => !q.expiry_date || new Date(q.expiry_date) > now);
+    }
+
+    if (!error) setQuotes(filteredData);
     setIsLoading(false);
   };
 
@@ -46,7 +64,14 @@ export default function QuotesPage() {
         if (existingProject) return alert('STOP: A project was already created for this quote!');
     }
     if (!confirm(`Mark this quote as ${newStatus}?`)) return;
-    const { error } = await supabase.from('quotes').update({ status: newStatus }).eq('id', quote.id);
+
+    // When accepting, clear the expiry_date since quote is now a project
+    const updateData: any = { status: newStatus };
+    if (newStatus === 'accepted') {
+      updateData.expiry_date = null;
+    }
+
+    const { error } = await supabase.from('quotes').update(updateData).eq('id', quote.id);
     if (newStatus === 'accepted' && !error) {
        await supabase.from('projects').insert([{ quote_id: quote.id, customer_name: quote.customer_name, customer_phone: quote.customer_phone, project_type: quote.project_type, status: 'preparation' }]);
       alert('Success! Project created and moved to the Board.');
@@ -121,13 +146,21 @@ export default function QuotesPage() {
             <Link href="/admin" className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-6 h-6" /></Link>
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10"><FileText className="w-6 h-6 text-white" /></div>
             <div>
-              <h1 className="font-bold text-xl tracking-tight text-white">{showArchived ? 'Accepted Archive' : 'Active Quotations'}</h1>
+              <h1 className="font-bold text-xl tracking-tight text-white">
+                {filterMode === 'accepted' ? 'Accepted Archive' : filterMode === 'expired' ? 'Expired Quotations' : 'Active Quotations'}
+              </h1>
               <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">Sales & Proposals</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-             <button onClick={() => setShowArchived(!showArchived)} className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${showArchived ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>
-               <Filter className="w-4 h-4" /> {showArchived ? 'Archive Active' : 'Filter Archive'}
+          <div className="flex items-center gap-2">
+             <button onClick={() => setFilterMode('active')} className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${filterMode === 'active' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>
+               Active
+             </button>
+             <button onClick={() => setFilterMode('accepted')} className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${filterMode === 'accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>
+               Accepted
+             </button>
+             <button onClick={() => setFilterMode('expired')} className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${filterMode === 'expired' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>
+               Expired
              </button>
              <Link href="/admin/quotes/create" className="bg-white text-black px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-gray-200 transition-all"><Plus className="w-4 h-4" /> New Quote</Link>
           </div>
@@ -141,7 +174,7 @@ export default function QuotesPage() {
         ) : quotes.length === 0 ? (
            <div className="text-center py-24 bg-white rounded-3xl border border-dashed border-gray-300">
              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4"><FileText className="w-8 h-8 text-gray-300" /></div>
-             <h3 className="text-lg font-bold">No {showArchived ? 'accepted' : 'active'} quotes</h3>
+             <h3 className="text-lg font-bold">No {filterMode === 'accepted' ? 'accepted' : filterMode === 'expired' ? 'expired' : 'active'} quotes</h3>
            </div>
         ) : (
           <div className="grid gap-4">
@@ -151,7 +184,23 @@ export default function QuotesPage() {
                 <div onClick={() => toggleExpand(quote.id)} className={`p-6 cursor-pointer flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all ${expandedQuote === quote.id ? 'rounded-t-2xl' : 'rounded-2xl'}`}>
                   <div className="flex items-start gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${quote.status === 'accepted' ? 'bg-green-100 text-green-600' : quote.status === 'rejected' ? 'bg-red-50 text-red-500' : 'bg-gray-100 text-gray-500'}`}><FileText className="w-6 h-6" /></div>
-                    <div><h3 className="font-bold text-lg text-gray-900">{quote.customer_name}</h3><div className="flex items-center gap-2 text-sm text-gray-500"><span className="capitalize">{quote.project_type}</span><span className="w-1 h-1 rounded-full bg-gray-300"></span><span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(quote.created_at).toLocaleDateString()}</span></div></div>
+                    <div>
+                      <h3 className="font-bold text-lg text-gray-900">{quote.customer_name}</h3>
+                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span className="capitalize">{quote.project_type}</span>
+                        <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                        <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(quote.created_at).toLocaleDateString()}</span>
+                        {quote.expiry_date && (
+                          <>
+                            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                            <span className={`flex items-center gap-1 ${new Date(quote.expiry_date) < new Date() ? 'text-orange-500' : 'text-gray-400'}`}>
+                              <Clock className="w-3 h-3" />
+                              {new Date(quote.expiry_date) < new Date() ? 'Expired' : `Expires ${new Date(quote.expiry_date).toLocaleDateString()}`}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                   <div className="flex items-center gap-4 ml-auto md:ml-0">
                     <div className="text-right hidden sm:block"><div className="text-xl font-black text-slate-900">SAR {quote.grand_total?.toLocaleString()}</div><div className={`text-[10px] font-bold uppercase tracking-wider text-right ${quote.status === 'accepted' ? 'text-green-600' : quote.status === 'rejected' ? 'text-red-500' : 'text-gray-400'}`}>{quote.status}</div></div>
@@ -167,6 +216,9 @@ export default function QuotesPage() {
                             </>
                           ) : (
                             <>
+                                {quote.status === 'draft' && (
+                                  <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/quotes/create?edit=${quote.id}`); }} className="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 text-blue-600 font-medium flex gap-2 border-b border-gray-100"><Pencil className="w-4 h-4" /> Edit Quote</button>
+                                )}
                                 <button onClick={(e) => { e.stopPropagation(); handleStatusUpdate(quote, 'accepted'); }} className="w-full text-left px-4 py-3 text-sm hover:bg-green-50 text-green-600 font-bold flex gap-2"><CheckCircle className="w-4 h-4" /> Accept & Create Project</button>
                                 {quote.status !== 'rejected' && (<button onClick={(e) => { e.stopPropagation(); handleStatusUpdate(quote, 'rejected'); }} className="w-full text-left px-4 py-3 text-sm hover:bg-red-50 text-red-600 flex gap-2"><XCircle className="w-4 h-4" /> Reject Quote</button>)}
                             </>

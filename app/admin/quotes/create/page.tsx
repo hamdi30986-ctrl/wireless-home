@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Trash2, Calculator, Search, ArrowLeft, Save, Loader2 } from 'lucide-react';
 
 const supabase = createClient(
@@ -23,16 +23,19 @@ type QuoteItem = {
 
 export default function CreateQuotePage() {
   const router = useRouter();
-  
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('edit');
+
   // --- STATE ---
   const [customer, setCustomer] = useState({ name: '', phone: '', type: 'villa' });
   const [items, setItems] = useState<QuoteItem[]>([]);
-  const [products, setProducts] = useState<any[]>([]); 
+  const [products, setProducts] = useState<any[]>([]);
   const [isProductPickerOpen, setIsProductPickerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  // --- 1. FETCH INVENTORY ---
+  // --- 1. FETCH INVENTORY & LOAD QUOTE IF EDITING ---
   useEffect(() => {
     const loadData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -41,9 +44,33 @@ export default function CreateQuotePage() {
 
       const { data } = await supabase.from('products').select('id, name, cost_price, price');
       if (data) setProducts(data);
+
+      // If editing an existing quote, load its data
+      if (editId) {
+        const { data: quote, error } = await supabase
+          .from('quotes')
+          .select('*')
+          .eq('id', editId)
+          .single();
+
+        if (quote && !error) {
+          setIsEditing(true);
+          setCustomer({
+            name: quote.customer_name || '',
+            phone: quote.customer_phone || '',
+            type: quote.project_type || 'villa'
+          });
+          // Load items with proper IDs
+          const loadedItems = (quote.items || []).map((item: any, idx: number) => ({
+            ...item,
+            id: item.id || `loaded-${idx}`
+          }));
+          setItems(loadedItems);
+        }
+      }
     };
     loadData();
-  }, [router]);
+  }, [router, editId]);
 
   // --- 2. THE GOLDEN FORMULA ENGINE ---
   const calculateSellingPrice = (baseCost: number) => {
@@ -142,11 +169,15 @@ export default function CreateQuotePage() {
     setIsSaving(true);
 
     try {
-      const quoteData = {
+      // Calculate expiry date (1 month from now)
+      const expiryDate = new Date();
+      expiryDate.setMonth(expiryDate.getMonth() + 1);
+
+      const quoteData: any = {
         customer_name: customer.name,
         customer_phone: customer.phone,
         project_type: customer.type,
-        items: items, 
+        items: items,
         total_cost: totalInternalCost || 0,
         total_profit: estimatedProfit || 0,
         vat_amount: vatAmount || 0,
@@ -154,10 +185,18 @@ export default function CreateQuotePage() {
         status: 'draft'
       };
 
-      const { error } = await supabase.from('quotes').insert([quoteData]);
-      if (error) throw error;
+      if (isEditing && editId) {
+        // UPDATE existing quote (don't change expiry_date on edit)
+        const { error } = await supabase.from('quotes').update(quoteData).eq('id', editId);
+        if (error) throw error;
+      } else {
+        // INSERT new quote with expiry_date
+        quoteData.expiry_date = expiryDate.toISOString();
+        const { error } = await supabase.from('quotes').insert([quoteData]);
+        if (error) throw error;
+      }
 
-      router.push('/admin/quotes'); 
+      router.push('/admin/quotes');
 
     } catch (error: any) {
       console.error(error);
@@ -175,8 +214,8 @@ export default function CreateQuotePage() {
           
           <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
             <div>
-               <h1 className="text-xl font-bold text-gray-900">New Quotation</h1>
-               <p className="text-xs text-gray-500">Create a proposal for a new project</p>
+               <h1 className="text-xl font-bold text-gray-900">{isEditing ? 'Edit Quotation' : 'New Quotation'}</h1>
+               <p className="text-xs text-gray-500">{isEditing ? 'Update the existing proposal' : 'Create a proposal for a new project'}</p>
             </div>
             <div className="flex gap-3 relative z-50">
                <button 
@@ -193,7 +232,7 @@ export default function CreateQuotePage() {
                  className={`px-6 py-2 bg-black text-white rounded-lg text-sm font-bold hover:bg-gray-800 shadow-lg transition-all flex items-center gap-2 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
                >
                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin"/> : <Save className="w-4 h-4" />}
-                 {isSaving ? 'Saving...' : 'Save Quote'}
+                 {isSaving ? 'Saving...' : (isEditing ? 'Update Quote' : 'Save Quote')}
                </button>
             </div>
           </div>
