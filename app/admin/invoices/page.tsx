@@ -27,8 +27,9 @@ export default function InvoicesPage() {
   useEffect(() => { fetchInvoices(); }, []);
 
   const fetchInvoices = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { router.push('/login'); return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push('/login'); return; }
+    if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
     const { data, error } = await supabase.from('invoices').select('*, projects ( customer_name, project_type, customer_phone )').order('created_at', { ascending: false });
     if (!error && data) { setInvoices(data); calculateStats(data); }
     setIsLoading(false);

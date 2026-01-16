@@ -61,9 +61,10 @@ export default function AdminOrders() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) router.push('/login');
-      else fetchData();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push('/login'); return; }
+      if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
+      fetchData();
     };
     checkUser();
   }, [router]);

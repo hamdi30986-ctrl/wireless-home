@@ -28,11 +28,12 @@ export default function QuotesPage() {
 
   const fetchQuotes = async () => {
     setIsLoading(true);
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { router.push('/login'); return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push('/login'); return; }
+    if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
     let query = supabase.from('quotes').select('*').order('created_at', { ascending: false });
     if (showArchived) query = query.eq('status', 'accepted');
-    else query = query.neq('status', 'accepted'); 
+    else query = query.neq('status', 'accepted');
     const { data, error } = await query;
     if (!error) setQuotes(data || []);
     setIsLoading(false);

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, Layout, History, User, CheckCircle, 
-  ChevronDown, ChevronUp, Package, Calendar, Ban, Clock, Timer, DollarSign, X 
+  ChevronDown, ChevronUp, Package, Calendar, Ban, Clock, Timer, DollarSign, X, Key, Wifi, Globe, Lock 
 } from 'lucide-react';
 
 const supabase = createClient(
@@ -29,15 +29,22 @@ export default function ProjectsPage() {
   const [viewMode, setViewMode] = useState<'board' | 'history'>('board');
   const [historyFilter, setHistoryFilter] = useState<'completed' | 'terminated'>('completed');
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
+  
+  // Invoice State
   const [invoiceModal, setInvoiceModal] = useState<{ open: boolean, project: any | null }>({ open: false, project: null });
   const [invoiceType, setInvoiceType] = useState('down_payment');
   const [customAmount, setCustomAmount] = useState('');
 
+  // Credentials State
+  const [credModal, setCredModal] = useState<{ open: boolean, project: any | null }>({ open: false, project: null });
+  const [creds, setCreds] = useState({ ha_url: '', username: '', password: '', wifi_ssid: '', wifi_pass: '' });
+
   useEffect(() => { fetchProjects(); }, []);
 
   const fetchProjects = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { router.push('/login'); return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push('/login'); return; }
+    if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
     const { data, error } = await supabase.from('projects').select('*, quotes ( items, grand_total, total_cost, total_profit )').order('created_at', { ascending: false });
     if (!error && data) setProjects(data);
     setIsLoading(false);
@@ -84,6 +91,34 @@ export default function ProjectsPage() {
     if (error) { alert('Error: ' + error.message); } else { alert('Success! Invoice created.'); setInvoiceModal({ open: false, project: null }); }
   };
 
+  const openCredModal = (project: any) => {
+    setCredModal({ open: true, project });
+    const existing = project.credentials || {};
+    setCreds({
+        ha_url: existing.ha_url || '',
+        username: existing.username || 'admin',
+        password: existing.password || '',
+        wifi_ssid: existing.wifi_ssid || '',
+        wifi_pass: existing.wifi_pass || ''
+    });
+  };
+
+  const saveCredentials = async () => {
+    if (!credModal.project) return;
+    const { error } = await supabase
+        .from('projects')
+        .update({ credentials: creds })
+        .eq('id', credModal.project.id);
+
+    if (error) {
+        alert('Failed to save credentials: ' + error.message);
+    } else {
+        setProjects(projects.map(p => p.id === credModal.project.id ? { ...p, credentials: creds } : p));
+        alert('Credentials updated safely in the Vault.');
+        setCredModal({ open: false, project: null });
+    }
+  };
+
   const toggleExpand = (id: string) => { if (expandedProject === id) setExpandedProject(null); else setExpandedProject(id); };
   const getDuration = (start: string | null, end: string | null) => {
     if (!start || !end) return '0 h';
@@ -99,7 +134,6 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-[#f4f4f5] font-sans text-slate-900">
       
-      {/* LUXURY HEADER (Fixed Width to Match Inventory) */}
       <nav className="bg-[#0d1117] border-b border-gray-800 sticky top-0 z-40 shadow-xl">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -117,12 +151,11 @@ export default function ProjectsPage() {
         </div>
       </nav>
 
-      {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-6 py-10">
         
-        {/* --- VIEW 1: BOARD (Scrollable Horizontal Area) --- */}
+        {/* --- VIEW 1: BOARD --- */}
         {viewMode === 'board' && (
-          <div className="overflow-x-auto pb-6 -mx-6 px-6"> {/* Negative margin allows full scroll width while keeping alignment */}
+          <div className="overflow-x-auto pb-6 -mx-6 px-6">
             <div className="grid grid-cols-5 gap-3 min-w-[1100px] items-start animate-in fade-in">
               {Object.entries(STAGES).map(([stageKey, config]) => (
                 <div key={stageKey} className="flex flex-col gap-3">
@@ -140,8 +173,12 @@ export default function ProjectsPage() {
                           <div className="space-y-3">
                             <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-lg border border-gray-100"><User className="w-3 h-3 text-gray-400" /><select className="text-xs bg-transparent border-none w-full focus:ring-0 cursor-pointer font-medium text-gray-700 p-0" value={project.technician_name || ''} onChange={(e) => updateTechnician(project.id, e.target.value)}><option value="">Select Tech...</option><option value="Hamdi">Hamdi</option><option value="Maher">Maher</option></select></div>
                             <div className="flex items-center justify-between pt-1 gap-1">
-                              <button onClick={() => openInvoiceModal(project)} title="Create Invoice" className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-transparent hover:border-green-200"><DollarSign className="w-4 h-4" /></button>
-                              <button onClick={() => terminateProject(project.id)} title="Stop" className="p-1.5 text-red-300 hover:bg-red-50 hover:text-red-600 rounded-lg"><Ban className="w-4 h-4" /></button>
+                              {/* BUTTONS */}
+                              <div className="flex gap-1">
+                                <button onClick={() => openInvoiceModal(project)} title="Create Invoice" className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-transparent hover:border-green-200"><DollarSign className="w-4 h-4" /></button>
+                                <button onClick={() => openCredModal(project)} title="Manage Credentials" className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors border border-transparent hover:border-purple-200"><Key className="w-4 h-4" /></button>
+                                <button onClick={() => terminateProject(project.id)} title="Stop" className="p-1.5 text-red-300 hover:bg-red-50 hover:text-red-600 rounded-lg"><Ban className="w-4 h-4" /></button>
+                              </div>
                               <div className="flex gap-1 ml-auto">
                                   {stageKey !== 'preparation' && <button onClick={() => updateStage(project, getPrevStage(stageKey))} className="px-2 py-1 text-[10px] font-bold text-gray-400 hover:bg-gray-100 rounded border border-gray-200">Back</button>}
                                   {stageKey === 'handover' ? (
@@ -232,6 +269,60 @@ export default function ProjectsPage() {
                 </div>
             </div>
         )}
+
+        {/* --- CREDENTIALS MODAL (THE VAULT) --- */}
+        {credModal.open && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
+                <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-900 text-white">
+                        <div className="flex items-center gap-2">
+                            <Key className="w-5 h-5 text-purple-400" />
+                            <h3 className="font-bold">Project Vault</h3>
+                        </div>
+                        <button onClick={() => setCredModal({ open: false, project: null })}><X className="w-5 h-5 text-gray-400 hover:text-white" /></button>
+                    </div>
+                    <div className="p-6 space-y-4">
+                        <div className="bg-purple-50 p-3 rounded-lg text-xs text-purple-800 border border-purple-100 mb-4">
+                            These credentials will be visible to the client in their "My Home" dashboard. Ensure they are accurate.
+                        </div>
+
+                        <div>
+                            <label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><Globe className="w-3 h-3" /> Home Assistant URL</label>
+                            <input type="text" className="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="http://192.168.x.x:8123" value={creds.ha_url} onChange={(e) => setCreds({ ...creds, ha_url: e.target.value })} />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><User className="w-3 h-3" /> Username</label>
+                                <input type="text" className="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="admin" value={creds.username} onChange={(e) => setCreds({ ...creds, username: e.target.value })} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><Lock className="w-3 h-3" /> Password</label>
+                                <input type="text" className="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="******" value={creds.password} onChange={(e) => setCreds({ ...creds, password: e.target.value })} />
+                            </div>
+                        </div>
+
+                        <div className="border-t border-gray-100 my-4 pt-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><Wifi className="w-3 h-3" /> WiFi SSID</label>
+                                    <input type="text" className="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="Network Name" value={creds.wifi_ssid} onChange={(e) => setCreds({ ...creds, wifi_ssid: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><Lock className="w-3 h-3" /> WiFi Password</label>
+                                    <input type="text" className="w-full p-3 border rounded-lg text-sm bg-gray-50" placeholder="******" value={creds.wifi_pass} onChange={(e) => setCreds({ ...creds, wifi_pass: e.target.value })} />
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onClick={saveCredentials} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2">
+                            <CheckCircle className="w-5 h-5" /> Save to Vault
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+
       </div>
     </div>
   );

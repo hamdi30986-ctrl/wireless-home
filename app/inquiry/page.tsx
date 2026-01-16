@@ -3,16 +3,19 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { supabase } from '@/lib/supabase'; // <--- Added Supabase Import
-import { 
-  ArrowLeft, 
-  Send, 
-  Package, 
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import {
+  ArrowLeft,
+  Send,
+  Package,
   CheckCircle,
   User,
   Mail,
   Phone,
   MessageSquare,
+  LogIn,
+  UserPlus,
 } from 'lucide-react';
 
 // ============================================
@@ -80,6 +83,8 @@ export default function InquiryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [continueAsGuest, setContinueAsGuest] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -87,6 +92,24 @@ export default function InquiryPage() {
     phone: '',
     notes: '',
   });
+
+  // Check if user is logged in
+  useEffect(() => {
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsLoggedIn(!!user);
+      if (user) {
+        // FIXED: Grabbing full_name from user_metadata (Supabase standard)
+        setFormData(prev => ({
+          ...prev,
+          name: user.user_metadata?.full_name || user.user_metadata?.name || prev.name,
+          email: user.email || prev.email,
+          phone: user.user_metadata?.phone || user.phone || prev.phone,
+        }));
+      }
+    }
+    checkAuth();
+  }, []);
 
   // Load items from sessionStorage
   useEffect(() => {
@@ -134,13 +157,10 @@ export default function InquiryPage() {
     setIsSubmitting(true);
 
     try {
-      // 1. Prepare Data for Supabase
       const orderData = {
         customer_name: formData.name,
         customer_email: formData.email,
         customer_phone: formData.phone,
-        // We bundle the items list AND the notes into the 'items' JSON column
-        // This preserves your database schema structure
         items: {
           requested_items: items,
           customer_notes: formData.notes
@@ -148,14 +168,12 @@ export default function InquiryPage() {
         status: 'pending'
       };
 
-      // 2. Send to Database
       const { error } = await supabase
         .from('orders')
         .insert([orderData]);
 
       if (error) throw error;
 
-      // 3. Success Handling
       setIsSubmitted(true);
       sessionStorage.removeItem('inquiryItems');
 
@@ -354,7 +372,6 @@ export default function InquiryPage() {
                         {(() => {
                           let itemImage = product.images?.[0] || '';
 
-                          // Type B: Gang + Color
                           if (product.gang && item.selectedGang) {
                             const gangObj = product.gang.find(g => g.value === item.selectedGang);
                             if (gangObj && item.selectedColor) {
@@ -362,12 +379,10 @@ export default function InquiryPage() {
                               itemImage = gangColorImg || itemImage;
                             }
                           }
-                          // Type A: Standalone color
                           else if (product.colors && item.selectedColor) {
                             const colorImg = product.colors.find(c => c.name === item.selectedColor)?.image;
                             itemImage = colorImg || itemImage;
                           }
-                          // Type
                           if (product.types && item.selectedType) {
                             const typeImg = product.types.find(t => t.value === item.selectedType)?.image;
                             itemImage = typeImg || itemImage;
@@ -401,69 +416,6 @@ export default function InquiryPage() {
                         <p style={{ fontSize: '12px', color: '#71717a', margin: '2px 0 0' }}>
                           {product.brand_name}
                         </p>
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
-                          {gangLabel && (
-                            <span
-                              style={{
-                                fontSize: '11px',
-                                fontWeight: 600,
-                                color: '#52525b',
-                                backgroundColor: '#e4e4e7',
-                                padding: '2px 8px',
-                                borderRadius: '4px',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                              }}
-                            >
-                              {gangLabel}
-                            </span>
-                          )}
-                          {item.selectedColor && (
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                fontSize: '11px',
-                                color: '#52525b',
-                                backgroundColor: '#f4f4f5',
-                                padding: '2px 8px',
-                                borderRadius: '4px',
-                              }}
-                            >
-                              <span
-                                style={{
-                                  width: '10px',
-                                  height: '10px',
-                                  borderRadius: '3px',
-                                  backgroundColor: (() => {
-                                    // Get color hex from gang colors or standalone colors
-                                    if (product.gang && item.selectedGang) {
-                                      const gangObj = product.gang.find(g => g.value === item.selectedGang);
-                                      return gangObj?.colors?.find(c => c.name === item.selectedColor)?.hex || '#ccc';
-                                    }
-                                    return product.colors?.find(c => c.name === item.selectedColor)?.hex || '#ccc';
-                                  })(),
-                                  border: '1px solid #e4e4e7',
-                                }}
-                              />
-                              {item.selectedColor}
-                            </span>
-                          )}
-                          {typeLabel && (
-                            <span
-                              style={{
-                                fontSize: '11px',
-                                color: '#52525b',
-                                backgroundColor: '#f4f4f5',
-                                padding: '2px 8px',
-                                borderRadius: '4px',
-                              }}
-                            >
-                              {typeLabel}
-                            </span>
-                          )}
-                        </div>
                       </div>
 
                       <div
@@ -485,8 +437,90 @@ export default function InquiryPage() {
             )}
           </div>
 
+          {/* Login/Guest Prompt */}
+          {items.length > 0 && isLoggedIn === false && !continueAsGuest && (
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '20px',
+                padding: '48px 32px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                textAlign: 'center',
+                border: '1px solid #f4f4f5'
+              }}
+            >
+              <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#18181b', marginBottom: '8px' }}>
+                How would you like to continue?
+              </h2>
+              <p style={{ fontSize: '14px', color: '#71717a', marginBottom: '32px' }}>
+                Sign in to track your orders and get faster checkout
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '320px', margin: '0 auto' }}>
+                {/* UPDATED: Added redirect parameter to login link */}
+                <Link
+                  href="/login?redirect=/inquiry"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '16px 24px',
+                    borderRadius: '12px',
+                    backgroundColor: '#18181b',
+                    color: '#ffffff',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <LogIn style={{ width: '18px', height: '18px' }} />
+                  Login to Your Account
+                </Link>
+
+                <Link
+                  href="/register"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '16px 24px',
+                    borderRadius: '12px',
+                    backgroundColor: '#f4f4f5',
+                    color: '#18181b',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                    border: '1px solid #e4e4e7',
+                  }}
+                >
+                  <UserPlus style={{ width: '18px', height: '18px' }} />
+                  Create New Account
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => setContinueAsGuest(true)}
+                  style={{
+                    padding: '14px 24px',
+                    color: '#71717a',
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Continue as Guest
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Contact Form */}
-          {items.length > 0 && (
+          {items.length > 0 && (isLoggedIn || continueAsGuest) && (
             <form onSubmit={handleSubmit}>
               <div
                 style={{
@@ -501,7 +535,6 @@ export default function InquiryPage() {
                 </h2>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Name */}
                   <div>
                     <label
                       htmlFor="name"
@@ -533,13 +566,11 @@ export default function InquiryPage() {
                         border: '1px solid #e4e4e7',
                         fontSize: '14px',
                         outline: 'none',
-                        transition: 'border-color 0.2s',
                         boxSizing: 'border-box',
                       }}
                     />
                   </div>
 
-                  {/* Email */}
                   <div>
                     <label
                       htmlFor="email"
@@ -571,13 +602,11 @@ export default function InquiryPage() {
                         border: '1px solid #e4e4e7',
                         fontSize: '14px',
                         outline: 'none',
-                        transition: 'border-color 0.2s',
                         boxSizing: 'border-box',
                       }}
                     />
                   </div>
 
-                  {/* Phone */}
                   <div>
                     <label
                       htmlFor="phone"
@@ -601,7 +630,7 @@ export default function InquiryPage() {
                       required
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="+966 5X XXX XXXX"
+                      placeholder="05X XXX XXXX"
                       style={{
                         width: '100%',
                         padding: '14px 16px',
@@ -609,13 +638,11 @@ export default function InquiryPage() {
                         border: '1px solid #e4e4e7',
                         fontSize: '14px',
                         outline: 'none',
-                        transition: 'border-color 0.2s',
                         boxSizing: 'border-box',
                       }}
                     />
                   </div>
 
-                  {/* Notes */}
                   <div>
                     <label
                       htmlFor="notes"
@@ -638,7 +665,7 @@ export default function InquiryPage() {
                       rows={4}
                       value={formData.notes}
                       onChange={handleInputChange}
-                      placeholder="Any specific requirements, questions, or project details..."
+                      placeholder="Any requirements..."
                       style={{
                         width: '100%',
                         padding: '14px 16px',
@@ -646,7 +673,6 @@ export default function InquiryPage() {
                         border: '1px solid #e4e4e7',
                         fontSize: '14px',
                         outline: 'none',
-                        transition: 'border-color 0.2s',
                         resize: 'vertical',
                         fontFamily: 'inherit',
                         boxSizing: 'border-box',
@@ -655,7 +681,6 @@ export default function InquiryPage() {
                   </div>
                 </div>
 
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -675,46 +700,16 @@ export default function InquiryPage() {
                     justifyContent: 'center',
                     gap: '8px',
                     opacity: isSubmitting ? 0.7 : 1,
-                    transition: 'opacity 0.2s',
                   }}
                 >
-                  {isSubmitting ? (
-                    <>
-                      <span
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          border: '2px solid rgba(255,255,255,0.3)',
-                          borderTopColor: '#ffffff',
-                          borderRadius: '50%',
-                          animation: 'spin 1s linear infinite',
-                        }}
-                      />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <Send style={{ width: '18px', height: '18px' }} />
-                      Submit Inquiry
-                    </>
-                  )}
+                  {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
                 </button>
-
-                <p style={{ textAlign: 'center', fontSize: '12px', color: '#a1a1aa', marginTop: '12px' }}>
-                  We typically respond within 24 hours
-                </p>
               </div>
             </form>
           )}
         </div>
       </div>
-
-      {/* Spinner Animation */}
-      <style jsx global>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+      <style jsx global>{` @keyframes spin { to { transform: rotate(360deg); } } `}</style>
     </div>
   );
 }

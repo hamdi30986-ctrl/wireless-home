@@ -35,8 +35,9 @@ export default function CreateQuotePage() {
   // --- 1. FETCH INVENTORY ---
   useEffect(() => {
     const loadData = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { router.push('/login'); return; }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push('/login'); return; }
+      if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
 
       const { data } = await supabase.from('products').select('id, name, cost_price, price');
       if (data) setProducts(data);

@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import {
   CheckCircle2, MapPin, User, Building2,
   ChevronDown, Sparkles, ArrowRight, Star,
-  Home, Building, HardHat, Check, Mail
+  Home, Building, HardHat, Check, Mail, LogIn, UserPlus,
+  Loader2, Info, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
-import { submitBooking } from '../actions'; // IMPORT ADDED
+import { submitBooking } from '../actions';
+import { supabase } from '@/lib/supabase';
 
 // --- CONFIGURATION ---
 const mapContainerStyle = { width: '100%', height: '100%' };
@@ -24,7 +26,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function BookingPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const projectTypes = [
     { value: 'villa', label: t.book.form.villa, icon: Home },
@@ -39,6 +41,26 @@ export default function BookingPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [continueAsGuest, setContinueAsGuest] = useState(false);
+
+  // Check if user is logged in
+  useEffect(() => {
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsLoggedIn(!!user);
+      if (user) {
+        // FIXED: Using full_name or name from metadata
+        setFormData(prev => ({
+          ...prev,
+          name: user.user_metadata?.full_name || user.user_metadata?.name || prev.name,
+          email: user.email || prev.email,
+          phone: user.user_metadata?.phone || user.phone || prev.phone,
+        }));
+      }
+    }
+    checkAuth();
+  }, []);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -61,7 +83,6 @@ export default function BookingPage() {
     setIsDropdownOpen(false);
   };
 
-  // UPDATED: Submit handler now calls the Server Action
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -109,7 +130,6 @@ export default function BookingPage() {
             className="p-10 md:p-14 lg:p-16 text-white flex flex-col justify-between relative overflow-hidden"
             style={{ background: 'linear-gradient(135deg, #e11d48 0%, #9333ea 100%)' }}
           >
-            {/* Pattern Overlay */}
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
             
             <motion.div
@@ -149,119 +169,134 @@ export default function BookingPage() {
             </motion.div>
           </div>
 
-          {/* Right Side: Form */}
-          <motion.div
-            className="p-10 md:p-14 lg:p-16 bg-white"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.book.heading}</h2>
-            <p className="text-gray-500 mb-8 italic">{t.book.subheading}</p>
-
-            <a href="https://wa.me/966598904919" target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 w-full px-6 py-4 mb-8 text-white font-bold rounded-xl transition-all hover:opacity-90 shadow-lg shadow-green-500/20"
-              style={{ backgroundColor: '#25D366' }}>
-              <WhatsAppIcon className="w-6 h-6" /> {t.home.finalCta.button2}
-            </a>
-
-            <div className="relative flex items-center gap-4 mb-8">
-              <div className="flex-1 h-px bg-gray-100" /><span className="text-[10px] font-bold text-gray-400">OR USE FORM</span><div className="flex-1 h-px bg-gray-100" />
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <motion.div
-                className="grid md:grid-cols-2 gap-4"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input type="text" name="name" required value={formData.name} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl outline-none" placeholder={t.book.form.name} />
+          {/* Right Side: Form / Auth Prompt */}
+          <div className="p-10 md:p-14 lg:p-16 bg-white overflow-y-auto">
+            {/* CLAUDE-STYLE AUTH PROMPT */}
+            {isLoggedIn === false && !continueAsGuest ? (
+              <div className="h-full flex flex-col justify-center text-center">
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">
+                  {language === 'ar' ? 'كيف تريد المتابعة؟' : 'How would you like to continue?'}
+                </h3>
+                <p className="text-gray-500 mb-8">
+                  {language === 'ar' ? 'سجل دخولك لتتبع طلباتك' : 'Sign in to track your bookings and get updates'}
+                </p>
+                
+                <div className="flex flex-col gap-4 max-w-xs mx-auto w-full">
+                  <Link
+                    href="/login?redirect=/book"
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-[#111318] text-white font-bold rounded-xl hover:bg-black transition-all"
+                  >
+                    <LogIn className="w-5 h-5" />
+                    {language === 'ar' ? 'تسجيل الدخول' : 'Login to Your Account'}
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-white text-slate-900 border border-gray-200 font-bold rounded-xl hover:bg-gray-50 transition-all"
+                  >
+                    <UserPlus className="w-5 h-5" />
+                    {language === 'ar' ? 'إنشاء حساب جديد' : 'Create New Account'}
+                  </Link>
+                  <button 
+                    onClick={() => setContinueAsGuest(true)}
+                    className="text-gray-400 hover:text-slate-900 text-sm font-medium transition-colors underline pt-2"
+                  >
+                    {language === 'ar' ? 'متابعة كضيف' : 'Continue as Guest'}
+                  </button>
                 </div>
-                <div className="relative flex">
-                  <div className="px-4 flex items-center bg-gray-100 border border-r-0 border-gray-200 rounded-l-xl text-gray-500 font-medium">+966</div>
-                  <input type="tel" name="phone" required maxLength={9} value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-r-xl outline-none" placeholder={t.book.form.phone} />
-                </div>
-              </motion.div>
-
+              </div>
+            ) : (
               <motion.div
-                className="relative"
                 initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
               >
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl outline-none" placeholder={t.book.form.email} />
-              </motion.div>
-
-              <motion.div
-                className="relative"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="w-full flex items-center justify-between px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-left">
-                  <div className="flex items-center gap-3">
-                    {selectedProject ? <><selectedProject.icon className="w-5 h-5 text-[#0066FF]" /><span>{selectedProject.label}</span></> : <><Building2 className="w-5 h-5 text-gray-400" /><span>{t.book.form.selectProject}</span></>}
-                  </div>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {isDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 overflow-hidden">
-                    {projectTypes.map((type) => (
-                      <button key={type.value} type="button" onClick={() => handleProjectTypeSelect(type.value)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-gray-700">
-                        <type.icon className="w-5 h-5" /> {type.label}
-                        {formData.projectType === type.value && <Check className="w-4 h-4 ml-auto text-[#0066FF]" />}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.7 }}
-              >
-                <label className="text-sm font-semibold text-gray-700 flex justify-between">{t.book.form.projectType} {formData.lat && <span className="text-emerald-500 text-[10px]">PIN DROPPED ✓</span>}</label>
-                <div className="relative aspect-square w-full bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden">
-                  {isLoaded ? (
-                    <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={12} onClick={onMapClick} options={{ streetViewControl: false, mapTypeControl: false, fullscreenControl: false }}>
-                      {formData.lat && formData.lng && <Marker position={{ lat: formData.lat, lng: formData.lng }} />}
-                    </GoogleMap>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-2">
-                      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                      <span className="text-xs">Loading Map...</span>
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900">{t.book.heading}</h2>
+                  {isLoggedIn && (
+                    <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
+                      <Check className="w-3 h-3 text-blue-600" />
+                      <span className="text-[10px] font-bold text-blue-600 uppercase">Auto-filled</span>
                     </div>
                   )}
                 </div>
-                <p className="text-[10px] text-gray-400 text-center uppercase tracking-widest">{t.book.form.location}</p>
-              </motion.div>
 
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-4 bg-[#0066FF] text-white font-bold rounded-xl shadow-lg hover:bg-[#0052CC] transition-all disabled:opacity-50"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-              >
-                {isSubmitting ? t.book.form.submitting : t.book.form.submit}
-              </motion.button>
-            </form>
-          </motion.div>
+                <a href="https://wa.me/966598904919" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 w-full px-6 py-4 mb-8 text-white font-bold rounded-xl transition-all hover:opacity-90 shadow-lg shadow-green-500/20"
+                  style={{ backgroundColor: '#25D366' }}>
+                  <WhatsAppIcon className="w-6 h-6" /> {t.home.finalCta.button2}
+                </a>
+
+                <div className="relative flex items-center gap-4 mb-8">
+                  <div className="flex-1 h-px bg-gray-100" />
+                  <span className="text-[10px] font-bold text-gray-400 uppercase">Or use form</span>
+                  <div className="flex-1 h-px bg-gray-100" />
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input type="text" name="name" required value={formData.name} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl outline-none" placeholder={t.book.form.name} />
+                    </div>
+                    <div className="relative flex">
+                      <div className="px-4 flex items-center bg-gray-100 border border-r-0 border-gray-200 rounded-l-xl text-gray-500 font-medium">+966</div>
+                      <input type="tel" name="phone" required maxLength={9} value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-r-xl outline-none" placeholder={t.book.form.phone} />
+                    </div>
+                  </div>
+
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl outline-none" placeholder={t.book.form.email} />
+                  </div>
+
+                  <div className="relative">
+                    <button type="button" onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="w-full flex items-center justify-between px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-left">
+                      <div className="flex items-center gap-3">
+                        {selectedProject ? <><selectedProject.icon className="w-5 h-5 text-[#0066FF]" /><span>{selectedProject.label}</span></> : <><Building2 className="w-5 h-5 text-gray-400" /><span>{t.book.form.selectProject}</span></>}
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isDropdownOpen && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-20 overflow-hidden">
+                        {projectTypes.map((type) => (
+                          <button key={type.value} type="button" onClick={() => handleProjectTypeSelect(type.value)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-gray-700">
+                            <type.icon className="w-5 h-5" /> {type.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700 flex justify-between">{t.book.form.projectType} {formData.lat && <span className="text-emerald-500 text-[10px]">PIN DROPPED ✓</span>}</label>
+                    <div className="relative aspect-square w-full bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden">
+                      {isLoaded ? (
+                        <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={12} onClick={onMapClick} options={{ streetViewControl: false, mapTypeControl: false, fullscreenControl: false }}>
+                          {formData.lat && formData.lng && <Marker position={{ lat: formData.lat, lng: formData.lng }} />}
+                        </GoogleMap>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-2">
+                          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                          <span className="text-xs">Loading Map...</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-4 bg-[#0066FF] text-white font-bold rounded-xl shadow-lg hover:bg-[#0052CC] transition-all disabled:opacity-50"
+                  >
+                    {isSubmitting ? t.book.form.submitting : t.book.form.submit}
+                  </button>
+                </form>
+              </motion.div>
+            )}
+          </div>
         </div>
       </div>
+      <style jsx global>{` @keyframes spin { to { transform: rotate(360deg); } } `}</style>
     </div>
   );
 }

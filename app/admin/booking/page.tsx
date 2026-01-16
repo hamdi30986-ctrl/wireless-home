@@ -20,10 +20,14 @@ export default function AdminBookingsPage() {
 
   useEffect(() => {
     const checkUserAndFetch = async () => {
-      // 1. SECURITY CHECK
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      // 1. SECURITY CHECK - Admin role required
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         router.push('/login');
+        return;
+      }
+      if (user.user_metadata?.role !== 'admin') {
+        router.push('/dashboard');
         return;
       }
 

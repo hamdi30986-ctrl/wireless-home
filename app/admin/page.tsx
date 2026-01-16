@@ -20,13 +20,22 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         router.push('/login');
-      } else {
-        fetchStats(); 
-        setIsLoading(false);
+        return;
       }
+
+      // Check if user is an admin
+      const isAdmin = user.user_metadata?.role === 'admin';
+      if (!isAdmin) {
+        // Non-admin users get redirected to user dashboard
+        router.push('/dashboard');
+        return;
+      }
+
+      fetchStats();
+      setIsLoading(false);
     };
     checkSession();
   }, [router]);

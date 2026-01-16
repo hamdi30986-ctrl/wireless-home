@@ -37,14 +37,15 @@ export default function InventoryPage() {
 
   const fetchProducts = async () => {
     setIsLoading(true);
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { router.push('/login'); return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push('/login'); return; }
+    if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
 
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('name');
-    
+
     if (!error && data) setProducts(data);
     setIsLoading(false);
   };
