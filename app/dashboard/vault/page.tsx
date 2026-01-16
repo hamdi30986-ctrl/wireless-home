@@ -42,6 +42,7 @@ export default function VaultPage() {
   };
 
   const copyToClipboard = (text: string, field: string) => {
+    if (!text) return;
     navigator.clipboard.writeText(text);
     setCopiedField(field);
     setTimeout(() => setCopiedField(null), 2000);
@@ -52,6 +53,9 @@ export default function VaultPage() {
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-[#f4f4f5]"><Loader2 className="w-8 h-8 animate-spin text-gray-400" /></div>;
+
+  // Extract credentials from JSONB column with fallbacks
+  const creds = project?.credentials || {};
 
   return (
     <div className="min-h-screen bg-[#f4f4f5]">
@@ -80,13 +84,11 @@ export default function VaultPage() {
 
       <div className="max-w-5xl mx-auto px-6 py-8">
         {!project ? (
-          /* --- EMPTY STATE (Matches Proposals Style) --- */
           <div className="bg-white rounded-2xl border border-gray-200 p-20 text-center shadow-sm">
             <Shield className="w-12 h-12 text-gray-200 mx-auto mb-4" />
             <p className="text-gray-500 font-medium">No secure credentials found</p>
           </div>
         ) : (
-          /* --- VAULT CONTENT --- */
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* --- HOME ASSISTANT ACCESS --- */}
@@ -99,23 +101,23 @@ export default function VaultPage() {
                 <div className="space-y-4">
                     <VaultItem
                         label="Local URL"
-                        value={project.ha_url || 'http://homeassistant.local:8123'}
-                        onCopy={() => copyToClipboard(project.ha_url, 'url')}
+                        value={creds.ha_url || 'http://homeassistant.local:8123'}
+                        onCopy={() => copyToClipboard(creds.ha_url, 'url')}
                         isCopied={copiedField === 'url'}
                     />
                     <VaultItem
                         label="Username"
-                        value={project.ha_username || 'admin'}
-                        onCopy={() => copyToClipboard(project.ha_username, 'user')}
+                        value={creds.ha_username || 'admin'}
+                        onCopy={() => copyToClipboard(creds.ha_username, 'user')}
                         isCopied={copiedField === 'user'}
                     />
                     <VaultItem
                         label="Password"
-                        value={project.ha_password || '••••••••'}
+                        value={creds.ha_password || creds.password || '••••••••'}
                         isPassword
                         show={showPass['ha']}
                         onToggle={() => togglePass('ha')}
-                        onCopy={() => copyToClipboard(project.ha_password, 'pass')}
+                        onCopy={() => copyToClipboard(creds.ha_password || creds.password, 'pass')}
                         isCopied={copiedField === 'pass'}
                     />
                 </div>
@@ -131,17 +133,17 @@ export default function VaultPage() {
                 <div className="space-y-4">
                     <VaultItem
                         label="Network Name (SSID)"
-                        value={project.wifi_ssid || 'CasaSmart_5G'}
-                        onCopy={() => copyToClipboard(project.wifi_ssid, 'ssid')}
+                        value={creds.wifi_ssid || 'CasaSmart_5G'}
+                        onCopy={() => copyToClipboard(creds.wifi_ssid, 'ssid')}
                         isCopied={copiedField === 'ssid'}
                     />
                     <VaultItem
                         label="WiFi Password"
-                        value={project.wifi_password || '••••••••'}
+                        value={creds.wifi_password || '••••••••'}
                         isPassword
                         show={showPass['wifi']}
                         onToggle={() => togglePass('wifi')}
-                        onCopy={() => copyToClipboard(project.wifi_password, 'wpass')}
+                        onCopy={() => copyToClipboard(creds.wifi_password, 'wpass')}
                         isCopied={copiedField === 'wpass'}
                     />
                 </div>
@@ -156,7 +158,7 @@ export default function VaultPage() {
                 <div>
                     <h4 className="text-white font-medium text-sm mb-1">Security Notice</h4>
                     <p className="text-sm text-slate-400 leading-relaxed">
-                        These credentials are encrypted and visible only to you. We recommend changing your passwords after the final handover. If you lose access, contact <span className="text-white">info@casasmart.sa</span>
+                        These credentials are saved securely in your project files. We recommend changing your passwords after the final handover. If you lose access, contact <span className="text-white">info@wireless.sa</span>
                     </p>
                 </div>
             </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,19 +8,18 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import {
   ChevronDown,
-  Menu,
-  X,
   Lightbulb,
   Thermometer,
   Shield,
   Blinds,
   Droplets,
   Wifi,
-  Calendar,
   Tv,
-  UserCircle,
   LayoutDashboard,
-  LogOut
+  LogOut,
+  Bell,
+  CreditCard,
+  Briefcase
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -53,18 +51,113 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<any>(null);
 
+  // NOTIFICATION STATES
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [lastReadTime, setLastReadTime] = useState<number>(0);
+  const [readIds, setReadIds] = useState<string[]>([]);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setMounted(true);
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
+    
+    const initializeAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+
+      if (currentUser) {
+        const userPhone = currentUser.user_metadata?.phone || currentUser.phone;
+        if (userPhone) {
+          const { data: projects } = await supabase
+            .from('projects')
+            .select('*, invoices(*)')
+            .eq('customer_phone', userPhone)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+          if (projects && projects.length > 0) {
+            const currentProject = projects[0];
+            const events: any[] = [];
+            
+            // Project Status Events
+            if (currentProject.date_installation) {
+              events.push({ 
+                id: `inst-${currentProject.id}`, 
+                title: 'Installation Started', 
+                desc: 'Hardware setup is underway.', 
+                date: currentProject.date_installation, 
+                type: 'status', 
+                href: '/dashboard' 
+              });
+            }
+            if (currentProject.date_completed) {
+              events.push({ 
+                id: `comp-${currentProject.id}`, 
+                title: 'Project Completed', 
+                desc: 'Ready for final handover.', 
+                date: currentProject.date_completed, 
+                type: 'status', 
+                href: '/dashboard' 
+              });
+            }
+
+            // Invoice Events - NEW DYNAMIC ID LOGIC
+            currentProject.invoices?.forEach((inv: any) => {
+              // Create a unique ID that changes when status changes (e.g., inv-123-paid)
+              const uniqueId = `inv-${inv.id}-${inv.status}`;
+              
+              // Use updated_at if available for paid invoices to ensure they appear recent
+              const date = inv.status === 'paid' 
+                ? (inv.updated_at || inv.created_at) 
+                : inv.issue_date;
+
+              events.push({
+                id: uniqueId,
+                title: inv.status === 'paid' ? 'Payment Received' : 'New Invoice Issued',
+                desc: inv.status === 'paid' ? `Processed: ${inv.invoice_ref}` : `Pending: ${inv.amount} SAR`,
+                date: date,
+                type: 'finance',
+                href: '/dashboard/financials'
+              });
+            });
+
+            const sortedNotes = events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+            setNotifications(sortedNotes);
+
+            const storedTime = parseInt(localStorage.getItem('lastNotificationRead') || '0');
+            const storedIds = JSON.parse(localStorage.getItem('readNotificationIds') || '[]');
+            setLastReadTime(storedTime);
+            setReadIds(storedIds);
+            
+            // Check against the new Unique IDs
+            const unreadList = sortedNotes.filter(note => 
+              new Date(note.date).getTime() > storedTime && !storedIds.includes(note.id)
+            );
+            setUnreadCount(unreadList.length);
+          }
+        }
+      }
+    };
+
+    initializeAuth();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (!session?.user) {
+        setNotifications([]);
+        setUnreadCount(0);
+      } else {
+        // Re-run init if needed or rely on refresh
+        initializeAuth();
+      }
     });
+
     return () => {
       setMounted(false);
       subscription.unsubscribe();
@@ -86,10 +179,40 @@ export default function Navbar() {
         setIsUserDropdownOpen(false);
         setConfirmLogout(false);
       }
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleNotificationAction = (note: any) => {
+    if (!readIds.includes(note.id)) {
+      const updatedIds = [...readIds, note.id];
+      setReadIds(updatedIds);
+      localStorage.setItem('readNotificationIds', JSON.stringify(updatedIds));
+      
+      const newCount = notifications.filter(n => 
+        new Date(n.date).getTime() > lastReadTime && !updatedIds.includes(n.id)
+      ).length;
+      setUnreadCount(newCount);
+    }
+
+    if (note.href) {
+      setShowNotifications(false);
+      router.push(note.href);
+    }
+  };
+
+  const markAllAsRead = () => {
+    const now = Date.now();
+    setLastReadTime(now);
+    setReadIds([]); 
+    localStorage.setItem('lastNotificationRead', now.toString());
+    localStorage.setItem('readNotificationIds', JSON.stringify([]));
+    setUnreadCount(0);
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -155,10 +278,60 @@ export default function Navbar() {
               {language === 'en' ? 'العربية' : 'English'}
             </button>
 
-            {/* Desktop Auth Section */}
-            <div className="hidden md:block" ref={userDropdownRef}>
-              {user ? (
-                <div className="relative">
+            {/* Desktop Auth & Notification Section */}
+            {user && (
+              <div className="hidden md:flex items-center gap-4">
+                {/* NOTIFICATION BELL */}
+                <div className="relative" ref={notificationRef}>
+                  <button onClick={() => setShowNotifications(!showNotifications)} className="relative text-gray-400 hover:text-[#00B5AD] transition-colors p-1">
+                    <Bell className="w-5 h-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold px-1 min-w-[14px] h-[14px] flex items-center justify-center rounded-full border border-[#111318]">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                  <AnimatePresence>
+                    {showNotifications && (
+                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute right-0 top-full mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
+                        <div className="p-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+                          <span className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">Recent Updates</span>
+                          {unreadCount > 0 && (
+                            <button onClick={markAllAsRead} className="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase transition-colors">Mark as read</button>
+                          )}
+                        </div>
+                        <div className="max-h-96 overflow-y-auto">
+                          {notifications.length === 0 ? (
+                            <div className="p-10 text-center text-gray-400 text-xs italic">No updates available</div>
+                          ) : (
+                            notifications.map((note) => {
+                              // Re-calculate isUnread for rendering the dot
+                              const isUnread = new Date(note.date).getTime() > lastReadTime && !readIds.includes(note.id);
+                              return (
+                                <div key={note.id} onClick={() => handleNotificationAction(note)} className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors flex gap-3 cursor-pointer group">
+                                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${note.type === 'finance' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'}`}>
+                                    {note.type === 'finance' ? <CreditCard className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <p className="text-sm font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors">{note.title}</p>
+                                      {isUnread && <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />}
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1 leading-snug">{note.desc}</p>
+                                    <p className="text-[10px] text-gray-400 mt-2 font-medium">{new Date(note.date).toLocaleDateString()}</p>
+                                  </div>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* USER DROPDOWN */}
+                <div className="relative" ref={userDropdownRef}>
                   <button onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-[#00B5AD] transition-colors rounded-lg hover:bg-white/10">
                     <div className="w-6 h-6 bg-[#0066FF] rounded-full flex items-center justify-center text-[10px] text-white uppercase font-bold">{displayName.charAt(0)}</div>
                     {displayName}
@@ -169,7 +342,6 @@ export default function Navbar() {
                         <Link href="/dashboard" onClick={() => setIsUserDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                           <LayoutDashboard className="w-4 h-4 text-slate-400" /> Dashboard
                         </Link>
-                        
                         <div className="border-t border-gray-50 mt-1">
                           {!confirmLogout ? (
                             <button onClick={() => setConfirmLogout(true)} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
@@ -189,10 +361,12 @@ export default function Navbar() {
                     )}
                   </AnimatePresence>
                 </div>
-              ) : (
-                <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-[#00B5AD] transition-colors rounded-lg hover:bg-white/10">Login</Link>
-              )}
-            </div>
+              </div>
+            )}
+
+            {!user && (
+              <Link href="/login" className="hidden md:inline-flex px-4 py-2 text-sm font-medium text-gray-300 hover:text-[#00B5AD] transition-colors rounded-lg hover:bg-white/10">Login</Link>
+            )}
 
             <Link href="/book" className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] transition-all shadow-lg shadow-blue-500/20">
                {t.nav.book}
