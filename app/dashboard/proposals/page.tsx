@@ -18,15 +18,48 @@ export default function ProposalsPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push('/login'); return; }
 
-      const userPhone = user.user_metadata?.phone || user.phone;
+      const rawPhone = user.user_metadata?.phone || user.phone || '';
+      // Normalize phone: remove all non-digit characters
+      const normalizedPhone = rawPhone.replace(/\D/g, '');
 
+      // Try multiple phone format variations for matching
+      const phoneVariations: string[] = [];
+      if (normalizedPhone) {
+        phoneVariations.push(normalizedPhone); // e.g., "0512345678"
+
+        // If starts with 0, also try without leading 0 and with country code
+        if (normalizedPhone.startsWith('0')) {
+          phoneVariations.push(normalizedPhone.slice(1)); // e.g., "512345678"
+          phoneVariations.push('966' + normalizedPhone.slice(1)); // e.g., "966512345678"
+          phoneVariations.push('+966' + normalizedPhone.slice(1)); // e.g., "+966512345678"
+        }
+
+        // If starts with 966, also try with leading 0
+        if (normalizedPhone.startsWith('966')) {
+          phoneVariations.push('0' + normalizedPhone.slice(3)); // e.g., "0512345678"
+        }
+      }
+
+      // Fetch all quotes and filter client-side for flexible phone matching
       const { data } = await supabase
         .from('quotes')
         .select('*')
-        .eq('customer_phone', userPhone)
         .order('created_at', { ascending: false });
 
-      setQuotes(data || []);
+      const matchedQuotes = (data || []).filter(quote => {
+        if (!quote.customer_phone) return false;
+        const quotePhoneNormalized = quote.customer_phone.replace(/\D/g, '');
+
+        // Check if any phone variation matches
+        return phoneVariations.some(variation => {
+          const variationNormalized = variation.replace(/\D/g, '');
+          return quotePhoneNormalized === variationNormalized ||
+                 quotePhoneNormalized.endsWith(variationNormalized) ||
+                 variationNormalized.endsWith(quotePhoneNormalized);
+        });
+      });
+
+      setQuotes(matchedQuotes);
       setLoading(false);
     }
     loadProposals();

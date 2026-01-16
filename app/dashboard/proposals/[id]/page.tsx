@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter, useParams } from 'next/navigation';
-import { 
-  Loader2, ArrowLeft, CheckCircle, Download, ShieldCheck, LogOut
+import {
+  Loader2, ArrowLeft, CheckCircle, Download, ShieldCheck, LogOut, Check, X
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -16,6 +17,8 @@ export default function ProposalDetailPage() {
   const [loading, setLoading] = useState(true);
   const [quote, setQuote] = useState<any>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showAcceptConfirm, setShowAcceptConfirm] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
 
   useEffect(() => {
     async function loadQuote() {
@@ -95,6 +98,26 @@ export default function ProposalDetailPage() {
     // Save
     doc.save(`Quote_${quote.customer_name}_${new Date().toISOString().split('T')[0]}.pdf`);
     setIsDownloading(false);
+  };
+
+  const handleAcceptQuote = async () => {
+    setIsAccepting(true);
+    try {
+      const { error } = await supabase
+        .from('quotes')
+        .update({ status: 'accepted' })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setQuote({ ...quote, status: 'accepted' });
+      setShowAcceptConfirm(false);
+    } catch (error) {
+      console.error('Error accepting quote:', error);
+      alert('Failed to accept quotation. Please try again.');
+    } finally {
+      setIsAccepting(false);
+    }
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-[#f4f4f5]"><Loader2 className="w-8 h-8 animate-spin text-gray-400" /></div>;
@@ -195,10 +218,17 @@ export default function ProposalDetailPage() {
             </div>
 
             <div className="space-y-3">
-                {quote.status === 'accepted' && (
-                  <div className="w-full bg-green-50 text-green-700 py-3 rounded-xl font-medium flex items-center justify-center gap-2 text-sm">
+                {quote.status === 'accepted' ? (
+                  <div className="w-full bg-green-50 text-green-700 py-3 rounded-xl font-medium flex items-center justify-center gap-2 text-sm border border-green-200">
                       <CheckCircle className="w-4 h-4" /> Proposal Accepted
                   </div>
+                ) : (
+                  <button
+                    onClick={() => setShowAcceptConfirm(true)}
+                    className="w-full bg-green-600 text-white py-3 rounded-xl font-medium hover:bg-green-700 transition-all text-sm flex items-center justify-center gap-2"
+                  >
+                      <Check className="w-4 h-4" /> Accept Quotation
+                  </button>
                 )}
 
                 <button
@@ -210,6 +240,54 @@ export default function ProposalDetailPage() {
                     Download PDF
                 </button>
             </div>
+
+            {/* Accept Confirmation Modal */}
+            <AnimatePresence>
+              {showAcceptConfirm && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                  onClick={() => setShowAcceptConfirm(false)}
+                >
+                  <motion.div
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.95, opacity: 0 }}
+                    className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Check className="w-6 h-6 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 text-center mb-2">Accept Quotation?</h3>
+                    <p className="text-sm text-gray-500 text-center mb-6">
+                      By accepting this quotation, you agree to proceed with the proposed scope and pricing. Our team will contact you to schedule the next steps.
+                    </p>
+                    <div className="text-center mb-6">
+                      <p className="text-2xl font-bold text-slate-900">{Math.round(quote.grand_total).toLocaleString()} <span className="text-sm font-normal text-gray-500">SAR</span></p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setShowAcceptConfirm(false)}
+                        className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all text-sm flex items-center justify-center gap-2"
+                      >
+                        <X className="w-4 h-4" /> Cancel
+                      </button>
+                      <button
+                        onClick={handleAcceptQuote}
+                        disabled={isAccepting}
+                        className="flex-1 py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                      >
+                        {isAccepting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                        {isAccepting ? 'Accepting...' : 'Confirm'}
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 

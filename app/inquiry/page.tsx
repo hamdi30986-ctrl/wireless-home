@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { useLanguage } from '@/app/context/LanguageContext';
 import {
   ArrowLeft,
   Send,
@@ -79,6 +80,10 @@ const brandColors: Record<string, string> = {
 // ============================================
 export default function InquiryPage() {
   const router = useRouter();
+  const { t, language } = useLanguage();
+  const isRTL = language === 'ar';
+  const inq = t.store.inquiry;
+
   const [items, setItems] = useState<InquiryItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -188,7 +193,7 @@ export default function InquiryPage() {
   // Success state
   if (isSubmitted) {
     return (
-      <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
+      <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }} dir={isRTL ? 'rtl' : 'ltr'}>
         <div style={{ paddingTop: '120px', paddingBottom: '80px' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
             <motion.div
@@ -211,25 +216,25 @@ export default function InquiryPage() {
                 <CheckCircle style={{ width: '40px', height: '40px', color: '#10b981' }} />
               </div>
             </motion.div>
-            
+
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               style={{ fontSize: '28px', fontWeight: 700, color: '#18181b', marginBottom: '12px' }}
             >
-              Inquiry Submitted!
+              {inq.success.title}
             </motion.h1>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               style={{ fontSize: '16px', color: '#71717a', marginBottom: '32px', lineHeight: 1.6 }}
             >
-              Thank you for your interest. Our team will review your request and get back to you within 24 hours.
+              {inq.success.message}
             </motion.p>
-            
+
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -246,7 +251,7 @@ export default function InquiryPage() {
                 cursor: 'pointer',
               }}
             >
-              Continue Shopping
+              {inq.success.continueButton}
             </motion.button>
           </div>
         </div>
@@ -255,7 +260,7 @@ export default function InquiryPage() {
   }
 
   return (
-    <div style={{ backgroundColor: '#fafafa', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: '#fafafa', minHeight: '100vh' }} dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #f4f4f5' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px' }}>
@@ -275,15 +280,15 @@ export default function InquiryPage() {
                 padding: 0,
               }}
             >
-              <ArrowLeft style={{ width: '18px', height: '18px' }} />
-              Back to Store
+              <ArrowLeft style={{ width: '18px', height: '18px', transform: isRTL ? 'rotate(180deg)' : 'none' }} />
+              {inq.backToStore}
             </button>
-            
+
             <h1 style={{ fontSize: '32px', fontWeight: 700, color: '#18181b', margin: 0 }}>
-              Request a Quote
+              {inq.title}
             </h1>
             <p style={{ fontSize: '16px', color: '#71717a', marginTop: '8px' }}>
-              Fill in your details and we'll get back to you within 24 hours
+              {inq.subtitle}
             </p>
           </div>
         </div>
@@ -303,13 +308,13 @@ export default function InquiryPage() {
             }}
           >
             <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#18181b', marginBottom: '16px' }}>
-              Items in Your Inquiry ({items.length})
+              {inq.itemsInInquiry} ({items.length})
             </h2>
-            
+
             {items.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
                 <Package style={{ width: '48px', height: '48px', color: '#e4e4e7', marginBottom: '12px' }} />
-                <p style={{ color: '#71717a' }}>No items in your inquiry</p>
+                <p style={{ color: '#71717a' }}>{inq.noItems}</p>
                 <button
                   onClick={() => router.push('/store')}
                   style={{
@@ -323,7 +328,7 @@ export default function InquiryPage() {
                     cursor: 'pointer',
                   }}
                 >
-                  Browse Products
+                  {inq.browseProducts}
                 </button>
               </div>
             ) : (
@@ -450,14 +455,13 @@ export default function InquiryPage() {
               }}
             >
               <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#18181b', marginBottom: '8px' }}>
-                How would you like to continue?
+                {inq.auth.title}
               </h2>
               <p style={{ fontSize: '14px', color: '#71717a', marginBottom: '32px' }}>
-                Sign in to track your orders and get faster checkout
+                {inq.auth.subtitle}
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '320px', margin: '0 auto' }}>
-                {/* UPDATED: Added redirect parameter to login link */}
                 <Link
                   href="/login?redirect=/inquiry"
                   style={{
@@ -475,7 +479,7 @@ export default function InquiryPage() {
                   }}
                 >
                   <LogIn style={{ width: '18px', height: '18px' }} />
-                  Login to Your Account
+                  {inq.auth.login}
                 </Link>
 
                 <Link
@@ -496,7 +500,7 @@ export default function InquiryPage() {
                   }}
                 >
                   <UserPlus style={{ width: '18px', height: '18px' }} />
-                  Create New Account
+                  {inq.auth.register}
                 </Link>
 
                 <button
@@ -513,7 +517,7 @@ export default function InquiryPage() {
                     textDecoration: 'underline',
                   }}
                 >
-                  Continue as Guest
+                  {inq.auth.guest}
                 </button>
               </div>
             </div>
@@ -531,9 +535,9 @@ export default function InquiryPage() {
                 }}
               >
                 <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#18181b', marginBottom: '20px' }}>
-                  Contact Information
+                  {inq.contactInfo}
                 </h2>
-                
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div>
                     <label
@@ -549,7 +553,7 @@ export default function InquiryPage() {
                       }}
                     >
                       <User style={{ width: '14px', height: '14px' }} />
-                      Full Name *
+                      {inq.fullName} *
                     </label>
                     <input
                       type="text"
@@ -558,7 +562,7 @@ export default function InquiryPage() {
                       required
                       value={formData.name}
                       onChange={handleInputChange}
-                      placeholder="Enter your full name"
+                      placeholder={inq.fullNamePlaceholder}
                       style={{
                         width: '100%',
                         padding: '14px 16px',
@@ -585,7 +589,7 @@ export default function InquiryPage() {
                       }}
                     >
                       <Mail style={{ width: '14px', height: '14px' }} />
-                      Email Address *
+                      {inq.email} *
                     </label>
                     <input
                       type="email"
@@ -594,7 +598,7 @@ export default function InquiryPage() {
                       required
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="Enter your email address"
+                      placeholder={inq.emailPlaceholder}
                       style={{
                         width: '100%',
                         padding: '14px 16px',
@@ -621,7 +625,7 @@ export default function InquiryPage() {
                       }}
                     >
                       <Phone style={{ width: '14px', height: '14px' }} />
-                      Phone Number *
+                      {inq.phone} *
                     </label>
                     <input
                       type="tel"
@@ -630,7 +634,7 @@ export default function InquiryPage() {
                       required
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="05X XXX XXXX"
+                      placeholder={inq.phonePlaceholder}
                       style={{
                         width: '100%',
                         padding: '14px 16px',
@@ -657,7 +661,7 @@ export default function InquiryPage() {
                       }}
                     >
                       <MessageSquare style={{ width: '14px', height: '14px' }} />
-                      Additional Notes (Optional)
+                      {inq.notes}
                     </label>
                     <textarea
                       id="notes"
@@ -665,7 +669,7 @@ export default function InquiryPage() {
                       rows={4}
                       value={formData.notes}
                       onChange={handleInputChange}
-                      placeholder="Any requirements..."
+                      placeholder={inq.notesPlaceholder}
                       style={{
                         width: '100%',
                         padding: '14px 16px',
@@ -702,8 +706,12 @@ export default function InquiryPage() {
                     opacity: isSubmitting ? 0.7 : 1,
                   }}
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
+                  {isSubmitting ? inq.submitting : inq.submit}
                 </button>
+
+                <p style={{ textAlign: 'center', fontSize: '12px', color: '#a1a1aa', marginTop: '12px' }}>
+                  {inq.responseTime}
+                </p>
               </div>
             </form>
           )}

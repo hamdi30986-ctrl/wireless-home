@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import {
-  Loader2, Home, FileText, Shield, ChevronRight, LogOut, Briefcase, CheckCircle2, Clock, Info, X, AlertCircle, MessageSquare, CalendarCheck
+  Loader2, Home, FileText, Shield, ChevronRight, LogOut, Briefcase, CheckCircle2, Clock, Info, X, AlertCircle, MessageSquare, CalendarCheck, User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -261,6 +261,18 @@ export default function ClientDashboard() {
                 ) : (
                   <p className="text-sm text-gray-500 leading-snug">Track your orders and booking requests.</p>
                 )}
+              </Link>
+
+              {/* PROFILE CARD */}
+              <Link href="/dashboard/profile" className="group bg-white p-6 rounded-2xl border border-gray-200 shadow-sm transition-all hover:shadow-md hover:border-gray-300">
+                <div className="w-10 h-10 bg-purple-600 text-white rounded-xl flex items-center justify-center mb-4">
+                  <User className="w-5 h-5" />
+                </div>
+                <div className="flex justify-between items-center mb-1">
+                  <h3 className="text-base font-semibold text-slate-900">My Profile</h3>
+                  <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-slate-900 transition-colors" />
+                </div>
+                <p className="text-sm text-gray-500 leading-snug">View and manage your account details.</p>
               </Link>
 
               {/* WARRANTY CARD */}

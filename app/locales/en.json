@@ -762,6 +762,38 @@
     "items": "items",
     "quantity": "Quantity",
     "requestQuote": "Request Quote",
+    "inquiry": {
+      "title": "Request a Quote",
+      "subtitle": "Fill in your details and we'll get back to you within 24 hours",
+      "backToStore": "Back to Store",
+      "itemsInInquiry": "Items in Your Inquiry",
+      "noItems": "No items in your inquiry",
+      "browseProducts": "Browse Products",
+      "contactInfo": "Contact Information",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter your full name",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email address",
+      "phone": "Phone Number",
+      "phonePlaceholder": "05X XXX XXXX",
+      "notes": "Additional Notes (Optional)",
+      "notesPlaceholder": "Any specific requirements, questions, or project details...",
+      "submit": "Submit Inquiry",
+      "submitting": "Submitting...",
+      "responseTime": "We typically respond within 24 hours",
+      "success": {
+        "title": "Inquiry Submitted!",
+        "message": "Thank you for your interest. Our team will review your request and get back to you within 24 hours.",
+        "continueButton": "Continue Shopping"
+      },
+      "auth": {
+        "title": "How would you like to continue?",
+        "subtitle": "Sign in to track your orders and get faster checkout",
+        "login": "Login to Your Account",
+        "register": "Create New Account",
+        "guest": "Continue as Guest"
+      }
+    },
     "brands": {
       "aqara": {
         "tagline": "Premium Hardware. Browse the complete range of Aqara products.",
