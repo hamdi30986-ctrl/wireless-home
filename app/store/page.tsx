@@ -29,7 +29,7 @@ type InquiryItem = {
   selectedGang?: string; // NEW: Gang support
 };
 
-const brandTabs = ['aqara', 'wirelesshome', 'shelly', 'tuya', 'zigbee', 'wifi'];
+const brandTabs = ['aqara', 'casasmart', 'shelly', 'tuya', 'zigbee', 'wifi'];
 
 // ============================================
 // STAR RATING COMPONENT

@@ -71,7 +71,7 @@ export default function AdminDashboard() {
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-xl tracking-tight text-white">WirelessHome</h1>
+              <h1 className="font-bold text-xl tracking-tight text-white">Casa Smart</h1>
               <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">Admin Console</p>
             </div>
           </div>

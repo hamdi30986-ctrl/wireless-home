@@ -277,9 +277,9 @@ export const brandData: Record<string, Brand> = {
       },
     ],
   },
-  wirelesshome: {
-    name: 'wirelesshome',
-    displayName: 'WirelessHome',
+  casasmart: {
+    name: 'casasmart',
+    displayName: 'Casa Smart',
     tagline: 'Engineered for Saudi Arabia.',
     description: 'Our in-house product line designed specifically for local conditions. Built for concrete walls and desert climates.',
     image: '/images/wireless.jpg',
@@ -307,7 +307,7 @@ export const brandData: Record<string, Brand> = {
         ],
         faqs: [
           { question: 'Does it work in extreme heat?', answer: 'Yes, it is designed for Saudi conditions and tested up to 60°C ambient temperature.' },
-          { question: 'What app does it use?', answer: 'It connects to the WirelessHome app which also integrates with Apple Home and Google Home.' },
+          { question: 'What app does it use?', answer: 'It connects to the Casa Smart app which also integrates with Apple Home and Google Home.' },
         ],
       },
       { 

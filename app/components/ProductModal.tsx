@@ -254,7 +254,7 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit }:
                 <select className="w-full px-4 py-3 bg-gray-50 border rounded-xl mt-2 outline-none focus:ring-2 focus:ring-black/5" 
                   value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})}>
                   <option value="aqara">Aqara</option>
-                  <option value="wirelesshome">WirelessHome</option>
+                  <option value="casasmart">Casa Smart</option>
                   <option value="shelly">Shelly</option>
                   <option value="tuya">Tuya</option>
                   <option value="zigbee">Zigbee</option>

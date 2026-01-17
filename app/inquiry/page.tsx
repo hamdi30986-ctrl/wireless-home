@@ -70,7 +70,7 @@ type Product = {
 // ============================================
 const brandColors: Record<string, string> = {
   'Aqara': '#c97e36',
-  'WirelessHome': '#3b82f6',
+  'Casa Smart': '#3b82f6',
   'Shelly': '#4aa3df',
   'Tuya': '#ff6b35',
 };

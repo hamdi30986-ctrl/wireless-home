@@ -89,7 +89,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   };
 
   // 3. Brand Logic (For Logo Switching)
-  const [activeBrand, setActiveBrand] = useState('wirelesshome');
+  const [activeBrand, setActiveBrand] = useState('casasmart');
 
   return (
     <StoreContext.Provider value={{

@@ -83,7 +83,7 @@ export default function InventoryPage() {
             </div>
             <div>
               <h1 className="font-bold text-xl tracking-tight text-white">Inventory Manager</h1>
-              <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">WirelessHome</p>
+              <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">Casa Smart</p>
             </div>
           </div>
         </div>
@@ -121,21 +121,13 @@ export default function InventoryPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-50/50 text-gray-500 font-semibold text-xs uppercase tracking-wider border-b border-gray-100">
-                <tr>
-                    <th className="px-6 py-4 w-20">Image</th> {/* New Column */}
-                    <th className="px-6 py-4">Product Name</th>
-                    <th className="px-6 py-4">Brand</th>
-                    <th className="px-6 py-4">Price</th>
-                    <th className="px-6 py-4">Stock</th>
-                    <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
+                <tr><th className="px-6 py-4 w-20">Image</th><th className="px-6 py-4">Product Name</th><th className="px-6 py-4">Brand</th><th className="px-6 py-4">Price</th><th className="px-6 py-4">Stock</th><th className="px-6 py-4 text-right">Actions</th></tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {isLoading ? <tr><td colSpan={6} className="px-6 py-12 text-center text-gray-400">Loading...</td></tr> : filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 group transition-colors">
-                    
-                    {/* IMAGE CELL (Restored) */}
-                    <td className="px-6 py-4">
+                {isLoading ? (
+                  <tr><td colSpan={6} className="px-6 py-12 text-center text-gray-400">Loading...</td></tr>
+                ) : filteredProducts.map((product) => (
+                  <tr key={product.id} className="hover:bg-gray-50 group transition-colors"><td className="px-6 py-4">
                         <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center p-1 bg-white">
                             {product.images?.[0] ? (
                                 <img src={product.images[0]} alt="" className="w-full h-full object-contain" />
@@ -143,19 +135,12 @@ export default function InventoryPage() {
                                 <Package className="w-5 h-5 text-gray-300" />
                             )}
                         </div>
-                    </td>
-
-                    <td className="px-6 py-4 font-semibold text-slate-900">{product.name}</td>
-                    <td className="px-6 py-4 capitalize text-gray-600">{product.brand}</td>
-                    <td className="px-6 py-4 font-bold text-slate-900">${product.price}</td>
-                    <td className="px-6 py-4"><span className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-bold ${product.stock > 10 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}><div className={`w-2 h-2 rounded-full ${product.stock > 10 ? 'bg-emerald-500' : 'bg-red-500'}`} />{product.stock} units</span></td>
-                    <td className="px-6 py-4 text-right">
+                    </td><td className="px-6 py-4 font-semibold text-slate-900">{product.name}</td><td className="px-6 py-4 capitalize text-gray-600">{product.brand}</td><td className="px-6 py-4 font-bold text-slate-900">${product.price}</td><td className="px-6 py-4"><span className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-bold ${product.stock > 10 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}><div className={`w-2 h-2 rounded-full ${product.stock > 10 ? 'bg-emerald-500' : 'bg-red-500'}`} />{product.stock} units</span></td><td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
                             <button onClick={() => handleEdit(product)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"><Edit2 className="w-4 h-4" /></button>
                             <button onClick={() => handleDelete(product.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                         </div>
-                    </td>
-                  </tr>
+                    </td></tr>
                 ))}
               </tbody>
             </table>
