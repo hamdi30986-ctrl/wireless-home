@@ -218,7 +218,7 @@ export default function Navbar() {
     await supabase.auth.signOut();
     setIsUserDropdownOpen(false);
     setConfirmLogout(false);
-    router.refresh();
+    window.location.href = '/login';
   };
 
   const handleMouseEnter = () => {

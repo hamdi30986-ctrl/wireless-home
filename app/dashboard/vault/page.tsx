@@ -46,7 +46,9 @@ export default function VaultPage() {
 
       // SECURITY: Use exact phone matching to find user's projects
       const matchedProject = (projects || []).find(project => {
-        const quotes = project.quotes || [];
+        // Ensure quotes is always an array (Supabase may return object or array)
+        const quotesRaw = project.quotes;
+        const quotes = Array.isArray(quotesRaw) ? quotesRaw : (quotesRaw ? [quotesRaw] : []);
         return quotes.some((quote: any) => {
           if (!quote.customer_phone) return false;
           const quotePhoneNormalized = quote.customer_phone.replace(/\D/g, '');

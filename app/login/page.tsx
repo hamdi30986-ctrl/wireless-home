@@ -21,7 +21,7 @@ function LoginForm() {
     setLoading(true);
     setErrorMsg('');
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -32,9 +32,12 @@ function LoginForm() {
       return;
     }
 
+    // Fetch fresh user data to ensure we have complete metadata
+    const { data: { user: freshUser } } = await supabase.auth.getUser();
+
     // SECURE REDIRECTION LOGIC - Prevent open redirect attacks
     const redirectTo = searchParams.get('redirect');
-    const isAdmin = data.user?.user_metadata?.role === 'admin';
+    const isAdmin = freshUser?.user_metadata?.role === 'admin';
 
     // Whitelist of allowed redirect paths (must start with /)
     const allowedPaths = ['/book', '/inquiry', '/dashboard', '/admin', '/dashboard/proposals', '/dashboard/vault'];

@@ -55,7 +55,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    window.location.href = '/login';
   };
 
   if (isLoading) return <div className="min-h-screen bg-[#f4f4f5]" />;
