@@ -114,8 +114,13 @@ export default function QuotesPage() {
     const finalY = (doc as any).lastAutoTable.finalY + 10;
     doc.setFontSize(10); doc.text(`Subtotal:`, 140, finalY); doc.text(`${(quote.grand_total / 1.15).toLocaleString(undefined, {maximumFractionDigits:0})} SAR`, 195, finalY, { align: 'right' });
     doc.text(`VAT (15%):`, 140, finalY + 6); doc.text(`${(quote.grand_total - (quote.grand_total / 1.15)).toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 6, { align: 'right' });
-    doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text(`Grand Total:`, 140, finalY + 16); doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
-    
+    doc.setFontSize(11); doc.setFont("helvetica", "bold"); doc.text(`Grand Total`, 140, finalY + 16); doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
+
+    // Bank Transfer Info
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
+    doc.text("Bank Transfer IBAN: SA4680000540608016154327", 14, finalY + 28);
+    doc.setTextColor(0);
+
     const paymentY = doc.internal.pageSize.height - 65;
     doc.setFontSize(9); doc.setTextColor(0); doc.setFont("helvetica", "bold"); doc.text("Payment Schedule:", 14, paymentY);
     doc.setFont("helvetica", "normal"); doc.text("• 40% Advance Payment upon acceptance.", 14, paymentY + 6); doc.text("• 40% Second Payment upon commencement of installation.", 14, paymentY + 11); doc.text("• 20% Final Payment upon handover.", 14, paymentY + 16);

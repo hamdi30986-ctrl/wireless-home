@@ -138,20 +138,26 @@ export default function InvoicesPage() {
     doc.text(`VAT (15%):`, 140, finalY + 6); 
     doc.text(`${vat.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 6, { align: 'right' });
     
-    doc.setFontSize(14); doc.setFont("helvetica", "bold"); 
-    doc.text(`Total Due:`, 140, finalY + 16); 
+    doc.setFontSize(11); doc.setFont("helvetica", "bold");
+    doc.text(`Total Due`, 140, finalY + 16);
     doc.text(`${invoice.amount.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
-    
-    if (invoice.amount_paid > 0) { 
-      doc.setFontSize(10); doc.setTextColor(0, 150, 0); 
-      doc.text(`Amount Paid:`, 140, finalY + 24); 
-      doc.text(`- ${invoice.amount_paid.toLocaleString()} SAR`, 195, finalY + 24, { align: 'right' }); 
-      
-      doc.setTextColor(200, 0, 0); 
-      doc.text(`Balance Due:`, 140, finalY + 30); 
-      doc.text(`${(invoice.amount - invoice.amount_paid).toLocaleString()} SAR`, 195, finalY + 30, { align: 'right' }); 
+
+    if (invoice.amount_paid > 0) {
+      doc.setFontSize(10); doc.setTextColor(0, 150, 0);
+      doc.text(`Amount Paid:`, 140, finalY + 24);
+      doc.text(`- ${invoice.amount_paid.toLocaleString()} SAR`, 195, finalY + 24, { align: 'right' });
+
+      doc.setTextColor(200, 0, 0);
+      doc.text(`Balance Due:`, 140, finalY + 30);
+      doc.text(`${(invoice.amount - invoice.amount_paid).toLocaleString()} SAR`, 195, finalY + 30, { align: 'right' });
     }
-    
+
+    // Bank Transfer Info
+    const bankY = invoice.amount_paid > 0 ? finalY + 42 : finalY + 28;
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
+    doc.text("Bank Transfer IBAN: SA4680000540608016154327", 14, bankY);
+    doc.setTextColor(0);
+
     doc.save(`Invoice_${invoice.invoice_ref}.pdf`);
   };
 

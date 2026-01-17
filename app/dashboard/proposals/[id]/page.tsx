@@ -137,10 +137,15 @@ export default function ProposalDetailPage() {
     doc.text(`VAT (15%):`, 130, finalY + 7); 
     doc.text(`${vat.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 7, { align: 'right' });
     
-    doc.setFontSize(12); doc.setFont("helvetica", "bold"); 
-    doc.text(`Grand Total:`, 130, finalY + 18); 
+    doc.setFontSize(11); doc.setFont("helvetica", "bold");
+    doc.text(`Grand Total`, 130, finalY + 18);
     doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 18, { align: 'right' });
-    
+
+    // Bank Transfer Info
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
+    doc.text("Bank Transfer IBAN: SA4680000540608016154327", 14, finalY + 30);
+    doc.setTextColor(0);
+
     // Save
     doc.save(`Quote_${quote.customer_name}_${new Date().toISOString().split('T')[0]}.pdf`);
     setIsDownloading(false);
