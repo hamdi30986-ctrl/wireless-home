@@ -143,7 +143,7 @@ export default function ProposalDetailPage() {
 
     // Bank Transfer Info
     doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-    doc.text("Bank Transfer IBAN: SA4680000540608016154327", 14, finalY + 30);
+    doc.text("Bank Transfer (Alrajhi Bank) IBAN: SA4680000540608016154327", 14, finalY + 30);
     doc.setTextColor(0);
 
     // Save

@@ -118,7 +118,7 @@ export default function QuotesPage() {
 
     // Bank Transfer Info
     doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-    doc.text("Bank Transfer IBAN: SA4680000540608016154327", 14, finalY + 28);
+    doc.text("Bank Transfer (Al-Rajhi) IBAN: SA4680000540608016154327", 14, finalY + 28);
     doc.setTextColor(0);
 
     const paymentY = doc.internal.pageSize.height - 65;

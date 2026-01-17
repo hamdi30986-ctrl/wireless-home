@@ -155,7 +155,7 @@ export default function InvoicesPage() {
     // Bank Transfer Info
     const bankY = invoice.amount_paid > 0 ? finalY + 42 : finalY + 28;
     doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-    doc.text("Bank Transfer IBAN: SA4680000540608016154327", 14, bankY);
+    doc.text("Bank Transfer (Al-Rajhi Bank) IBAN: SA4680000540608016154327", 14, bankY);
     doc.setTextColor(0);
 
     doc.save(`Invoice_${invoice.invoice_ref}.pdf`);
