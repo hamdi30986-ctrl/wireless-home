@@ -19,7 +19,10 @@ import {
   LogOut,
   Bell,
   CreditCard,
-  Briefcase
+  Briefcase,
+  ShieldCheck,
+  Menu,
+  X
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -340,8 +343,13 @@ export default function Navbar() {
                     {isUserDropdownOpen && (
                       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden py-1">
                         <Link href="/dashboard" onClick={() => setIsUserDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
-                          <LayoutDashboard className="w-4 h-4 text-slate-400" /> Dashboard
+                          <LayoutDashboard className="w-4 h-4 text-slate-400" /> {language === 'ar' ? 'لوحة المستخدم' : "User's Dashboard"}
                         </Link>
+                        {user?.user_metadata?.role === 'admin' && (
+                          <Link href="/admin" onClick={() => setIsUserDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+                            <ShieldCheck className="w-4 h-4 text-slate-400" /> {language === 'ar' ? 'لوحة الإدارة' : 'Admin Dashboard'}
+                          </Link>
+                        )}
                         <div className="border-t border-gray-50 mt-1">
                           {!confirmLogout ? (
                             <button onClick={() => setConfirmLogout(true)} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
@@ -371,9 +379,105 @@ export default function Navbar() {
             <Link href="/book" className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] transition-all shadow-lg shadow-blue-500/20">
                {t.nav.book}
             </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 text-gray-300 hover:text-[#00B5AD] transition-colors rounded-lg hover:bg-white/10"
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </nav>
       </div>
+
+      {/* Mobile Menu Panel */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden bg-[#111318] border-t border-gray-800 overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-2">
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors">
+                {t.nav.home}
+              </Link>
+
+              {/* Solutions - Expandable */}
+              <div className="space-y-1">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-300 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors"
+                >
+                  {t.nav.solutions}
+                  <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {isDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pl-4 space-y-1 overflow-hidden"
+                    >
+                      {solutions.map((solution) => (
+                        <Link
+                          key={solution.href}
+                          href={solution.href}
+                          onClick={() => { setIsMobileMenuOpen(false); setIsDropdownOpen(false); }}
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-400 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors"
+                        >
+                          <span className="text-gray-500">{solution.icon}</span>
+                          <span>{language === 'ar' ? solution.nameAr : solution.name}</span>
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <Link href="/store" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors">
+                {t.nav.store}
+              </Link>
+              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors">
+                {t.nav.about}
+              </Link>
+
+              {/* Mobile User Menu */}
+              {user ? (
+                <div className="pt-2 mt-2 border-t border-gray-800 space-y-1">
+                  <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-300 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors">
+                    <LayoutDashboard className="w-4 h-4" />
+                    {language === 'ar' ? 'لوحة المستخدم' : "User's Dashboard"}
+                  </Link>
+                  {user?.user_metadata?.role === 'admin' && (
+                    <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-300 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors">
+                      <ShieldCheck className="w-4 h-4" />
+                      {language === 'ar' ? 'لوحة الإدارة' : 'Admin Dashboard'}
+                    </Link>
+                  )}
+                  <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-300 hover:text-red-400 hover:bg-white/5 rounded-lg transition-colors">
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-[#00B5AD] hover:bg-white/5 rounded-lg transition-colors">
+                  Login
+                </Link>
+              )}
+
+              {/* Mobile Book Button */}
+              <Link href="/book" onClick={() => setIsMobileMenuOpen(false)} className="block mt-4 px-4 py-3 text-center text-sm font-bold text-white bg-[#0066FF] hover:bg-[#0052CC] rounded-xl transition-all">
+                {t.nav.book}
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

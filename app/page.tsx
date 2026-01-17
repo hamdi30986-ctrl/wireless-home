@@ -5,13 +5,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  Wifi,
   Smartphone,
   Shield,
   Thermometer,
   ChevronRight,
-  Sparkles,
-  Tv,
   Check,
   GripVertical,
   Lightbulb,
@@ -21,148 +18,6 @@ import {
 import { useLanguage } from './context/LanguageContext';
 
 // --- SUB-COMPONENTS ---
-
-function VibrantHeroBackground() {
-  const [nodes, setNodes] = useState<Array<{id: number, x: number, y: number, delay: number}>>([]);
-  const [icons, setIcons] = useState<Array<{id: number, icon: any, x: number, y: number, delay: number, color: string, duration: number}>>([]);
-
-  useEffect(() => {
-    const nodeArray = [];
-    for (let i = 0; i < 30; i++) {
-      nodeArray.push({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        delay: Math.random() * 3,
-      });
-    }
-    setNodes(nodeArray);
-
-    const iconArray = [
-      { icon: Lightbulb, color: '#FFB800' },
-      { icon: Thermometer, color: '#00B5AD' },
-      { icon: Shield, color: '#FF6B6B' },
-      { icon: Wifi, color: '#0066FF' },
-      { icon: Tv, color: '#A855F7' },
-      { icon: Droplet, color: '#3B82F6' },
-      { icon: Wind, color: '#14B8A6' },
-      { icon: Smartphone, color: '#F59E0B' },
-    ];
-
-    const floatingIcons = [];
-    for (let i = 0; i < 8; i++) {
-      floatingIcons.push({
-        id: i,
-        icon: iconArray[i].icon,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        delay: Math.random() * 5,
-        color: iconArray[i].color,
-        duration: 15 + Math.random() * 10,
-      });
-    }
-    setIcons(floatingIcons);
-  }, []);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <svg className="absolute inset-0 w-full h-full opacity-[0.05]">
-        <defs>
-          <pattern id="vibrant-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00B5AD" strokeWidth="1"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#vibrant-grid)" />
-      </svg>
-
-      {nodes.map((node) => (
-        <motion.div
-          key={node.id}
-          className="absolute w-2 h-2 rounded-full bg-[#00B5AD]"
-          style={{
-            left: `${node.x.toFixed(2)}%`,
-            top: `${node.y.toFixed(2)}%`,
-            boxShadow: '0 0 10px rgba(0, 181, 173, 0.8)',
-          }}
-          animate={{
-            scale: [1, 1.8, 1],
-            opacity: [0.4, 0.8, 0.4],
-          }}
-          transition={{
-            duration: 2,
-            delay: node.delay,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-      ))}
-
-      {icons.map((item) => {
-        const Icon = item.icon;
-        return (
-          <motion.div
-            key={item.id}
-            className="absolute"
-            style={{
-              left: `${item.x}%`,
-              top: `${item.y}%`,
-              filter: 'blur(1px)',
-            }}
-            animate={{
-              y: [0, -50, 0],
-              x: [0, Math.random() * 30 - 15, 0],
-              opacity: [0.25, 0.45, 0.25],
-              rotate: [0, 10, -10, 0],
-            }}
-            transition={{
-              duration: item.duration,
-              delay: item.delay,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            <div
-              className="w-12 h-12 flex items-center justify-center rounded-full"
-              style={{
-                backgroundColor: `${item.color}30`,
-                boxShadow: `0 0 25px ${item.color}50`,
-              }}
-            >
-              <Icon className="w-6 h-6" style={{ color: item.color }} />
-            </div>
-          </motion.div>
-        );
-      })}
-
-      <svg className="absolute inset-0 w-full h-full">
-        {icons.map((icon, i) => {
-          if (i >= icons.length - 1) return null;
-          const nextIcon = icons[i + 1];
-          return (
-            <motion.line
-              key={`line-${i}`}
-              x1={`${icon.x}%`}
-              y1={`${icon.y}%`}
-              x2={`${nextIcon.x}%`}
-              y2={`${nextIcon.y}%`}
-              stroke="#00B5AD"
-              strokeWidth="1"
-              opacity="0.1"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: [0, 1, 0] }}
-              transition={{
-                duration: 3,
-                delay: i * 0.5,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          );
-        })}
-      </svg>
-    </div>
-  );
-}
 
 function BeforeAfterSlider() {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -307,74 +162,38 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="relative min-h-screen flex items-center overflow-hidden w-full bg-[#111318]">
-        <VibrantHeroBackground />
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div
-              className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-[#00B5AD] opacity-[0.12] blur-[140px]"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.12, 0.15, 0.12] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#D4C3A1] opacity-[0.08] blur-[120px]"
-              animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.12, 0.08] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            />
-            <motion.div
-              className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] rounded-full bg-[#0066FF] opacity-[0.07] blur-[130px]"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.07, 0.1, 0.07] }}
-              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-            />
-        </div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden" style={{ height: '70vh', minHeight: '500px', maxHeight: '700px' }}>
+        {/* Background Image */}
+        <img
+          src="/home.png"
+          alt="Smart Home"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', pointerEvents: 'none' }}
+        />
 
-        <div className="relative z-10 py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-end pb-20" dir="ltr">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/80 mb-8"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="max-w-2xl"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.45)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)' }}
             >
-              <Sparkles className="w-4 h-4 text-[#D4C3A1]" />
-              <span>{t.home.badge}</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-5" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#00B5AD' }} />
+                <span className="text-xs font-semibold uppercase tracking-[0.15em]" style={{ color: 'rgba(255,255,255,0.85)' }}>{t.home.badge}</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight" style={{ color: '#ffffff' }}>
+                {t.home.heading1}
+                <br />
+                <span className="bg-gradient-to-r from-[#D4C3A1] via-white to-[#00B5AD] bg-clip-text text-transparent">
+                  {t.home.heading2}
+                </span>
+              </h1>
+              <p className="text-base sm:text-lg font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{t.home.subheading}</p>
             </motion.div>
-
-            <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              {t.home.heading1}
-              <br />
-              <span className="bg-gradient-to-r from-[#D4C3A1] via-white to-[#00B5AD] bg-clip-text text-transparent">
-                {t.home.heading2}
-              </span>
-            </motion.h1>
-
-            <motion.p
-              className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              {t.home.subheading}
-            </motion.p>
-
-            <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <Link href="/solutions" className="group flex items-center gap-3 px-8 py-4 bg-[#0066FF] text-white font-semibold rounded-xl hover:bg-[#0052CC] transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5">{t.home.cta1} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
-              <Link href="/store" className="group flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/10 hover:border-white/20 transition-colors duration-300">{t.home.cta2} <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" /></Link>
-            </motion.div>
-            <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500 opacity-60">
-              <div className="flex items-center gap-2"><Shield className="w-5 h-5 text-green-400" /><span>{t.home.trust1}</span></div>
-              <div className="flex items-center gap-2"><Wifi className="w-5 h-5 text-[#0066FF]" /><span>{t.home.trust2}</span></div>
-              <div className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-[#00B5AD]" /><span>{t.home.trust3}</span></div>
-            </div>
           </div>
         </div>
       </section>

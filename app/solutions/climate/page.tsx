@@ -298,84 +298,37 @@ export default function ClimateControlPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0a0e27] w-full">
-        {/* Glowing Mesh blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-[-5%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-500 opacity-[0.15] blur-[140px]" />
-            <div className="absolute top-[30%] left-[-5%] w-[50%] h-[50%] rounded-full bg-sky-600 opacity-[0.1] blur-[120px]" />
-            <div className="absolute bottom-[-15%] right-[10%] w-[45%] h-[45%] rounded-full bg-blue-700 opacity-[0.08] blur-[130px]" />
-        </div>
+      <section className="relative overflow-hidden" style={{ height: '70vh', minHeight: '500px', maxHeight: '700px' }}>
+        {/* Background Image */}
+        <img
+          src="/climate.png"
+          alt="Climate Control"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', pointerEvents: 'none' }}
+        />
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          {/* FIXED: Removed whileInView and added explicit animate for immediate reliability */}
-          <motion.div 
-            className="max-w-4xl mx-auto text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-          >
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/80 mb-8">
-              <Snowflake className="w-4 h-4 text-cyan-400" />
-              <span>{t.climate.badge}</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight">
-              {t.climate.heading1}
-              <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
-                {t.climate.heading2}
-              </span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {t.climate.subheading}
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/book"
-                className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 hover:-translate-y-0.5"
-              >
-                {t.climate.cta1}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-
-              <Link
-                href="/store"
-                className="group flex items-center gap-3 px-8 py-4 bg-white/5 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300"
-              >
-                {t.climate.cta2}
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-            </div>
-
-            {/* Trust indicators */}
-            <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500 opacity-70">
-              <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-emerald-400" />
-                <span>{t.climate.trust1}</span>
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-end pb-20" dir="ltr">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="max-w-2xl"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.45)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)' }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-5" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#06b6d4' }} />
+                <span className="text-xs font-semibold uppercase tracking-[0.15em]" style={{ color: 'rgba(255,255,255,0.85)' }}>{t.climate.badge}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Thermometer className="w-5 h-5 text-cyan-400" />
-                <span>{t.climate.trust2}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Smartphone className="w-5 h-5 text-sky-400" />
-                <span>{t.climate.trust3}</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
-          <span className="text-xs uppercase tracking-widest">{t.climate.scroll}</span>
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center pt-2">
-            <div className="w-1.5 h-3 bg-white/40 rounded-full animate-bounce" />
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight" style={{ color: '#ffffff' }}>
+                {t.climate.heading1}
+                <br />
+                <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+                  {t.climate.heading2}
+                </span>
+              </h1>
+              <p className="text-base sm:text-lg font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{t.climate.subheading}</p>
+            </motion.div>
           </div>
         </div>
       </section>

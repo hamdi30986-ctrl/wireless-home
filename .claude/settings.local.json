@@ -23,7 +23,9 @@
       "Bash(python:*)",
       "Bash(dir:*)",
       "Bash(findstr:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\\\Users\\\\Don\\\\wireless-home\\\\public\\\\images'' -Recurse -Name | Select-Object -First 50\")",
+      "Bash(powershell -Command:*)"
     ]
   }
 }

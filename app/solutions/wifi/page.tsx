@@ -142,84 +142,38 @@ export default function WifiPage() {
 
   return (
     <>
-      {/* HERO SECTION */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gray-950 w-full">
-        <div className="absolute inset-0">
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                               linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-              backgroundSize: '60px 60px',
-            }}
-          />
-          <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-violet-600 opacity-20 rounded-full blur-[120px]" />
-          <div className="absolute -bottom-32 left-1/4 w-[400px] h-[400px] bg-fuchsia-600 opacity-15 rounded-full blur-[100px]" />
-        </div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden" style={{ height: '70vh', minHeight: '500px', maxHeight: '700px' }}>
+        {/* Background Image */}
+        <img
+          src="/wifi.png"
+          alt="Wi-Fi & Networking"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', pointerEvents: 'none' }}
+        />
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          {/* FIXED: Switched to animate for mount reliability */}
-          <motion.div
-            className="max-w-4xl mx-auto text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-          >
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/90 mb-8">
-              <Wifi className="w-4 h-4 text-violet-400" />
-              <span>{t.wifi.badge}</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight">
-              {t.wifi.heading1} <br />
-              <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-purple-500 bg-clip-text text-transparent">
-                {t.wifi.heading2}
-              </span>
-            </h1>
-
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {t.wifi.subheading}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/book"
-                className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-xl hover:from-violet-700 hover:to-fuchsia-700 transition-all duration-300 shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:-translate-y-0.5"
-              >
-                {t.wifi.cta1}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-
-              <Link
-                href="/store"
-                className="group flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300"
-              >
-                {t.wifi.cta2}
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-            </div>
-
-            <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <Signal className="w-5 h-5 text-violet-400" />
-                <span>{t.wifi.trust1}</span>
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-end pb-20" dir="ltr">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="max-w-2xl"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.45)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)' }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-5" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#8b5cf6' }} />
+                <span className="text-xs font-semibold uppercase tracking-[0.15em]" style={{ color: 'rgba(255,255,255,0.85)' }}>{t.wifi.badge}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Gamepad2 className="w-5 h-5 text-fuchsia-400" />
-                <span>{t.wifi.trust2}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-purple-400" />
-                <span>{t.wifi.trust3}</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center pt-2">
-            <div className="w-1.5 h-3 bg-white/40 rounded-full animate-bounce" />
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight" style={{ color: '#ffffff' }}>
+                {t.wifi.heading1}
+                <br />
+                <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-purple-500 bg-clip-text text-transparent">
+                  {t.wifi.heading2}
+                </span>
+              </h1>
+              <p className="text-base sm:text-lg font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{t.wifi.subheading}</p>
+            </motion.div>
           </div>
         </div>
       </section>

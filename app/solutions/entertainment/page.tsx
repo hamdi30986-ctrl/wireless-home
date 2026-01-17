@@ -122,79 +122,38 @@ export default function EntertainmentPage() {
 
   return (
     <>
-      {/* HERO SECTION - Grid marks removed */}
-      <section
-        className="relative min-h-screen flex items-center overflow-hidden w-full"
-        style={{
-          background: 'linear-gradient(135deg, #e11d48 0%, #9333ea 100%)'
-        }}
-      >
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          {/* FIXED: Using explicit animate and removed whileInView for load reliability */}
-          <motion.div
-            className="max-w-4xl mx-auto text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-          >
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-sm font-medium text-white/90 mb-8">
-              <Music className="w-4 h-4 text-white" />
-              <span>{t.entertainment.badge}</span>
-            </div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden" style={{ height: '70vh', minHeight: '500px', maxHeight: '700px' }}>
+        {/* Background Image */}
+        <img
+          src="/entertainment.png"
+          alt="Home Entertainment"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', pointerEvents: 'none' }}
+        />
 
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] mb-6 tracking-tight">
-              {t.entertainment.heading1} <br />
-              <span className="text-white">
-                {t.entertainment.heading2}
-              </span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className="text-lg sm:text-xl md:text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
-              {t.entertainment.subheading}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/book"
-                className="group flex items-center gap-3 px-8 py-4 bg-white text-rose-600 font-semibold rounded-xl hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-              >
-                {t.entertainment.cta1}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-
-              <Link
-                href="/store"
-                className="group flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300"
-              >
-                {t.entertainment.cta2}
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-            </div>
-
-            <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-white/70">
-              <div className="flex items-center gap-2">
-                <Speaker className="w-5 h-5 text-white" />
-                <span>{t.entertainment.trust1}</span>
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-end pb-20" dir="ltr">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="max-w-2xl"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.45)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)' }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-5" style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#e11d48' }} />
+                <span className="text-xs font-semibold uppercase tracking-[0.15em]" style={{ color: 'rgba(255,255,255,0.85)' }}>{t.entertainment.badge}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Cast className="w-5 h-5 text-white" />
-                <span>{t.entertainment.trust2}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mic className="w-5 h-5 text-white" />
-                <span>{t.entertainment.trust3}</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
-          <span className="text-xs uppercase tracking-widest">Scroll</span>
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center pt-2">
-            <div className="w-1.5 h-3 bg-white/40 rounded-full animate-bounce" />
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight" style={{ color: '#ffffff' }}>
+                {t.entertainment.heading1}
+                <br />
+                <span className="bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                  {t.entertainment.heading2}
+                </span>
+              </h1>
+              <p className="text-base sm:text-lg font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{t.entertainment.subheading}</p>
+            </motion.div>
           </div>
         </div>
       </section>
