@@ -172,8 +172,8 @@ export default function HomePage() {
         />
 
         {/* Content */}
-        <div className="relative z-10 h-full flex items-end pb-20" dir="ltr">
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 h-full flex items-end justify-end pb-20" dir="ltr">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
