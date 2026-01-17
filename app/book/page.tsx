@@ -6,7 +6,7 @@ import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import {
   CheckCircle2, MapPin, User, Building2,
   ChevronDown, Sparkles, ArrowRight, Star,
-  Home, Building, HardHat, Check, Mail, LogIn, UserPlus,
+  Home, Building, HardHat, Mail, LogIn, UserPlus,
   Loader2, Info, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -210,14 +210,8 @@ export default function BookingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="flex items-center justify-between mb-8">
+                <div className="mb-8">
                   <h2 className="text-2xl font-bold text-gray-900">{t.book.heading}</h2>
-                  {isLoggedIn && (
-                    <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
-                      <Check className="w-3 h-3 text-blue-600" />
-                      <span className="text-[10px] font-bold text-blue-600 uppercase">Auto-filled</span>
-                    </div>
-                  )}
                 </div>
 
                 <a href="https://wa.me/966598904919" target="_blank" rel="noopener noreferrer"

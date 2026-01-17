@@ -32,21 +32,12 @@ function LoginForm() {
       return;
     }
 
-    // SECURE REDIRECTION LOGIC - Prevent open redirect attacks
+    // NEW REDIRECTION LOGIC
     const redirectTo = searchParams.get('redirect');
     const isAdmin = data.user?.user_metadata?.role === 'admin';
 
-    // Whitelist of allowed redirect paths (must start with /)
-    const allowedPaths = ['/book', '/inquiry', '/dashboard', '/admin', '/dashboard/proposals', '/dashboard/vault'];
-
-    // Validate redirect: must be a relative path starting with / and be in allowed list
-    const isValidRedirect = redirectTo &&
-      redirectTo.startsWith('/') &&
-      !redirectTo.startsWith('//') &&
-      !redirectTo.includes(':') &&
-      allowedPaths.some(path => redirectTo === path || redirectTo.startsWith(path + '/'));
-
-    if (isValidRedirect) {
+    if (redirectTo) {
+      // If a specific return path exists (like /book or /inquiry), go there
       router.push(redirectTo);
     } else if (isAdmin) {
       router.push('/admin');

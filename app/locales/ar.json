@@ -1244,5 +1244,163 @@
       "button1": "طلب استشارة",
       "button2": "تصفح المنتجات"
     }
+  },
+  "dashboard": {
+    "welcomeBack": "مرحباً بعودتك",
+    "noActiveProject": "لا يوجد مشروع نشط",
+    "signOut": "تسجيل الخروج",
+    "confirmSignOut": "تأكيد تسجيل الخروج؟",
+    "cancel": "إلغاء",
+    "progress": {
+      "title": "تقدم التركيب",
+      "complete": "مكتمل",
+      "phase": "المرحلة",
+      "of": "من",
+      "stages": {
+        "preparation": "التحضير",
+        "installation": "التركيب",
+        "programming": "البرمجة",
+        "qc": "فحص الجودة",
+        "handover": "التسليم"
+      }
+    },
+    "cards": {
+      "proposals": {
+        "title": "العروض",
+        "description": "راجع واقبل عروض منزلك الذكي."
+      },
+      "vault": {
+        "title": "الخزنة الذكية",
+        "description": "الوصول إلى بيانات الاعتماد والمفاتيح الرقمية."
+      },
+      "financials": {
+        "title": "المالية",
+        "description": "تتبع المدفوعات وتحميل الفواتير الضريبية."
+      },
+      "inquiries": {
+        "title": "تتبع الاستفسارات",
+        "description": "تتبع طلباتك وحجوزاتك.",
+        "latest": "الأخير"
+      },
+      "profile": {
+        "title": "ملفي الشخصي",
+        "description": "عرض وإدارة تفاصيل حسابك."
+      },
+      "warranty": {
+        "title": "الضمان والعناية",
+        "pendingCompletion": "في انتظار الاكتمال",
+        "coverageEnds": "ينتهي التغطية",
+        "daysLeft": "يوم متبقي",
+        "protectionExpired": "انتهت الحماية",
+        "renewFor": "تجديد مقابل",
+        "rules": {
+          "title": "شروط الضمان",
+          "rule1": "ضمان سنتين: يغطي استقرار الأجهزة والبرمجيات.",
+          "rule2": "شروط الإلغاء: يُلغى إذا تم فتحه أو بسبب سوء الاستخدام.",
+          "rule3": "النطاق: لا يشمل تلف إعدادات المستخدم غير المصرح بها."
+        }
+      }
+    },
+    "proposals": {
+      "title": "عروض الأسعار",
+      "subtitle": "المبيعات والعروض",
+      "noQuotations": "لم يتم العثور على عروض أسعار",
+      "expired": "منتهي",
+      "expires": "ينتهي",
+      "status": {
+        "draft": "مسودة",
+        "sent": "مُرسل",
+        "accepted": "مقبول",
+        "rejected": "مرفوض"
+      }
+    },
+    "proposalDetail": {
+      "title": "عرض النظام",
+      "ref": "المرجع",
+      "scopeOfWorks": "نطاق العمل",
+      "description": "الوصف",
+      "type": "النوع",
+      "qty": "الكمية",
+      "unitPrice": "سعر الوحدة",
+      "total": "الإجمالي",
+      "subtotal": "المجموع الفرعي",
+      "vat": "ضريبة القيمة المضافة (15%)",
+      "grandTotal": "المجموع الكلي",
+      "downloadPdf": "تحميل PDF",
+      "downloading": "جاري التحميل...",
+      "expiredNotice": "انتهت صلاحية هذا العرض ولم يعد صالحاً للقبول.",
+      "contactUs": "يرجى التواصل معنا للحصول على عرض محدث.",
+      "acceptQuote": "قبول العرض",
+      "rejectQuote": "رفض العرض",
+      "accepted": "تم قبول العرض",
+      "rejected": "تم رفض العرض",
+      "acceptConfirm": {
+        "title": "قبول العرض؟",
+        "message": "بالقبول، فإنك توافق على المضي قدماً في هذا العرض وسيبدأ فريقنا في تحضير المشروع.",
+        "confirm": "نعم، أقبل",
+        "cancel": "إلغاء"
+      },
+      "rejectConfirm": {
+        "title": "رفض العرض؟",
+        "placeholder": "يرجى إخبارنا بسبب رفضك لهذا العرض...",
+        "confirm": "إرسال الرفض",
+        "cancel": "إلغاء"
+      }
+    },
+    "vault": {
+      "title": "الخزنة الذكية",
+      "subtitle": "بيانات الاعتماد الآمنة",
+      "noProject": "لم يتم العثور على مشروع",
+      "noProjectDesc": "ستظهر بيانات الاعتماد الآمنة الخاصة بك هنا بمجرد اكتمال تركيب منزلك الذكي.",
+      "wifiCredentials": "بيانات اعتماد الواي فاي",
+      "networkName": "اسم الشبكة",
+      "password": "كلمة المرور",
+      "appAccess": "الوصول للتطبيق",
+      "adminPanel": "لوحة الإدارة",
+      "username": "اسم المستخدم",
+      "copied": "تم النسخ!",
+      "clickToCopy": "انقر للنسخ"
+    },
+    "financials": {
+      "title": "المالية",
+      "subtitle": "المدفوعات والفواتير",
+      "contractValue": "قيمة العقد",
+      "totalPaid": "إجمالي المدفوع",
+      "remaining": "المتبقي",
+      "invoices": "الفواتير",
+      "noInvoices": "لا توجد فواتير بعد",
+      "noInvoicesDesc": "ستظهر فواتيرك هنا بمجرد إنشائها.",
+      "downloadInvoice": "تحميل الفاتورة",
+      "status": {
+        "paid": "مدفوع",
+        "pending": "معلق",
+        "overdue": "متأخر"
+      }
+    },
+    "inquiries": {
+      "title": "سجل الاستفسارات",
+      "subtitle": "تتبع طلباتك وحجوزاتك",
+      "noInquiries": "لم يتم العثور على استفسارات",
+      "noInquiriesDesc": "ستظهر طلبات الاستشارة واستفسارات المنتجات هنا.",
+      "consultation": "استشارة",
+      "productInquiry": "استفسار عن منتج",
+      "status": {
+        "pending": "معلق",
+        "contacted": "تم التواصل",
+        "completed": "مكتمل",
+        "cancelled": "ملغي"
+      }
+    },
+    "profile": {
+      "title": "ملفي الشخصي",
+      "subtitle": "تفاصيل الحساب",
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "memberSince": "عضو منذ",
+      "lastSignIn": "آخر تسجيل دخول",
+      "verified": "موثق",
+      "notVerified": "غير موثق"
+    }
   }
 }

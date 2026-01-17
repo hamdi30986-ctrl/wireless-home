@@ -1235,5 +1235,163 @@
       "button1": "Request a Consultation",
       "button2": "Browse Products"
     }
+  },
+  "dashboard": {
+    "welcomeBack": "Welcome back",
+    "noActiveProject": "No active project",
+    "signOut": "Sign Out",
+    "confirmSignOut": "Confirm Sign Out?",
+    "cancel": "CANCEL",
+    "progress": {
+      "title": "Installation Progress",
+      "complete": "Complete",
+      "phase": "Phase",
+      "of": "of",
+      "stages": {
+        "preparation": "Preparation",
+        "installation": "Installation",
+        "programming": "Programming",
+        "qc": "QC Check",
+        "handover": "Handover"
+      }
+    },
+    "cards": {
+      "proposals": {
+        "title": "Proposals",
+        "description": "Review and accept your smart home offers."
+      },
+      "vault": {
+        "title": "Smart Vault",
+        "description": "Access secure credentials and digital keys."
+      },
+      "financials": {
+        "title": "Financials",
+        "description": "Monitor payments and download tax invoices."
+      },
+      "inquiries": {
+        "title": "Track Inquiries",
+        "description": "Track your orders and booking requests.",
+        "latest": "Latest"
+      },
+      "profile": {
+        "title": "My Profile",
+        "description": "View and manage your account details."
+      },
+      "warranty": {
+        "title": "Warranty & Care",
+        "pendingCompletion": "Pending completion",
+        "coverageEnds": "Coverage ends",
+        "daysLeft": "Days Left",
+        "protectionExpired": "Protection Expired",
+        "renewFor": "Renew for",
+        "rules": {
+          "title": "Warranty Rules",
+          "rule1": "2-Year Warranty: Covers hardware & software stability.",
+          "rule2": "Void Conditions: Void if opened or due to misuse.",
+          "rule3": "Scope: No unauthorized user configuration corruption."
+        }
+      }
+    },
+    "proposals": {
+      "title": "Quotations",
+      "subtitle": "Sales & Proposals",
+      "noQuotations": "No quotations found",
+      "expired": "Expired",
+      "expires": "Expires",
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      }
+    },
+    "proposalDetail": {
+      "title": "System Proposal",
+      "ref": "Ref",
+      "scopeOfWorks": "Scope of Works",
+      "description": "Description",
+      "type": "Type",
+      "qty": "Qty",
+      "unitPrice": "Unit Price",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "vat": "VAT (15%)",
+      "grandTotal": "Grand Total",
+      "downloadPdf": "Download PDF",
+      "downloading": "Downloading...",
+      "expiredNotice": "This quotation has expired and is no longer valid for acceptance.",
+      "contactUs": "Please contact us for an updated quotation.",
+      "acceptQuote": "Accept Quotation",
+      "rejectQuote": "Reject Quotation",
+      "accepted": "Quotation Accepted",
+      "rejected": "Quotation Rejected",
+      "acceptConfirm": {
+        "title": "Accept Quotation?",
+        "message": "By accepting, you agree to proceed with this quotation and our team will begin project preparation.",
+        "confirm": "Yes, Accept",
+        "cancel": "Cancel"
+      },
+      "rejectConfirm": {
+        "title": "Reject Quotation?",
+        "placeholder": "Please tell us why you're rejecting this quotation...",
+        "confirm": "Submit Rejection",
+        "cancel": "Cancel"
+      }
+    },
+    "vault": {
+      "title": "Smart Vault",
+      "subtitle": "Secure Credentials",
+      "noProject": "No project found",
+      "noProjectDesc": "Your secure credentials will appear here once your smart home installation is complete.",
+      "wifiCredentials": "Wi-Fi Credentials",
+      "networkName": "Network Name",
+      "password": "Password",
+      "appAccess": "App Access",
+      "adminPanel": "Admin Panel",
+      "username": "Username",
+      "copied": "Copied!",
+      "clickToCopy": "Click to copy"
+    },
+    "financials": {
+      "title": "Financials",
+      "subtitle": "Payments & Invoices",
+      "contractValue": "Contract Value",
+      "totalPaid": "Total Paid",
+      "remaining": "Remaining",
+      "invoices": "Invoices",
+      "noInvoices": "No invoices yet",
+      "noInvoicesDesc": "Your invoices will appear here once generated.",
+      "downloadInvoice": "Download Invoice",
+      "status": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      }
+    },
+    "inquiries": {
+      "title": "Inquiry History",
+      "subtitle": "Track your requests & orders",
+      "noInquiries": "No inquiries found",
+      "noInquiriesDesc": "Your consultation requests and product inquiries will appear here.",
+      "consultation": "Consultation",
+      "productInquiry": "Product Inquiry",
+      "status": {
+        "pending": "Pending",
+        "contacted": "Contacted",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Account Details",
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "memberSince": "Member Since",
+      "lastSignIn": "Last Sign In",
+      "verified": "Verified",
+      "notVerified": "Not Verified"
+    }
   }
 }

@@ -29,13 +29,9 @@ export default function RegisterPage() {
     setLoading(true);
     setErrorMsg('');
 
-    // 1. Password Validation - minimum 6 chars with at least 1 letter and 1 number
-    const hasMinLength = formData.password.length >= 6;
-    const hasLetter = /[a-zA-Z]/.test(formData.password);
-    const hasNumber = /\d/.test(formData.password);
-
-    if (!hasMinLength || !hasLetter || !hasNumber) {
-      setErrorMsg('Password must be at least 6 characters with at least 1 letter and 1 number.');
+    // 1. Basic Validation
+    if (formData.password.length < 6) {
+      setErrorMsg('Password must be at least 6 characters.');
       setLoading(false);
       return;
     }
@@ -173,7 +169,7 @@ export default function RegisterPage() {
                                 />
                             </div>
                             <p className="text-[10px] text-gray-400 mt-1 ml-1">
-                                Minimum 6 characters with 1 letter and 1 number.
+                                Minimum 6 characters.
                             </p>
                         </div>
 

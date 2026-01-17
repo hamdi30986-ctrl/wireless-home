@@ -1,13 +1,18 @@
 'use client';
 
 import { useState, useEffect, Fragment } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import {
-  ArrowLeft, Layout, History, User, CheckCircle,
-  ChevronDown, ChevronUp, Package, Calendar, Ban, Clock, Timer, DollarSign, X, Key, Wifi, Globe, Lock
+import { 
+  ArrowLeft, Layout, History, User, CheckCircle, 
+  ChevronDown, ChevronUp, Package, Calendar, Ban, Clock, Timer, DollarSign, X, Key, Wifi, Globe, Lock 
 } from 'lucide-react';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const STAGES = {
   preparation: { label: 'Prep & Stock', color: 'bg-gray-100 border-gray-200 text-gray-600' },

@@ -7,6 +7,7 @@ import {
   Loader2, ArrowLeft, LogOut, User, Mail, Phone, Calendar, Shield, CheckCircle, XCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '../../context/LanguageContext';
 
 type UserProfile = {
   id: string;
@@ -21,6 +22,7 @@ type UserProfile = {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
@@ -47,7 +49,7 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    window.location.reload();
   };
 
   const formatDate = (dateString: string) => {
@@ -68,21 +70,21 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f4f4f5]">
+    <div className={`min-h-screen bg-[#f4f4f5] ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
 
       {/* --- HEADER --- */}
       <div className="bg-[#0d1117] text-white px-6 py-8 shadow-xl">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="p-2 hover:bg-white/10 rounded-lg transition-all">
-              <ArrowLeft className="w-5 h-5 text-white" />
+              <ArrowLeft className={`w-5 h-5 text-white ${isRTL ? 'rotate-180' : ''}`} />
             </Link>
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
               <User className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">My Profile</h1>
-              <p className="text-xs text-gray-400 mt-0.5">Account Information</p>
+              <h1 className="text-xl font-semibold tracking-tight">{t.dashboard.profile.title}</h1>
+              <p className="text-xs text-gray-400 mt-0.5">{t.dashboard.profile.subtitle}</p>
             </div>
           </div>
 
@@ -90,7 +92,7 @@ export default function ProfilePage() {
             onClick={handleSignOut}
             className="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors"
           >
-            <LogOut className="w-4 h-4" /> Sign Out
+            <LogOut className="w-4 h-4" /> {t.dashboard.signOut}
           </button>
         </div>
       </div>
@@ -109,11 +111,11 @@ export default function ProfilePage() {
               <div className="flex items-center gap-2 mt-2">
                 {profile?.email_verified ? (
                   <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-lg">
-                    <CheckCircle className="w-3 h-3" /> Verified
+                    <CheckCircle className="w-3 h-3" /> {t.dashboard.profile.verified}
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-lg">
-                    <XCircle className="w-3 h-3" /> Unverified
+                    <XCircle className="w-3 h-3" /> {t.dashboard.profile.notVerified}
                   </span>
                 )}
               </div>
@@ -126,7 +128,7 @@ export default function ProfilePage() {
 
           {/* Contact Information */}
           <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Contact Information</h3>
+            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">{t.dashboard.profile.subtitle}</h3>
 
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
@@ -134,7 +136,7 @@ export default function ProfilePage() {
                   <Mail className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-500 font-medium">Email Address</p>
+                  <p className="text-xs text-gray-500 font-medium">{t.dashboard.profile.email}</p>
                   <p className="text-sm font-semibold text-slate-900">{profile?.email}</p>
                 </div>
                 {profile?.email_verified ? (
@@ -149,8 +151,8 @@ export default function ProfilePage() {
                   <Phone className="w-5 h-5 text-green-600" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-500 font-medium">Phone Number</p>
-                  <p className="text-sm font-semibold text-slate-900">{profile?.phone || 'Not provided'}</p>
+                  <p className="text-xs text-gray-500 font-medium">{t.dashboard.profile.phone}</p>
+                  <p className="text-sm font-semibold text-slate-900">{profile?.phone || '-'}</p>
                 </div>
                 {profile?.phone_verified ? (
                   <CheckCircle className="w-5 h-5 text-green-500" />
@@ -163,7 +165,7 @@ export default function ProfilePage() {
 
           {/* Account Details */}
           <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Account Details</h3>
+            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">{t.dashboard.profile.title}</h3>
 
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
@@ -171,7 +173,7 @@ export default function ProfilePage() {
                   <Calendar className="w-5 h-5 text-purple-600" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-500 font-medium">Account Created</p>
+                  <p className="text-xs text-gray-500 font-medium">{t.dashboard.profile.memberSince}</p>
                   <p className="text-sm font-semibold text-slate-900">{formatDate(profile?.created_at || '')}</p>
                 </div>
               </div>
@@ -181,7 +183,7 @@ export default function ProfilePage() {
                   <Shield className="w-5 h-5 text-orange-600" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-500 font-medium">Last Sign In</p>
+                  <p className="text-xs text-gray-500 font-medium">{t.dashboard.profile.lastSignIn}</p>
                   <p className="text-sm font-semibold text-slate-900">{formatDate(profile?.last_sign_in || '')}</p>
                 </div>
               </div>

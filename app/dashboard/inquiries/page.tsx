@@ -4,13 +4,15 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import {
-  Loader2, MessageSquare, ArrowLeft, LogOut, Package, 
+  Loader2, MessageSquare, ArrowLeft, LogOut, Package,
   Calendar, ChevronDown, Tag, MapPin, List
 } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function InquiriesPage() {
   const router = useRouter();
+  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [expandedId, setExpandedId] = useState<string | number | null>(null);
@@ -42,7 +44,7 @@ export default function InquiriesPage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    window.location.reload();
   };
 
   const toggleExpand = (id: string | number) => {
@@ -56,21 +58,21 @@ export default function InquiriesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f4f4f5]">
+    <div className={`min-h-screen bg-[#f4f4f5] ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
 
       {/* --- HEADER (MATCHED TO FINANCIALS) --- */}
       <div className="bg-[#0d1117] text-white px-6 py-8 shadow-xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="p-2 hover:bg-white/10 rounded-lg transition-all">
-              <ArrowLeft className="w-5 h-5 text-white" />
+              <ArrowLeft className={`w-5 h-5 text-white ${isRTL ? 'rotate-180' : ''}`} />
             </Link>
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
               <MessageSquare className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">Inquiry History</h1>
-              <p className="text-xs text-gray-400 mt-0.5">Track your requests & orders</p>
+              <h1 className="text-xl font-semibold tracking-tight">{t.dashboard.inquiries.title}</h1>
+              <p className="text-xs text-gray-400 mt-0.5">{t.dashboard.inquiries.subtitle}</p>
             </div>
           </div>
 
@@ -78,7 +80,7 @@ export default function InquiriesPage() {
             onClick={handleSignOut}
             className="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors"
           >
-            <LogOut className="w-4 h-4" /> Sign Out
+            <LogOut className="w-4 h-4" /> {t.dashboard.signOut}
           </button>
         </div>
       </div>
@@ -90,12 +92,12 @@ export default function InquiriesPage() {
             /* --- EMPTY STATE (Matches Financials/Proposals) --- */
             <div className="bg-white rounded-2xl border border-gray-200 p-20 text-center shadow-sm">
               <MessageSquare className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-              <p className="text-gray-500 font-medium">No inquiries found</p>
+              <p className="text-gray-500 font-medium">{t.dashboard.inquiries.noInquiries}</p>
             </div>
           ) : (
             inquiries.map((item) => (
-              <div 
-                key={item.id} 
+              <div
+                key={item.id}
                 className={`bg-white rounded-2xl border transition-all overflow-hidden cursor-pointer ${
                   expandedId === item.id ? 'border-blue-500 shadow-md' : 'border-gray-200 shadow-sm hover:border-gray-300'
                 }`}
@@ -111,20 +113,20 @@ export default function InquiriesPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1.5">
-                        {item.inquiryType} • {new Date(item.created_at).toLocaleDateString()}
+                        {item.inquiryType === 'Consultation' ? t.dashboard.inquiries.consultation : t.dashboard.inquiries.productInquiry} • {new Date(item.created_at).toLocaleDateString()}
                       </p>
                       <h3 className="text-base font-semibold text-slate-900 leading-none">
-                        {item.inquiryType === 'Consultation' ? `${item.project_type || 'Smart Home'}` : 'Store Request'}
+                        {item.inquiryType === 'Consultation' ? `${item.project_type || 'Smart Home'}` : t.dashboard.inquiries.productInquiry}
                       </h3>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-6">
-                    <div className="text-right">
+                    <div className={isRTL ? 'text-left' : 'text-right'}>
                       <span className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-tight ${
                         item.status === 'pending' ? 'bg-slate-100 text-slate-600' : 'bg-green-100 text-green-700'
                       }`}>
-                        {item.status}
+                        {item.status === 'pending' ? t.dashboard.inquiries.status.pending : t.dashboard.inquiries.status.completed}
                       </span>
                     </div>
                     <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${expandedId === item.id ? 'rotate-180' : ''}`} />

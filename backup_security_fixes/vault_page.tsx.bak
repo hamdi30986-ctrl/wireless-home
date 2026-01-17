@@ -7,11 +7,9 @@ import {
   Loader2, Shield, Lock, Wifi, ArrowLeft, Copy, Check, LogOut, Eye, EyeOff
 } from 'lucide-react';
 import Link from 'next/link';
-import { useLanguage } from '../../context/LanguageContext';
 
 export default function VaultPage() {
   const router = useRouter();
-  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState<any>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -22,40 +20,16 @@ export default function VaultPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push('/login'); return; }
 
-      const rawPhone = user.user_metadata?.phone || user.phone || '';
-      const normalizedPhone = rawPhone.replace(/\D/g, '');
+      const userPhone = user.user_metadata?.phone || user.phone;
 
-      // Build phone variations for matching
-      const phoneVariations: string[] = [];
-      if (normalizedPhone) {
-        phoneVariations.push(normalizedPhone);
-        if (normalizedPhone.startsWith('0')) {
-          phoneVariations.push(normalizedPhone.slice(1));
-          phoneVariations.push('966' + normalizedPhone.slice(1));
-        }
-        if (normalizedPhone.startsWith('966')) {
-          phoneVariations.push('0' + normalizedPhone.slice(3));
-        }
-      }
-
-      // Fetch projects with their quotes
       const { data: projects } = await supabase
         .from('projects')
-        .select(`*, quotes(customer_phone)`)
-        .limit(100);
+        .select(`*, quotes!inner(customer_phone)`)
+        .eq('quotes.customer_phone', userPhone)
+        .limit(1);
 
-      // SECURITY: Use exact phone matching to find user's projects
-      const matchedProject = (projects || []).find(project => {
-        const quotes = project.quotes || [];
-        return quotes.some((quote: any) => {
-          if (!quote.customer_phone) return false;
-          const quotePhoneNormalized = quote.customer_phone.replace(/\D/g, '');
-          return phoneVariations.some(v => v.replace(/\D/g, '') === quotePhoneNormalized);
-        });
-      });
-
-      if (matchedProject) {
-        setProject(matchedProject);
+      if (projects && projects.length > 0) {
+        setProject(projects[0]);
       }
       setLoading(false);
     }
@@ -64,7 +38,7 @@ export default function VaultPage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    window.location.reload();
+    router.push('/login');
   };
 
   const copyToClipboard = (text: string, field: string) => {
@@ -84,26 +58,26 @@ export default function VaultPage() {
   const creds = project?.credentials || {};
 
   return (
-    <div className={`min-h-screen bg-[#f4f4f5] ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-[#f4f4f5]">
 
       {/* --- HEADER --- */}
       <div className="bg-[#0d1117] text-white px-6 py-8 shadow-xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="p-2 hover:bg-white/10 rounded-lg transition-all">
-              <ArrowLeft className={`w-5 h-5 text-white ${isRTL ? 'rotate-180' : ''}`} />
+              <ArrowLeft className="w-5 h-5 text-white" />
             </Link>
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
               <Shield className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">{t.dashboard.vault.title}</h1>
-              <p className="text-xs text-gray-400 mt-0.5">{t.dashboard.vault.subtitle}</p>
+              <h1 className="text-xl font-semibold tracking-tight">Smart Vault</h1>
+              <p className="text-xs text-gray-400 mt-0.5">Secure Credentials & Access</p>
             </div>
           </div>
 
           <button onClick={handleSignOut} className="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors">
-             <LogOut className="w-4 h-4" /> {t.dashboard.signOut}
+             <LogOut className="w-4 h-4" /> Sign Out
           </button>
         </div>
       </div>
@@ -112,7 +86,7 @@ export default function VaultPage() {
         {!project ? (
           <div className="bg-white rounded-2xl border border-gray-200 p-20 text-center shadow-sm">
             <Shield className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium">{t.dashboard.vault.noProjectDesc}</p>
+            <p className="text-gray-500 font-medium">No secure credentials found</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -121,24 +95,24 @@ export default function VaultPage() {
               <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-3 mb-5">
                     <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600"><Lock className="w-5 h-5" /></div>
-                    <h3 className="text-base font-semibold text-slate-900">{t.dashboard.vault.appAccess}</h3>
+                    <h3 className="text-base font-semibold text-slate-900">Home Assistant</h3>
                 </div>
 
                 <div className="space-y-4">
                     <VaultItem
-                        label={t.dashboard.vault.adminPanel}
+                        label="Local URL"
                         value={creds.ha_url || 'http://homeassistant.local:8123'}
                         onCopy={() => copyToClipboard(creds.ha_url, 'url')}
                         isCopied={copiedField === 'url'}
                     />
                     <VaultItem
-                        label={t.dashboard.vault.username}
+                        label="Username"
                         value={creds.ha_username || 'admin'}
                         onCopy={() => copyToClipboard(creds.ha_username, 'user')}
                         isCopied={copiedField === 'user'}
                     />
                     <VaultItem
-                        label={t.dashboard.vault.password}
+                        label="Password"
                         value={creds.ha_password || creds.password || '••••••••'}
                         isPassword
                         show={showPass['ha']}
@@ -153,18 +127,18 @@ export default function VaultPage() {
               <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-3 mb-5">
                     <div className="p-2.5 bg-green-50 rounded-xl text-green-600"><Wifi className="w-5 h-5" /></div>
-                    <h3 className="text-base font-semibold text-slate-900">{t.dashboard.vault.wifiCredentials}</h3>
+                    <h3 className="text-base font-semibold text-slate-900">WiFi Network</h3>
                 </div>
 
                 <div className="space-y-4">
                     <VaultItem
-                        label={t.dashboard.vault.networkName}
+                        label="Network Name (SSID)"
                         value={creds.wifi_ssid || 'CasaSmart_5G'}
                         onCopy={() => copyToClipboard(creds.wifi_ssid, 'ssid')}
                         isCopied={copiedField === 'ssid'}
                     />
                     <VaultItem
-                        label={t.dashboard.vault.password}
+                        label="WiFi Password"
                         value={creds.wifi_password || '••••••••'}
                         isPassword
                         show={showPass['wifi']}
@@ -182,9 +156,9 @@ export default function VaultPage() {
                     <Shield className="w-5 h-5 text-blue-400 shrink-0" />
                 </div>
                 <div>
-                    <h4 className="text-white font-medium text-sm mb-1">{t.dashboard.vault.clickToCopy}</h4>
+                    <h4 className="text-white font-medium text-sm mb-1">Security Notice</h4>
                     <p className="text-sm text-slate-400 leading-relaxed">
-                        {t.dashboard.vault.noProjectDesc} <span className="text-white">info@wireless.sa</span>
+                        These credentials are saved securely in your project files. We recommend changing your passwords after the final handover. If you lose access, contact <span className="text-white">info@wireless.sa</span>
                     </p>
                 </div>
             </div>

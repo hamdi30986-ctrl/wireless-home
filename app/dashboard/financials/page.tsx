@@ -7,9 +7,11 @@ import {
   Loader2, Wallet, TrendingUp, Receipt, PieChart, ArrowLeft, LogOut
 } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function FinancialsPage() {
   const router = useRouter();
+  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   // Initializing with zero state to prevent empty screen for new users
   const [data, setData] = useState<any>({
@@ -54,7 +56,7 @@ export default function FinancialsPage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    window.location.reload();
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-[#f4f4f5]"><Loader2 className="w-8 h-8 animate-spin text-gray-400" /></div>;
@@ -62,21 +64,21 @@ export default function FinancialsPage() {
   const remaining = (data?.total_contract_value || 0) - (data?.total_paid || 0);
 
   return (
-    <div className="min-h-screen bg-[#f4f4f5]">
+    <div className={`min-h-screen bg-[#f4f4f5] ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
 
       {/* --- HEADER --- */}
       <div className="bg-[#0d1117] text-white px-6 py-8 shadow-xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="p-2 hover:bg-white/10 rounded-lg transition-all">
-              <ArrowLeft className="w-5 h-5 text-white" />
+              <ArrowLeft className={`w-5 h-5 text-white ${isRTL ? 'rotate-180' : ''}`} />
             </Link>
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
               <Wallet className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">Financials</h1>
-              <p className="text-xs text-gray-400 mt-0.5">Payments & Invoices</p>
+              <h1 className="text-xl font-semibold tracking-tight">{t.dashboard.financials.title}</h1>
+              <p className="text-xs text-gray-400 mt-0.5">{t.dashboard.financials.subtitle}</p>
             </div>
           </div>
 
@@ -84,7 +86,7 @@ export default function FinancialsPage() {
             onClick={handleSignOut}
             className="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors"
           >
-            <LogOut className="w-4 h-4" /> Sign Out
+            <LogOut className="w-4 h-4" /> {t.dashboard.signOut}
           </button>
         </div>
       </div>
@@ -94,19 +96,19 @@ export default function FinancialsPage() {
         {/* --- KPI ROW --- */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <KpiCard
-            label="Total Contract"
+            label={t.dashboard.financials.contractValue}
             value={data.total_contract_value}
             color="blue"
             icon={<Receipt className="w-4 h-4" />}
           />
           <KpiCard
-            label="Paid to Date"
+            label={t.dashboard.financials.totalPaid}
             value={data.total_paid}
             color="green"
             icon={<TrendingUp className="w-4 h-4" />}
           />
           <KpiCard
-            label="Pending Payment"
+            label={t.dashboard.financials.remaining}
             value={remaining}
             color="orange"
             icon={<PieChart className="w-4 h-4" />}
@@ -118,10 +120,10 @@ export default function FinancialsPage() {
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Receipt className="w-4 h-4 text-gray-400" />
-              <h3 className="text-base font-semibold text-slate-900">Invoices</h3>
+              <h3 className="text-base font-semibold text-slate-900">{t.dashboard.financials.invoices}</h3>
             </div>
             <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-medium">
-                {data.invoices.length} records
+                {data.invoices.length}
             </span>
           </div>
 
@@ -129,9 +131,9 @@ export default function FinancialsPage() {
             <table className="w-full text-left">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500">Invoice</th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 text-center">Status</th>
-                  <th className="px-10 py-3 text-xs font-medium text-gray-500 text-right">Amount</th>
+                  <th className={`px-6 py-3 text-xs font-medium text-gray-500 ${isRTL ? 'text-right' : 'text-left'}`}>{t.dashboard.financials.invoices}</th>
+                  <th className="px-6 py-3 text-xs font-medium text-gray-500 text-center">{t.dashboard.financials.status?.paid || 'Status'}</th>
+                  <th className={`px-10 py-3 text-xs font-medium text-gray-500 ${isRTL ? 'text-left' : 'text-right'}`}>{t.dashboard.proposalDetail.total}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -140,7 +142,7 @@ export default function FinancialsPage() {
                   <tr>
                     <td colSpan={3} className="px-6 py-20 text-center">
                       <Receipt className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                      <p className="text-gray-500 font-medium">No invoices found</p>
+                      <p className="text-gray-500 font-medium">{t.dashboard.financials.noInvoices}</p>
                     </td>
                   </tr>
                 ) : (
@@ -148,16 +150,16 @@ export default function FinancialsPage() {
                     <tr key={inv.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
                           <p className="font-medium text-slate-900 capitalize">{inv.type}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">Ref: {inv.invoice_ref}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">{t.dashboard.proposalDetail.ref}: {inv.invoice_ref}</p>
                       </td>
                       <td className="px-6 py-4 text-center">
                           <span className={`inline-block px-2.5 py-1 rounded-lg text-xs font-medium capitalize ${
                             inv.status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
                           }`}>
-                            {inv.status}
+                            {inv.status === 'paid' ? t.dashboard.financials.status.paid : t.dashboard.financials.status.pending}
                           </span>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className={`px-6 py-4 ${isRTL ? 'text-left' : 'text-right'}`}>
                           <span className="text-base font-semibold text-slate-900">{Math.round(inv.amount).toLocaleString()}</span>
                           <span className="text-xs text-gray-500 ml-1">SAR</span>
                       </td>

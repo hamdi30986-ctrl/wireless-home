@@ -7,11 +7,9 @@ import {
   Loader2, FileText, ArrowLeft, ChevronRight, LogOut, Clock
 } from 'lucide-react';
 import Link from 'next/link';
-import { useLanguage } from '../../context/LanguageContext';
 
 export default function ProposalsPage() {
   const router = useRouter();
-  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [quotes, setQuotes] = useState<any[]>([]);
 
@@ -21,21 +19,28 @@ export default function ProposalsPage() {
       if (!user) { router.push('/login'); return; }
 
       const rawPhone = user.user_metadata?.phone || user.phone || '';
+      // Normalize phone: remove all non-digit characters
       const normalizedPhone = rawPhone.replace(/\D/g, '');
 
+      // Try multiple phone format variations for matching
       const phoneVariations: string[] = [];
       if (normalizedPhone) {
-        phoneVariations.push(normalizedPhone);
+        phoneVariations.push(normalizedPhone); // e.g., "0512345678"
+
+        // If starts with 0, also try without leading 0 and with country code
         if (normalizedPhone.startsWith('0')) {
-          phoneVariations.push(normalizedPhone.slice(1));
-          phoneVariations.push('966' + normalizedPhone.slice(1));
-          phoneVariations.push('+966' + normalizedPhone.slice(1));
+          phoneVariations.push(normalizedPhone.slice(1)); // e.g., "512345678"
+          phoneVariations.push('966' + normalizedPhone.slice(1)); // e.g., "966512345678"
+          phoneVariations.push('+966' + normalizedPhone.slice(1)); // e.g., "+966512345678"
         }
+
+        // If starts with 966, also try with leading 0
         if (normalizedPhone.startsWith('966')) {
-          phoneVariations.push('0' + normalizedPhone.slice(3));
+          phoneVariations.push('0' + normalizedPhone.slice(3)); // e.g., "0512345678"
         }
       }
 
+      // Fetch all quotes and filter client-side for flexible phone matching
       const { data } = await supabase
         .from('quotes')
         .select('*')
@@ -44,9 +49,13 @@ export default function ProposalsPage() {
       const matchedQuotes = (data || []).filter(quote => {
         if (!quote.customer_phone) return false;
         const quotePhoneNormalized = quote.customer_phone.replace(/\D/g, '');
+
+        // Check if any phone variation matches
         return phoneVariations.some(variation => {
           const variationNormalized = variation.replace(/\D/g, '');
-          return quotePhoneNormalized === variationNormalized;
+          return quotePhoneNormalized === variationNormalized ||
+                 quotePhoneNormalized.endsWith(variationNormalized) ||
+                 variationNormalized.endsWith(quotePhoneNormalized);
         });
       });
 
@@ -58,17 +67,7 @@ export default function ProposalsPage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    window.location.reload();
-  };
-
-  const getStatusText = (status: string) => {
-    const statusMap: Record<string, string> = {
-      draft: t.dashboard.proposals.status.draft,
-      sent: t.dashboard.proposals.status.sent,
-      accepted: t.dashboard.proposals.status.accepted,
-      rejected: t.dashboard.proposals.status.rejected
-    };
-    return statusMap[status] || status;
+    router.push('/login');
   };
 
   if (loading) return (
@@ -78,21 +77,21 @@ export default function ProposalsPage() {
   );
 
   return (
-    <div className={`min-h-screen bg-[#f4f4f5] ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-[#f4f4f5]">
 
       {/* --- HEADER --- */}
       <div className="bg-[#0d1117] text-white px-6 py-8 shadow-xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="p-2 hover:bg-white/10 rounded-lg transition-all">
-              <ArrowLeft className={`w-5 h-5 text-white ${isRTL ? 'rotate-180' : ''}`} />
+              <ArrowLeft className="w-5 h-5 text-white" />
             </Link>
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
               <FileText className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">{t.dashboard.proposals.title}</h1>
-              <p className="text-xs text-gray-400 mt-0.5">{t.dashboard.proposals.subtitle}</p>
+              <h1 className="text-xl font-semibold tracking-tight">Quotations</h1>
+              <p className="text-xs text-gray-400 mt-0.5">Sales & Proposals</p>
             </div>
           </div>
 
@@ -100,7 +99,7 @@ export default function ProposalsPage() {
             onClick={handleSignOut}
             className="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors"
           >
-            <LogOut className="w-4 h-4" /> {t.dashboard.signOut}
+            <LogOut className="w-4 h-4" /> Sign Out
           </button>
         </div>
       </div>
@@ -112,7 +111,7 @@ export default function ProposalsPage() {
           {quotes.length === 0 ? (
             <div className="bg-white rounded-2xl p-16 text-center border border-gray-200">
                 <FileText className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">{t.dashboard.proposals.noQuotations}</p>
+                <p className="text-gray-500 text-sm">No quotations found</p>
             </div>
           ) : (
             quotes.map((quote) => {
@@ -133,34 +132,34 @@ export default function ProposalsPage() {
                           <h3 className={`text-base font-semibold ${isExpired ? 'text-gray-500' : 'text-slate-900'}`}>{quote.project_name || 'Smart Home System'}</h3>
                           {isExpired ? (
                             <span className="px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-700">
-                              {t.dashboard.proposals.expired}
+                              Expired
                             </span>
                           ) : (
                             <span className={`px-2 py-0.5 rounded text-xs font-medium capitalize ${
                               quote.status === 'accepted' ? 'bg-green-100 text-green-700' :
                               quote.status === 'draft' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
                             }`}>
-                              {getStatusText(quote.status)}
+                              {quote.status}
                             </span>
                           )}
                         </div>
                         <p className="text-sm text-gray-500 mt-0.5">
                           {quote.property_type || 'Residential'} • {new Date(quote.created_at).toLocaleDateString()}
                           {quote.expiry_date && !isExpired && quote.status !== 'accepted' && (
-                            <span className="text-gray-400"> • {t.dashboard.proposals.expires} {new Date(quote.expiry_date).toLocaleDateString()}</span>
+                            <span className="text-gray-400"> • Expires {new Date(quote.expiry_date).toLocaleDateString()}</span>
                           )}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-6">
-                      <div className={isRTL ? 'text-left' : 'text-right'}>
+                      <div className="text-right">
                         <div className={`text-lg font-semibold ${isExpired ? 'text-gray-400' : 'text-slate-900'}`}>
                           {Math.round(quote.grand_total).toLocaleString()}
-                          <span className={`text-xs font-medium text-gray-500 ${isRTL ? 'mr-1' : 'ml-1'}`}>SAR</span>
+                          <span className="text-xs font-medium text-gray-500 ml-1">SAR</span>
                         </div>
                       </div>
-                      <ChevronRight className={`w-5 h-5 transition-colors ${isExpired ? 'text-gray-300' : 'text-gray-400 group-hover:text-slate-900'} ${isRTL ? 'rotate-180' : ''}`} />
+                      <ChevronRight className={`w-5 h-5 transition-colors ${isExpired ? 'text-gray-300' : 'text-gray-400 group-hover:text-slate-900'}`} />
                     </div>
                   </div>
                 </Link>
