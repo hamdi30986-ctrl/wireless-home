@@ -89,44 +89,44 @@ export default function VaultPage() {
     <div className={`min-h-screen bg-[#f4f4f5] ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
 
       {/* --- HEADER --- */}
-      <div className="bg-[#0d1117] text-white px-6 py-8 shadow-xl">
+      <div className="bg-[#0d1117] text-white px-4 sm:px-6 py-6 sm:py-8 shadow-xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="p-2 hover:bg-white/10 rounded-lg transition-all">
-              <ArrowLeft className={`w-5 h-5 text-white ${isRTL ? 'rotate-180' : ''}`} />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/dashboard" className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-all">
+              <ArrowLeft className={`w-4 h-4 sm:w-5 sm:h-5 text-white ${isRTL ? 'rotate-180' : ''}`} />
             </Link>
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 rounded-xl flex items-center justify-center">
+              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">{t.dashboard.vault.title}</h1>
-              <p className="text-xs text-gray-400 mt-0.5">{t.dashboard.vault.subtitle}</p>
+              <h1 className="text-base sm:text-xl font-semibold tracking-tight">{t.dashboard.vault.title}</h1>
+              <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">{t.dashboard.vault.subtitle}</p>
             </div>
           </div>
 
-          <button onClick={handleSignOut} className="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors">
-             <LogOut className="w-4 h-4" /> {t.dashboard.signOut}
+          <button onClick={handleSignOut} className="text-gray-400 hover:text-white text-xs sm:text-sm flex items-center gap-1 sm:gap-2 transition-colors">
+             <LogOut className="w-4 h-4" /> <span className="hidden sm:inline">{t.dashboard.signOut}</span>
           </button>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {!project ? (
-          <div className="bg-white rounded-2xl border border-gray-200 p-20 text-center shadow-sm">
-            <Shield className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium">{t.dashboard.vault.noProjectDesc}</p>
+          <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-10 sm:p-20 text-center shadow-sm">
+            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-gray-200 mx-auto mb-4" />
+            <p className="text-gray-500 font-medium text-sm sm:text-base">{t.dashboard.vault.noProjectDesc}</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* --- HOME ASSISTANT ACCESS --- */}
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-3 mb-5">
-                    <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600"><Lock className="w-5 h-5" /></div>
-                    <h3 className="text-base font-semibold text-slate-900">{t.dashboard.vault.appAccess}</h3>
+              <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+                    <div className="p-2 sm:p-2.5 bg-blue-50 rounded-lg sm:rounded-xl text-blue-600"><Lock className="w-4 h-4 sm:w-5 sm:h-5" /></div>
+                    <h3 className="text-sm sm:text-base font-semibold text-slate-900">{t.dashboard.vault.appAccess}</h3>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                     <VaultItem
                         label={t.dashboard.vault.adminPanel}
                         value={creds.ha_url || 'http://homeassistant.local:8123'}
@@ -152,13 +152,13 @@ export default function VaultPage() {
               </div>
 
               {/* --- WIFI NETWORK --- */}
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-3 mb-5">
-                    <div className="p-2.5 bg-green-50 rounded-xl text-green-600"><Wifi className="w-5 h-5" /></div>
-                    <h3 className="text-base font-semibold text-slate-900">{t.dashboard.vault.wifiCredentials}</h3>
+              <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
+                    <div className="p-2 sm:p-2.5 bg-green-50 rounded-lg sm:rounded-xl text-green-600"><Wifi className="w-4 h-4 sm:w-5 sm:h-5" /></div>
+                    <h3 className="text-sm sm:text-base font-semibold text-slate-900">{t.dashboard.vault.wifiCredentials}</h3>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                     <VaultItem
                         label={t.dashboard.vault.networkName}
                         value={creds.wifi_ssid || 'CasaSmart_5G'}
@@ -179,13 +179,13 @@ export default function VaultPage() {
             </div>
 
             {/* --- SECURITY NOTICE --- */}
-            <div className="bg-slate-900 p-5 rounded-2xl flex items-start gap-4">
-                <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <Shield className="w-5 h-5 text-blue-400 shrink-0" />
+            <div className="bg-slate-900 p-4 sm:p-5 rounded-xl sm:rounded-2xl flex items-start gap-3 sm:gap-4">
+                <div className="p-1.5 sm:p-2 bg-blue-500/10 rounded-lg shrink-0">
+                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
                 </div>
                 <div>
-                    <h4 className="text-white font-medium text-sm mb-1">{t.dashboard.vault.clickToCopy}</h4>
-                    <p className="text-sm text-slate-400 leading-relaxed">
+                    <h4 className="text-white font-medium text-xs sm:text-sm mb-1">{t.dashboard.vault.clickToCopy}</h4>
+                    <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
                         {t.dashboard.vault.noProjectDesc} <span className="text-white">info@wireless.sa</span>
                     </p>
                 </div>
@@ -199,21 +199,21 @@ export default function VaultPage() {
 
 function VaultItem({ label, value, isPassword, show, onToggle, onCopy, isCopied }: any) {
     return (
-        <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-500 ml-1">{label}</label>
-            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 p-3 rounded-xl hover:border-gray-300 transition-all">
+        <div className="space-y-1 sm:space-y-1.5">
+            <label className="text-[10px] sm:text-xs font-medium text-gray-500 ml-1">{label}</label>
+            <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 p-2.5 sm:p-3 rounded-lg sm:rounded-xl hover:border-gray-300 transition-all">
                 <input
                     readOnly
                     type={isPassword && !show ? "password" : "text"}
                     value={value}
-                    className="bg-transparent flex-1 font-medium text-slate-900 outline-none text-sm"
+                    className="bg-transparent flex-1 font-medium text-slate-900 outline-none text-xs sm:text-sm min-w-0"
                 />
                 {isPassword && (
-                    <button onClick={onToggle} className="p-1 hover:text-slate-900 text-gray-400 transition-colors">
+                    <button onClick={onToggle} className="p-1 hover:text-slate-900 text-gray-400 transition-colors shrink-0">
                         {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                 )}
-                <button onClick={onCopy} className="p-1 hover:text-slate-900 text-gray-400 transition-colors">
+                <button onClick={onCopy} className="p-1 hover:text-slate-900 text-gray-400 transition-colors shrink-0">
                     {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </button>
             </div>

@@ -81,19 +81,67 @@ export default function BookingRow({ booking }: { booking: any }) {
   const currentStyle = statusColors[status as keyof typeof statusColors] || statusColors.pending;
 
   return (
-    <tr className="hover:bg-gray-50 transition-colors">
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    <>
+    {/* Mobile Card View */}
+    <tr className="sm:hidden hover:bg-gray-50 transition-colors">
+      <td colSpan={6} className="p-4">
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <h4 className="font-medium text-gray-900 text-sm">{booking.name}</h4>
+            <div className="text-xs text-gray-500 mt-0.5">
+              {new Date(booking.created_at).toLocaleDateString('en-GB')} • {new Date(booking.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+          <div className="relative">
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10 rounded">
+                <Loader2 className="w-3 h-3 animate-spin text-blue-600" />
+              </div>
+            )}
+            <select
+              value={status}
+              onChange={handleStatusChange}
+              className={`appearance-none cursor-pointer px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border outline-none ${currentStyle}`}
+            >
+              <option value="pending">⏳ Pending</option>
+              <option value="contacted">📞 Contacted</option>
+              <option value="completed">✅ Completed</option>
+              <option value="cancelled">❌ Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <a href={`tel:${booking.phone}`} className="flex items-center gap-1 font-mono text-blue-600">
+            <Phone className="w-3 h-3" />{booking.phone}
+          </a>
+          <span className="px-2 py-0.5 bg-gray-100 rounded text-[10px] font-medium border border-gray-200 capitalize">
+            {booking.project_type || 'General'}
+          </span>
+          {booking.latitude && (
+            <a href={`http://googleusercontent.com/maps.google.com/?q=${booking.latitude},${booking.longitude}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-blue-600">
+              <MapPin className="w-3 h-3" />Map
+            </a>
+          )}
+          <button onClick={openNotesPanel} className="ml-auto p-1 text-gray-400 hover:text-blue-600 rounded" title="Notes">
+            <MessageSquare className="w-4 h-4" />
+          </button>
+        </div>
+      </td>
+    </tr>
+    {/* Desktop Table Row */}
+    <tr className="hidden sm:table-row hover:bg-gray-50 transition-colors">
+      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
         {new Date(booking.created_at).toLocaleDateString('en-GB')}
         <div className="text-xs text-gray-400">
           {new Date(booking.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       </td>
-      
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+
+      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-900">
         {booking.name}
       </td>
-      
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+
+      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-600">
         <div className="flex flex-col gap-1">
           <a href={`tel:${booking.phone}`} className="flex items-center gap-2 font-mono text-blue-600 hover:underline">
             <Phone className="w-3 h-3" />
@@ -102,18 +150,18 @@ export default function BookingRow({ booking }: { booking: any }) {
           {booking.email && <span className="text-xs text-gray-400">{booking.email}</span>}
         </div>
       </td>
-      
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 capitalize">
+
+      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-600 capitalize">
         <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium border border-gray-200">
           {booking.project_type || 'General'}
         </span>
       </td>
-      
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+
+      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
         {booking.latitude ? (
-          <a 
-            href={`http://googleusercontent.com/maps.google.com/?q=${booking.latitude},${booking.longitude}`} 
-            target="_blank" 
+          <a
+            href={`http://googleusercontent.com/maps.google.com/?q=${booking.latitude},${booking.longitude}`}
+            target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline"
           >
@@ -123,8 +171,8 @@ export default function BookingRow({ booking }: { booking: any }) {
           <span className="text-gray-400 italic text-xs">No Location</span>
         )}
       </td>
-      
-      <td className="px-6 py-4 whitespace-nowrap">
+
+      <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
         <div className="flex items-center gap-2">
           <div className="relative w-fit">
             {isLoading && (
@@ -217,5 +265,6 @@ export default function BookingRow({ booking }: { booking: any }) {
         </td>
       )}
     </tr>
+    </>
   );
 }

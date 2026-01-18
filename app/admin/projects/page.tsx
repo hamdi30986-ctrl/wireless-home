@@ -130,28 +130,72 @@ export default function ProjectsPage() {
     <div className="min-h-screen bg-[#f4f4f5] font-sans text-slate-900">
       
       <nav className="bg-[#0d1117] border-b border-gray-800 sticky top-0 z-40 shadow-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-6 h-6" /></Link>
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10"><Layout className="w-6 h-6 text-white" /></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" /></Link>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10"><Layout className="w-4 h-4 sm:w-6 sm:h-6 text-white" /></div>
             <div>
-              <h1 className="font-bold text-xl tracking-tight text-white">{viewMode === 'board' ? 'Projects Board' : 'Projects History'}</h1>
-              <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">Operations & Execution</p>
+              <h1 className="font-bold text-sm sm:text-xl tracking-tight text-white">{viewMode === 'board' ? 'Projects' : 'History'}</h1>
+              <p className="text-[10px] sm:text-xs text-gray-400 font-medium tracking-wider uppercase">Operations</p>
             </div>
           </div>
-          <div className="flex bg-white/10 rounded-lg p-1 border border-white/10">
-            <button onClick={() => { setViewMode('board'); setExpandedProject(null); }} className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${viewMode === 'board' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}><Layout className="w-4 h-4" /> Board</button>
-            <button onClick={() => { setViewMode('history'); setExpandedProject(null); }} className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${viewMode === 'history' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}><History className="w-4 h-4" /> History</button>
+          <div className="flex bg-white/10 rounded-lg p-0.5 sm:p-1 border border-white/10">
+            <button onClick={() => { setViewMode('board'); setExpandedProject(null); }} className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-bold transition-all ${viewMode === 'board' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}><Layout className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Board</span></button>
+            <button onClick={() => { setViewMode('history'); setExpandedProject(null); }} className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-bold transition-all ${viewMode === 'history' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}><History className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">History</span></button>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         
         {/* --- VIEW 1: BOARD --- */}
         {viewMode === 'board' && (
-          <div className="overflow-x-auto pb-6 -mx-6 px-6">
-            <div className="grid grid-cols-5 gap-3 min-w-[1100px] items-start animate-in fade-in">
+          <div className="overflow-x-auto pb-6 -mx-4 sm:-mx-6 px-4 sm:px-6">
+            {/* Mobile: Vertical stacked layout */}
+            <div className="sm:hidden space-y-6">
+              {Object.entries(STAGES).map(([stageKey, config]) => {
+                const stageProjects = activeProjects.filter(p => p.status === stageKey);
+                if (stageProjects.length === 0) return null;
+                return (
+                  <div key={stageKey}>
+                    <div className={`p-2 rounded-lg border-b-2 font-bold text-xs uppercase tracking-wide flex justify-between mb-3 ${config.color}`}>
+                      <span>{config.label}</span><span className="bg-white/50 px-2 rounded text-xs">{stageProjects.length}</span>
+                    </div>
+                    <div className="space-y-3">
+                      {stageProjects.map((project) => (
+                        <div key={project.id} className={`bg-white rounded-xl border border-gray-200 shadow-sm transition-all ${expandedProject === project.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}>
+                          <div className="p-3">
+                            <div className="flex justify-between items-start mb-2 cursor-pointer" onClick={() => toggleExpand(project.id)}>
+                              <div className="overflow-hidden"><h4 className="font-bold text-gray-900 text-sm truncate">{project.customer_name}</h4><div className="flex items-center gap-2 text-[10px] text-gray-400 mt-0.5"><Clock className="w-3 h-3" /> {new Date(project.created_at).toLocaleDateString()}</div></div>
+                              <div className="text-gray-400 shrink-0 ml-2">{expandedProject === project.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</div>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-lg border border-gray-100"><User className="w-3 h-3 text-gray-400" /><select className="text-xs bg-transparent border-none w-full focus:ring-0 cursor-pointer font-medium text-gray-700 p-0" value={project.technician_name || ''} onChange={(e) => updateTechnician(project.id, e.target.value)}><option value="">Select Tech...</option><option value="Hamdi">Hamdi</option><option value="Maher">Maher</option></select></div>
+                              <div className="flex items-center justify-between pt-1 gap-1">
+                                <div className="flex gap-1">
+                                  <button onClick={() => openInvoiceModal(project)} title="Create Invoice" className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg"><DollarSign className="w-4 h-4" /></button>
+                                  <button onClick={() => openCredModal(project)} title="Manage Credentials" className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-lg"><Key className="w-4 h-4" /></button>
+                                  <button onClick={() => terminateProject(project.id)} title="Stop" className="p-1.5 text-red-300 hover:bg-red-50 hover:text-red-600 rounded-lg"><Ban className="w-4 h-4" /></button>
+                                </div>
+                                <div className="flex gap-1">
+                                  {stageKey !== 'preparation' && <button onClick={() => updateStage(project, getPrevStage(stageKey))} className="px-2 py-1 text-[10px] font-bold text-gray-400 hover:bg-gray-100 rounded border border-gray-200">Back</button>}
+                                  {stageKey === 'handover' ? (
+                                    <button onClick={() => { if(confirm('Archive as Completed?')) updateStage(project, 'completed'); }} className="px-2 py-1 text-[10px] font-bold text-white bg-green-600 rounded-lg flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Done</button>
+                                  ) : (<button onClick={() => updateStage(project, getNextStage(stageKey))} className="px-2 py-1 text-[10px] font-bold text-white bg-black rounded-lg">Next</button>)}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {expandedProject === project.id && (<div className="border-t border-gray-100 bg-gray-50 p-2 rounded-b-xl">{project.quotes?.items?.length > 0 ? (<div className="bg-white rounded-lg border border-gray-200 overflow-hidden"><table className="w-full text-[10px] text-left"><tbody className="divide-y divide-gray-50">{project.quotes.items.map((item: any, idx: number) => (<tr key={idx}><td className="p-2 font-medium text-gray-700">{item.name}</td><td className="p-2 text-gray-500 text-right">x{item.quantity}</td></tr>))}</tbody></table></div>) : (<div className="p-2 text-center text-[10px] text-gray-400 italic">No items.</div>)}</div>)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Desktop: Kanban layout */}
+            <div className="hidden sm:grid grid-cols-5 gap-3 min-w-[1100px] items-start animate-in fade-in">
               {Object.entries(STAGES).map(([stageKey, config]) => (
                 <div key={stageKey} className="flex flex-col gap-3">
                   <div className={`p-2.5 rounded-xl border-b-4 font-bold text-xs uppercase tracking-wide flex justify-between ${config.color.replace('bg-', 'border-').replace('text-', 'text-')}`}>
@@ -196,8 +240,37 @@ export default function ProjectsPage() {
         {/* --- VIEW 2: HISTORY --- */}
         {viewMode === 'history' && (
           <div className="space-y-4">
-             <div className="flex gap-4 border-b border-gray-200 pb-1"><button onClick={() => setHistoryFilter('completed')} className={`pb-3 text-sm font-bold border-b-2 transition-all ${historyFilter === 'completed' ? 'border-green-500 text-green-700' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Completed Projects</button><button onClick={() => setHistoryFilter('terminated')} className={`pb-3 text-sm font-bold border-b-2 transition-all ${historyFilter === 'terminated' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Terminated / Stopped</button></div>
-             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2">
+             <div className="flex gap-2 sm:gap-4 border-b border-gray-200 pb-1 overflow-x-auto"><button onClick={() => setHistoryFilter('completed')} className={`pb-2 sm:pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${historyFilter === 'completed' ? 'border-green-500 text-green-700' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Completed</button><button onClick={() => setHistoryFilter('terminated')} className={`pb-2 sm:pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${historyFilter === 'terminated' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Terminated</button></div>
+             {/* Mobile Card View */}
+             <div className="sm:hidden space-y-3">
+               {historyProjects.map(project => {
+                 const revenue = project.quotes?.grand_total || 0;
+                 return (
+                   <div key={project.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4" onClick={() => toggleExpand(project.id)}>
+                     <div className="flex justify-between items-start mb-2">
+                       <div>
+                         <h4 className="font-bold text-gray-900">{project.customer_name}</h4>
+                         <p className="text-xs text-gray-400 capitalize">{project.project_type}</p>
+                       </div>
+                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${project.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-red-50 text-red-600'}`}>{project.status === 'completed' ? 'Done' : 'Stopped'}</span>
+                     </div>
+                     <div className="flex items-center justify-between text-xs text-gray-500">
+                       <span className="bg-gray-100 px-2 py-1 rounded">{project.technician_name || 'Unassigned'}</span>
+                       <span className="flex items-center gap-1"><Timer className="w-3 h-3" /> {getDuration(project.created_at, project.date_completed || project.date_terminated)}</span>
+                     </div>
+                     {expandedProject === project.id && (
+                       <div className="mt-3 pt-3 border-t border-gray-100 text-xs">
+                         {project.status === 'completed' && <div className="text-green-600 font-bold">Revenue: {revenue.toLocaleString()} SAR</div>}
+                       </div>
+                     )}
+                   </div>
+                 );
+               })}
+               {historyProjects.length === 0 && <div className="text-center py-12 text-gray-400">No projects found.</div>}
+             </div>
+             {/* Desktop Table View */}
+             <div className="hidden sm:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2">
+                <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                     <thead className="bg-gray-50 text-gray-500 font-bold text-xs uppercase border-b border-gray-100"><tr><th className="px-6 py-4">Customer</th><th className="px-6 py-4">Technician</th><th className="px-6 py-4">Duration</th><th className="px-6 py-4 text-right">Status</th><th className="px-6 py-4 w-10"></th></tr></thead>
                     <tbody className="divide-y divide-gray-50">
@@ -238,6 +311,7 @@ export default function ProjectsPage() {
                     {historyProjects.length === 0 && <tr><td colSpan={5} className="py-12 text-center text-gray-400 italic">No projects found.</td></tr>}
                     </tbody>
                 </table>
+                </div>
              </div>
           </div>
         )}

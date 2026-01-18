@@ -98,70 +98,70 @@ export default function AdminOrders() {
       
       {/* LUXURY HEADER (Standardized) */}
       <nav className="bg-[#0d1117] border-b border-gray-800 sticky top-0 z-40 shadow-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/admin" className="text-gray-400 hover:text-white transition-colors">
-               <ArrowLeft className="w-6 h-6" />
+               <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             </Link>
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10">
-               <ShoppingBag className="w-6 h-6 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10">
+               <ShoppingBag className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-xl tracking-tight text-white">Store Orders</h1>
-              <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">E-Commerce & Fulfillment</p>
+              <h1 className="font-bold text-sm sm:text-xl tracking-tight text-white">Orders</h1>
+              <p className="text-[10px] sm:text-xs text-gray-400 font-medium tracking-wider uppercase">Fulfillment</p>
             </div>
           </div>
-          
+
           {/* Notification Badge in Header */}
           {orders.filter(o => o.status === 'pending').length > 0 && (
-             <div className="hidden md:flex items-center gap-2 text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full">
-               <div className="relative flex h-2 w-2 mr-1">
+             <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 sm:px-4 py-1 sm:py-2 rounded-full">
+               <div className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-blue-500"></span>
                </div>
-               {orders.filter(o => o.status === 'pending').length} New Pending
+               {orders.filter(o => o.status === 'pending').length} <span className="hidden sm:inline">New</span>
              </div>
           )}
         </div>
       </nav>
 
       {/* --- MAIN CONTENT --- */}
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {isLoading ? (
-           <div className="flex flex-col items-center justify-center h-[50vh]">
-             <Loader2 className="w-10 h-10 animate-spin text-gray-400 mb-4" />
-             <p className="text-gray-500 font-medium">Loading Orders...</p>
+           <div className="flex flex-col items-center justify-center h-[40vh] sm:h-[50vh]">
+             <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 animate-spin text-gray-400 mb-4" />
+             <p className="text-gray-500 font-medium text-sm sm:text-base">Loading Orders...</p>
            </div>
         ) : orders.length === 0 ? (
-           <div className="text-center py-24 bg-white rounded-3xl border border-dashed border-gray-300 shadow-sm mx-auto max-w-lg">
-             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Package className="w-10 h-10 text-gray-300" />
+           <div className="text-center py-16 sm:py-24 bg-white rounded-2xl sm:rounded-3xl border border-dashed border-gray-300 shadow-sm mx-auto max-w-lg">
+             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <Package className="w-8 h-8 sm:w-10 sm:h-10 text-gray-300" />
              </div>
-             <h3 className="text-xl font-bold text-gray-900 mb-2">No Orders Yet</h3>
+             <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">No Orders Yet</h3>
            </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 items-start">
+
             {/* --- LEFT COLUMN: LIST --- */}
             <div className="lg:col-span-4 flex flex-col">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1 mb-4">Order History</h3>
-              <div className="flex flex-col gap-4">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1 mb-3 sm:mb-4">Order History</h3>
+              <div className="flex flex-col gap-3 sm:gap-4">
                 {orders.map((order) => (
-                  <div 
+                  <div
                     key={order.id}
                     onClick={() => setSelectedOrder(order)}
-                    className={`relative p-6 rounded-2xl border cursor-pointer transition-all duration-200 group ${
+                    className={`relative p-4 sm:p-6 rounded-xl sm:rounded-2xl border cursor-pointer transition-all duration-200 group ${
                       selectedOrder?.id === order.id ? 'bg-white border-black shadow-xl scale-[1.02] ring-1 ring-black/5 z-10' : 'bg-white border-gray-200 hover:border-gray-400 hover:shadow-md'
                     }`}
                   >
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-bold text-gray-900 text-lg">{order.customer_name}</h3>
-                      <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-md uppercase tracking-wide">{formatDate(order.created_at)}</span>
+                    <div className="flex justify-between items-start mb-2 sm:mb-3">
+                      <h3 className="font-bold text-gray-900 text-sm sm:text-lg">{order.customer_name}</h3>
+                      <span className="text-[9px] sm:text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md uppercase tracking-wide">{formatDate(order.created_at)}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-5"><Phone className="w-3.5 h-3.5" />{order.customer_phone}</div>
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-blue-100 text-blue-700' : order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{order.status}</span>
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400 font-bold"><Package className="w-3.5 h-3.5" />{order.items.requested_items?.length || 0} Items</div>
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-5"><Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" />{order.customer_phone}</div>
+                    <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-gray-100">
+                        <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-blue-100 text-blue-700' : order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{order.status}</span>
+                        <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-gray-400 font-bold"><Package className="w-3 h-3 sm:w-3.5 sm:h-3.5" />{order.items.requested_items?.length || 0} Items</div>
                     </div>
                   </div>
                 ))}
@@ -171,55 +171,55 @@ export default function AdminOrders() {
             {/* --- RIGHT COLUMN: DETAILS --- */}
             <div className="lg:col-span-8 lg:sticky lg:top-28">
               {selectedOrder ? (
-                <div className="bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden animate-in slide-in-from-right-4 duration-300">
-                  <div className="p-8 border-b border-gray-100 bg-gray-50">
-                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 shadow-xl overflow-hidden animate-in slide-in-from-right-4 duration-300">
+                  <div className="p-4 sm:p-8 border-b border-gray-100 bg-gray-50">
+                    <div className="flex flex-col gap-4 sm:gap-6">
                       <div>
-                        <div className="flex items-center gap-3 mb-2">
-                           <h2 className="text-3xl font-bold text-gray-900">{selectedOrder.customer_name}</h2>
-                           {selectedOrder.status === 'pending' && (<span className="w-3 h-3 rounded-full bg-blue-500 animate-pulse border-2 border-white" />)}
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                           <h2 className="text-xl sm:text-3xl font-bold text-gray-900">{selectedOrder.customer_name}</h2>
+                           {selectedOrder.status === 'pending' && (<span className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-blue-500 animate-pulse border-2 border-white" />)}
                         </div>
-                        <div className="flex flex-wrap gap-4 mt-4">
-                          <div className="flex items-center gap-2 text-sm text-gray-600 bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-sm"><Phone className="w-4 h-4 text-gray-400" />{selectedOrder.customer_phone}</div>
-                          {selectedOrder.customer_email && (<div className="flex items-center gap-2 text-sm text-gray-600 bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-sm"><Mail className="w-4 h-4 text-gray-400" />{selectedOrder.customer_email}</div>)}
-                          <div className="flex items-center gap-2 text-sm text-gray-500 px-2"><Clock className="w-4 h-4 text-gray-400" />{new Date(selectedOrder.created_at).toLocaleString()}</div>
+                        <div className="flex flex-wrap gap-2 sm:gap-4 mt-3 sm:mt-4">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600 bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-gray-200 shadow-sm"><Phone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />{selectedOrder.customer_phone}</div>
+                          {selectedOrder.customer_email && (<div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600 bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-gray-200 shadow-sm"><Mail className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" /><span className="truncate max-w-[120px] sm:max-w-none">{selectedOrder.customer_email}</span></div>)}
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500 px-2"><Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />{new Date(selectedOrder.created_at).toLocaleString()}</div>
                         </div>
                       </div>
-                      <div className="flex gap-3">
+                      <div className="flex gap-2 sm:gap-3">
                         {selectedOrder.status === 'pending' ? (
-                          <button onClick={() => updateStatus(selectedOrder.id, 'completed')} className="flex items-center gap-2 px-6 py-3 bg-black hover:bg-gray-800 text-white rounded-xl text-sm font-bold transition-all shadow-lg hover:shadow-xl active:scale-95"><CheckCircle className="w-4 h-4" /> Mark Completed</button>
+                          <button onClick={() => updateStatus(selectedOrder.id, 'completed')} className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-black hover:bg-gray-800 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all shadow-lg active:scale-95"><CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Mark</span> Completed</button>
                         ) : (
-                          <button onClick={() => updateStatus(selectedOrder.id, 'pending')} className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-xl text-sm font-bold transition-colors"><XCircle className="w-4 h-4" /> Reopen Order</button>
+                          <button onClick={() => updateStatus(selectedOrder.id, 'pending')} className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-colors"><XCircle className="w-3 h-3 sm:w-4 sm:h-4" /> Reopen</button>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-8 bg-white min-h-[400px]">
+                  <div className="p-4 sm:p-8 bg-white min-h-[300px] sm:min-h-[400px]">
                     {selectedOrder.items.customer_notes && (
-                      <div className="mb-8">
-                          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2"><MessageSquare className="w-3 h-3" /> Customer Notes</h3>
-                          <div className="p-6 bg-yellow-50 border border-yellow-100 rounded-2xl text-sm text-yellow-800 font-medium leading-relaxed shadow-sm">"{selectedOrder.items.customer_notes}"</div>
+                      <div className="mb-6 sm:mb-8">
+                          <h3 className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2"><MessageSquare className="w-3 h-3" /> Customer Notes</h3>
+                          <div className="p-4 sm:p-6 bg-yellow-50 border border-yellow-100 rounded-xl sm:rounded-2xl text-xs sm:text-sm text-yellow-800 font-medium leading-relaxed shadow-sm">"{selectedOrder.items.customer_notes}"</div>
                       </div>
                     )}
                     <div>
-                      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2"><Package className="w-3 h-3" /> Requested Items ({selectedOrder.items.requested_items?.length || 0})</h3>
-                      <div className="space-y-4">
+                      <h3 className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 sm:mb-4 flex items-center gap-2"><Package className="w-3 h-3" /> Requested Items ({selectedOrder.items.requested_items?.length || 0})</h3>
+                      <div className="space-y-3 sm:space-y-4">
                         {selectedOrder.items.requested_items?.map((item, idx) => {
                           const productInfo = getProductInfo(item.productId);
                           return (
-                            <div key={idx} className="flex items-start gap-4 p-4 rounded-2xl border border-gray-100 hover:border-gray-300 transition-colors">
-                              <div className="w-20 h-20 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
-                                {productInfo.images?.[0] ? (<img src={productInfo.images[0]} alt="" className="w-full h-full object-cover" />) : (<Package className="w-8 h-8 text-gray-300" />)}
+                            <div key={idx} className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 hover:border-gray-300 transition-colors">
+                              <div className="w-14 h-14 sm:w-20 sm:h-20 bg-gray-50 rounded-lg sm:rounded-xl border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                {productInfo.images?.[0] ? (<img src={productInfo.images[0]} alt="" className="w-full h-full object-cover" />) : (<Package className="w-6 h-6 sm:w-8 sm:h-8 text-gray-300" />)}
                               </div>
-                              <div className="flex-1 min-w-0 py-1">
-                                <div className="flex justify-between items-start">
-                                  <div><h4 className="font-bold text-gray-900 text-lg">{productInfo.name}</h4><p className="text-xs text-gray-400 mt-0.5">ID: {item.productId}</p></div>
-                                  <span className="bg-black text-white px-3 py-1 rounded-lg text-sm font-bold shadow-md">x{item.quantity}</span>
+                              <div className="flex-1 min-w-0 py-0.5 sm:py-1">
+                                <div className="flex justify-between items-start gap-2">
+                                  <div className="min-w-0"><h4 className="font-bold text-gray-900 text-sm sm:text-lg truncate">{productInfo.name}</h4><p className="text-[10px] sm:text-xs text-gray-400 mt-0.5 truncate">ID: {item.productId}</p></div>
+                                  <span className="bg-black text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs sm:text-sm font-bold shadow-md flex-shrink-0">x{item.quantity}</span>
                                 </div>
-                                <div className="flex flex-wrap gap-2 mt-3">
-                                  {item.selectedColor && (<span className="text-[11px] bg-gray-100 border border-gray-200 px-2 py-1 rounded-md text-gray-600 font-semibold uppercase tracking-wide">Color: {item.selectedColor}</span>)}
-                                  {item.selectedType && (<span className="text-[11px] bg-gray-100 border border-gray-200 px-2 py-1 rounded-md text-gray-600 font-semibold uppercase tracking-wide">Type: {item.selectedType}</span>)}
+                                <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
+                                  {item.selectedColor && (<span className="text-[10px] sm:text-[11px] bg-gray-100 border border-gray-200 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-gray-600 font-semibold uppercase tracking-wide">Color: {item.selectedColor}</span>)}
+                                  {item.selectedType && (<span className="text-[10px] sm:text-[11px] bg-gray-100 border border-gray-200 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-gray-600 font-semibold uppercase tracking-wide">Type: {item.selectedType}</span>)}
                                 </div>
                               </div>
                             </div>
@@ -230,7 +230,7 @@ export default function AdminOrders() {
                   </div>
                 </div>
               ) : (
-                <div className="h-full flex flex-col items-center justify-center text-gray-400 bg-white rounded-3xl border-2 border-dashed border-gray-200 min-h-[500px]">
+                <div className="hidden lg:flex h-full flex-col items-center justify-center text-gray-400 bg-white rounded-3xl border-2 border-dashed border-gray-200 min-h-[500px]">
                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4"><Eye className="w-8 h-8 text-gray-300" /></div>
                   <p className="font-medium text-lg text-gray-500">Select an order from the list</p>
                 </div>

@@ -32,16 +32,13 @@ export default function QuotesPage() {
     if (filterMode === 'accepted') {
       query = query.eq('status', 'accepted');
     } else if (filterMode === 'expired') {
-      // Fetch quotes that are expired (expiry_date in past) and not accepted
       query = query.neq('status', 'accepted').lt('expiry_date', new Date().toISOString());
     } else {
-      // Active: not accepted and not expired (expiry_date is null or in future)
       query = query.neq('status', 'accepted');
     }
 
     const { data, error } = await query;
 
-    // For active filter, additionally filter out expired quotes on client side
     let filteredData = data || [];
     if (filterMode === 'active') {
       const now = new Date();
@@ -60,7 +57,6 @@ export default function QuotesPage() {
     }
     if (!confirm(`Mark this quote as ${newStatus}?`)) return;
 
-    // When accepting, clear the expiry_date since quote is now a project
     const updateData: any = { status: newStatus };
     if (newStatus === 'accepted') {
       updateData.expiry_date = null;
@@ -87,7 +83,6 @@ export default function QuotesPage() {
 
   const generatePDF = (quote: any) => {
     const doc = new jsPDF();
-    // --- FIX: Explicitly type the color tuple to satisfy TypeScript ---
     const primaryColor: [number, number, number] = [0, 0, 0];
 
     doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("Casa Smart", 14, 22);
@@ -106,7 +101,7 @@ export default function QuotesPage() {
       head: [['Description', 'Type', 'Qty', 'Unit Price', 'Total']], 
       body: tableRows, 
       theme: 'grid', 
-      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, // No error now
+      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, 
       styles: { fontSize: 9, cellPadding: 3 }, 
       columnStyles: { 0: { cellWidth: 80 }, 4: { halign: 'right', fontStyle: 'bold' } } 
     });
@@ -116,7 +111,6 @@ export default function QuotesPage() {
     doc.text(`VAT (15%):`, 140, finalY + 6); doc.text(`${(quote.grand_total - (quote.grand_total / 1.15)).toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 6, { align: 'right' });
     doc.setFontSize(11); doc.setFont("helvetica", "bold"); doc.text(`Grand Total`, 140, finalY + 16); doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
 
-    // Bank Transfer Info
     doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
     doc.text("Bank Transfer (Al-Rajhi) IBAN: SA4680000540608016154327", 14, finalY + 28);
     doc.setTextColor(0);
@@ -128,7 +122,7 @@ export default function QuotesPage() {
     const termsY = doc.internal.pageSize.height - 35;
     doc.setDrawColor(200); doc.line(14, termsY, 196, termsY); 
     doc.setTextColor(80); doc.setFontSize(8); doc.setFont("helvetica", "bold"); doc.text("Warranty & Terms of Service:", 14, termsY + 8);
-    doc.setFont("helvetica", "normal"); const terms = ["1. 2-Year Warranty: Covers all hardware defects and software stability issues.", "2. Void Conditions: Warranty is void if device enclosures are opened or non-recommended items installed.", "3. Scope: Software support covers configuration corruption not caused by unauthorized user access."];
+    const terms = ["1. 2-Year Warranty: Covers all hardware defects and software stability issues.", "2. Void Conditions: Warranty is void if device enclosures are opened or non-recommended items installed.", "3. Scope: Software support covers configuration corruption not caused by unauthorized user access."];
     let currentY = termsY + 13; terms.forEach(term => { doc.text(term, 14, currentY); currentY += 4; });
     
     doc.save(`Quote_${quote.customer_name}_${new Date().toISOString().split('T')[0]}.pdf`);
@@ -139,101 +133,148 @@ export default function QuotesPage() {
   return (
     <div className="min-h-screen bg-[#f4f4f5] font-sans text-slate-900" onClick={() => setActiveMenu(null)}>
       
-      {/* LUXURY HEADER */}
+      {/* MOBILE OPTIMIZED NAV */}
       <nav className="bg-[#0d1117] border-b border-gray-800 sticky top-0 z-40 shadow-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-6 h-6" /></Link>
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10"><FileText className="w-6 h-6 text-white" /></div>
+        {/* Top Row: Brand & Action */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors p-1"><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" /></Link>
             <div>
-              <h1 className="font-bold text-xl tracking-tight text-white">
-                {filterMode === 'accepted' ? 'Accepted Archive' : filterMode === 'expired' ? 'Expired Quotations' : 'Active Quotations'}
+              <h1 className="font-bold text-lg sm:text-xl tracking-tight text-white leading-none">
+                {filterMode === 'accepted' ? 'Accepted' : filterMode === 'expired' ? 'Expired' : 'Active'}
               </h1>
-              <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">Sales & Proposals</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 font-medium tracking-wider uppercase mt-0.5">Quotations</p>
             </div>
           </div>
+          
           <div className="flex items-center gap-2">
-             <button onClick={() => setFilterMode('active')} className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${filterMode === 'active' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>
-               Active
-             </button>
-             <button onClick={() => setFilterMode('accepted')} className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${filterMode === 'accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>
-               Accepted
-             </button>
-             <button onClick={() => setFilterMode('expired')} className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${filterMode === 'expired' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>
-               Expired
-             </button>
-             <Link href="/admin/quotes/create" className="bg-white text-black px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-gray-200 transition-all"><Plus className="w-4 h-4" /> New Quote</Link>
+             {/* Desktop Filters (Hidden on Mobile) */}
+             <div className="hidden sm:flex items-center gap-2 mr-2">
+                <button onClick={() => setFilterMode('active')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'active' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>Active</button>
+                <button onClick={() => setFilterMode('accepted')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>Accepted</button>
+                <button onClick={() => setFilterMode('expired')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'expired' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>Expired</button>
+             </div>
+             
+             <Link href="/admin/quotes/create" className="bg-white text-black px-4 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-2 hover:bg-gray-200 transition-all shadow-lg shadow-white/10">
+                <Plus className="w-4 h-4" /> <span className="hidden sm:inline">New Quote</span><span className="sm:hidden">New</span>
+             </Link>
           </div>
+        </div>
+
+        {/* Mobile Scrollable Filter Row */}
+        <div className="sm:hidden flex gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide border-t border-gray-800/50 pt-3">
+          <button onClick={() => setFilterMode('active')} className={`px-4 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all ${filterMode === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}>Active</button>
+          <button onClick={() => setFilterMode('accepted')} className={`px-4 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all ${filterMode === 'accepted' ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}>Accepted</button>
+          <button onClick={() => setFilterMode('expired')} className={`px-4 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all ${filterMode === 'expired' ? 'bg-orange-500 text-white' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}>Expired</button>
         </div>
       </nav>
 
       {/* CONTENT */}
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {isLoading ? (
            <div className="flex justify-center py-20"><Loader2 className="animate-spin text-gray-400" /></div>
         ) : quotes.length === 0 ? (
-           <div className="text-center py-24 bg-white rounded-3xl border border-dashed border-gray-300">
+           <div className="text-center py-24 bg-white rounded-3xl border border-dashed border-gray-300 mx-2 sm:mx-0">
              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4"><FileText className="w-8 h-8 text-gray-300" /></div>
-             <h3 className="text-lg font-bold">No {filterMode === 'accepted' ? 'accepted' : filterMode === 'expired' ? 'expired' : 'active'} quotes</h3>
+             <h3 className="text-lg font-bold">No {filterMode} quotes</h3>
            </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-3 sm:gap-4">
             {quotes.map((quote) => (
-              <div key={quote.id} className={`bg-white rounded-2xl border transition-all duration-300 relative ${expandedQuote === quote.id ? 'border-blue-500 shadow-lg ring-1 ring-blue-500' : 'border-gray-200 hover:border-gray-300 shadow-sm'} ${activeMenu === quote.id ? 'z-20' : 'z-0'}`}>
-                {/* Header Row */}
-                <div onClick={() => toggleExpand(quote.id)} className={`p-6 cursor-pointer flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all ${expandedQuote === quote.id ? 'rounded-t-2xl' : 'rounded-2xl'}`}>
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${quote.status === 'accepted' ? 'bg-green-100 text-green-600' : quote.status === 'rejected' ? 'bg-red-50 text-red-500' : 'bg-gray-100 text-gray-500'}`}><FileText className="w-6 h-6" /></div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">{quote.customer_name}</h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <span className="capitalize">{quote.project_type}</span>
-                        <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                        <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(quote.created_at).toLocaleDateString()}</span>
-                        {quote.expiry_date && (
-                          <>
-                            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                            <span className={`flex items-center gap-1 ${new Date(quote.expiry_date) < new Date() ? 'text-orange-500' : 'text-gray-400'}`}>
-                              <Clock className="w-3 h-3" />
-                              {new Date(quote.expiry_date) < new Date() ? 'Expired' : `Expires ${new Date(quote.expiry_date).toLocaleDateString()}`}
-                            </span>
-                          </>
-                        )}
+              <div key={quote.id} className={`bg-white rounded-xl sm:rounded-2xl border transition-all duration-300 relative ${expandedQuote === quote.id ? 'border-blue-500 shadow-lg ring-1 ring-blue-500' : 'border-gray-200 hover:border-gray-300 shadow-sm'} ${activeMenu === quote.id ? 'z-20' : 'z-0'}`}>
+                
+                {/* COMPACT CARD HEADER */}
+                <div onClick={() => toggleExpand(quote.id)} className={`p-4 cursor-pointer transition-all ${expandedQuote === quote.id ? 'bg-gray-50/50' : ''}`}>
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    {/* Avatar */}
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0 border border-gray-100 shadow-sm ${quote.status === 'accepted' ? 'bg-green-100 text-green-600' : quote.status === 'rejected' ? 'bg-red-50 text-red-500' : 'bg-white text-gray-500'}`}>
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </div>
+
+                    {/* Main Content - Row Layout on Mobile too */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-bold text-sm sm:text-lg text-gray-900 truncate pr-2 leading-tight">{quote.customer_name}</h3>
+                            <div className="text-[10px] sm:text-xs text-gray-500 uppercase font-medium tracking-wide mt-0.5">{quote.project_type}</div>
+                          </div>
+                          
+                          {/* Menu & Chevron */}
+                          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+                              <div className="relative">
+                                  <button onClick={(e) => { e.stopPropagation(); setActiveMenu(activeMenu === quote.id ? null : quote.id); }} className="p-1.5 hover:bg-gray-200 rounded-full text-gray-400 hover:text-black transition-colors">
+                                      <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
+                                  </button>
+                                  {activeMenu === quote.id && (
+                                    <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 z-50 origin-top-right">
+                                      <button onClick={(e) => { e.stopPropagation(); generatePDF(quote); }} className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 text-gray-700 font-medium flex gap-2 border-b border-gray-100"><Download className="w-4 h-4" /> Download PDF</button>
+                                      {quote.status === 'accepted' ? (
+                                        <>
+                                            <div className="px-4 py-3 bg-gray-50 border-b border-gray-100 flex items-center gap-2 text-green-600 text-xs font-bold uppercase tracking-wide"><CheckCircle className="w-3 h-3" /> Project Active</div>
+                                            <button onClick={(e) => { e.stopPropagation(); handleRevoke(quote); }} className="w-full text-left px-4 py-3 text-sm hover:bg-red-50 text-red-600 font-medium flex items-center gap-2 border-t border-gray-100"><RotateCcw className="w-4 h-4" /> Revoke Project</button>
+                                        </>
+                                      ) : (
+                                        <>
+                                            {quote.status === 'draft' && (
+                                              <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/quotes/create?edit=${quote.id}`); }} className="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 text-blue-600 font-medium flex gap-2 border-b border-gray-100"><Pencil className="w-4 h-4" /> Edit Quote</button>
+                                            )}
+                                            <button onClick={(e) => { e.stopPropagation(); handleStatusUpdate(quote, 'accepted'); }} className="w-full text-left px-4 py-3 text-sm hover:bg-green-50 text-green-600 font-bold flex gap-2"><CheckCircle className="w-4 h-4" /> Accept</button>
+                                            {quote.status !== 'rejected' && (<button onClick={(e) => { e.stopPropagation(); handleStatusUpdate(quote, 'rejected'); }} className="w-full text-left px-4 py-3 text-sm hover:bg-red-50 text-red-600 flex gap-2"><XCircle className="w-4 h-4" /> Reject</button>)}
+                                        </>
+                                      )}
+                                    </div>
+                                  )}
+                              </div>
+                              <div className="text-gray-300">{expandedQuote === quote.id ? <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" /> : <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />}</div>
+                          </div>
+                      </div>
+
+                      {/* Info Row (Price & Date) */}
+                      <div className="flex items-center justify-between mt-3 sm:mt-2">
+                         <div className="flex items-center gap-3">
+                             <div className="text-sm sm:text-lg font-black text-slate-900">SAR {quote.grand_total?.toLocaleString()}</div>
+                             {quote.expiry_date && new Date(quote.expiry_date) < new Date() && (
+                               <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold flex items-center gap-1"><Clock className="w-3 h-3" /> Expired</span>
+                             )}
+                         </div>
+                         <div className="text-[10px] sm:text-xs text-gray-400 flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(quote.created_at).toLocaleDateString()}</div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 ml-auto md:ml-0">
-                    <div className="text-right hidden sm:block"><div className="text-xl font-black text-slate-900">SAR {quote.grand_total?.toLocaleString()}</div><div className={`text-[10px] font-bold uppercase tracking-wider text-right ${quote.status === 'accepted' ? 'text-green-600' : quote.status === 'rejected' ? 'text-red-500' : 'text-gray-400'}`}>{quote.status}</div></div>
-                    <div className="relative"> 
-                      <button onClick={(e) => { e.stopPropagation(); setActiveMenu(activeMenu === quote.id ? null : quote.id); }} className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-black transition-colors"><MoreVertical className="w-5 h-5" /></button>
-                      {activeMenu === quote.id && (
-                        <div className="absolute right-0 top-full mt-2 w-60 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 z-50">
-                          <button onClick={(e) => { e.stopPropagation(); generatePDF(quote); }} className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 text-gray-700 font-medium flex gap-2 border-b border-gray-100"><Download className="w-4 h-4" /> Download PDF</button>
-                          {quote.status === 'accepted' ? (
-                            <>
-                                <div className="px-4 py-3 bg-gray-50 border-b border-gray-100 flex items-center gap-2 text-green-600 text-xs font-bold uppercase tracking-wide"><CheckCircle className="w-3 h-3" /> Project Active</div>
-                                <button onClick={(e) => { e.stopPropagation(); handleRevoke(quote); }} className="w-full text-left px-4 py-3 text-sm hover:bg-red-50 text-red-600 font-medium flex items-center gap-2 border-t border-gray-100"><RotateCcw className="w-4 h-4" /> Cancel Project & Revoke</button>
-                            </>
-                          ) : (
-                            <>
-                                {quote.status === 'draft' && (
-                                  <button onClick={(e) => { e.stopPropagation(); router.push(`/admin/quotes/create?edit=${quote.id}`); }} className="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 text-blue-600 font-medium flex gap-2 border-b border-gray-100"><Pencil className="w-4 h-4" /> Edit Quote</button>
-                                )}
-                                <button onClick={(e) => { e.stopPropagation(); handleStatusUpdate(quote, 'accepted'); }} className="w-full text-left px-4 py-3 text-sm hover:bg-green-50 text-green-600 font-bold flex gap-2"><CheckCircle className="w-4 h-4" /> Accept & Create Project</button>
-                                {quote.status !== 'rejected' && (<button onClick={(e) => { e.stopPropagation(); handleStatusUpdate(quote, 'rejected'); }} className="w-full text-left px-4 py-3 text-sm hover:bg-red-50 text-red-600 flex gap-2"><XCircle className="w-4 h-4" /> Reject Quote</button>)}
-                            </>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-gray-300">{expandedQuote === quote.id ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}</div>
-                  </div>
                 </div>
-                {/* Expanded Details */}
+
+                {/* Expanded Details - Improved Mobile Table */}
                 {expandedQuote === quote.id && (
-                  <div className="border-t border-gray-100 bg-gray-50/50 p-6 rounded-b-2xl animate-in slide-in-from-top-1">
-                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden"><table className="w-full text-sm text-left"><thead className="bg-gray-50 text-gray-500 font-bold text-xs uppercase border-b border-gray-100"><tr><th className="px-4 py-3">Item Details</th><th className="px-4 py-3 text-right">Price</th><th className="px-4 py-3 text-center">Qty</th><th className="px-4 py-3 text-right">Total</th></tr></thead><tbody className="divide-y divide-gray-50">{quote.items?.map((item: any, idx: number) => (<tr key={idx} className="hover:bg-gray-50"><td className="px-4 py-3 font-medium text-gray-900">{item.name}<div className="text-[10px] text-gray-400 uppercase">{item.type}</div></td><td className="px-4 py-3 text-right text-gray-500">{item.unit_price?.toLocaleString()}</td><td className="px-4 py-3 text-center text-gray-500">x{item.quantity}</td><td className="px-4 py-3 text-right font-bold text-gray-900">{item.total?.toLocaleString()}</td></tr>))}<tr className="bg-gray-50 font-bold text-gray-900 border-t border-gray-200"><td colSpan={3} className="px-4 py-3 text-right">Grand Total (Inc. VAT)</td><td className="px-4 py-3 text-right text-lg">{quote.grand_total?.toLocaleString()} SAR</td></tr></tbody></table></div>
-                    <div className="mt-4 flex justify-end"><p className="text-xs text-gray-400 italic">Internal Cost: {quote.total_cost?.toLocaleString()} SAR | Estimated Profit: {quote.total_profit?.toLocaleString()} SAR</p></div>
+                  <div className="border-t border-gray-100 bg-gray-50/50 p-3 sm:p-6 rounded-b-xl sm:rounded-b-2xl animate-in slide-in-from-top-1">
+                    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-xs text-left whitespace-nowrap">
+                          <thead className="bg-gray-50 text-gray-500 font-bold text-[10px] uppercase border-b border-gray-100">
+                             <tr>
+                               <th className="px-3 py-2">Item</th>
+                               <th className="px-3 py-2 text-right">Price</th>
+                               <th className="px-3 py-2 text-center">Qty</th>
+                               <th className="px-3 py-2 text-right">Total</th>
+                             </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-50">
+                             {quote.items?.map((item: any, idx: number) => (
+                               <tr key={idx} className="hover:bg-gray-50">
+                                 <td className="px-3 py-2 font-medium text-gray-900 max-w-[120px] truncate">{item.name}<div className="text-[9px] text-gray-400 uppercase">{item.type}</div></td>
+                                 <td className="px-3 py-2 text-right text-gray-500">{item.unit_price?.toLocaleString()}</td>
+                                 <td className="px-3 py-2 text-center text-gray-500">x{item.quantity}</td>
+                                 <td className="px-3 py-2 text-right font-bold text-gray-900">{item.total?.toLocaleString()}</td>
+                               </tr>
+                             ))}
+                             <tr className="bg-gray-50 font-bold text-gray-900 border-t border-gray-200">
+                               <td colSpan={3} className="px-3 py-2 text-right text-xs">Total</td>
+                               <td className="px-3 py-2 text-right text-sm">{quote.grand_total?.toLocaleString()}</td>
+                             </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div className="mt-2 flex justify-end px-1"><p className="text-[10px] text-gray-400 italic">Profit: {quote.total_profit?.toLocaleString()} SAR</p></div>
                   </div>
                 )}
               </div>

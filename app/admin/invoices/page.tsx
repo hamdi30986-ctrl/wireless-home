@@ -165,32 +165,68 @@ export default function InvoicesPage() {
     <div className="min-h-screen bg-[#f4f4f5] font-sans text-slate-900">
       
       <nav className="bg-[#0d1117] border-b border-gray-800 sticky top-0 z-40 shadow-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-6 h-6" /></Link>
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10"><DollarSign className="w-6 h-6 text-white" /></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" /></Link>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10"><DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-white" /></div>
             <div>
-              <h1 className="font-bold text-xl tracking-tight text-white">Financial Dashboard</h1>
-              <p className="text-xs text-gray-400 font-medium tracking-wider uppercase">Cash Flow & Invoicing</p>
+              <h1 className="font-bold text-sm sm:text-xl tracking-tight text-white">Financials</h1>
+              <p className="text-[10px] sm:text-xs text-gray-400 font-medium tracking-wider uppercase">Invoicing</p>
             </div>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between"><div><p className="text-sm text-gray-500 font-medium mb-1">Total Collected</p><h2 className="text-3xl font-black text-green-500">{stats.collected.toLocaleString()} SAR</h2></div><div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-green-600"><DollarSign className="w-6 h-6" /></div></div>
-            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between"><div><p className="text-sm text-gray-500 font-medium mb-1">Pending Payment</p><h2 className="text-3xl font-black text-orange-400">{stats.pending.toLocaleString()} SAR</h2></div><div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-500"><AlertCircle className="w-6 h-6" /></div></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 mb-6 sm:mb-8">
+            <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between"><div><p className="text-xs sm:text-sm text-gray-500 font-medium mb-1">Collected</p><h2 className="text-lg sm:text-3xl font-black text-green-500">{stats.collected.toLocaleString()}</h2><span className="text-[10px] sm:text-xs text-gray-400">SAR</span></div><div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 rounded-full flex items-center justify-center text-green-600"><DollarSign className="w-4 h-4 sm:w-6 sm:h-6" /></div></div>
+            <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between"><div><p className="text-xs sm:text-sm text-gray-500 font-medium mb-1">Pending</p><h2 className="text-lg sm:text-3xl font-black text-orange-400">{stats.pending.toLocaleString()}</h2><span className="text-[10px] sm:text-xs text-gray-400">SAR</span></div><div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-500"><AlertCircle className="w-4 h-4 sm:w-6 sm:h-6" /></div></div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center"><h3 className="font-bold text-gray-700 flex items-center gap-2"><FileText className="w-4 h-4" /> Issued Invoices</h3><span className="text-xs text-gray-400 bg-white border px-2 py-1 rounded-md">{invoices.length} Records</span></div>
-            {isLoading ? <div className="p-12 text-center text-gray-400">Loading financials...</div> : invoices.length === 0 ? <div className="p-12 text-center text-gray-400 italic">No invoices issued yet.</div> : (
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="p-3 sm:p-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center"><h3 className="font-bold text-sm sm:text-base text-gray-700 flex items-center gap-2"><FileText className="w-4 h-4" /> <span className="hidden sm:inline">Issued</span> Invoices</h3><span className="text-[10px] sm:text-xs text-gray-400 bg-white border px-2 py-1 rounded-md">{invoices.length}</span></div>
+            {isLoading ? <div className="p-8 sm:p-12 text-center text-gray-400">Loading...</div> : invoices.length === 0 ? <div className="p-8 sm:p-12 text-center text-gray-400 italic">No invoices yet.</div> : (
+                <>
+                {/* Mobile Card View */}
+                <div className="sm:hidden divide-y divide-gray-50">
+                  {invoices.map((inv) => {
+                    const percent = Math.min(100, Math.round((inv.amount_paid / inv.amount) * 100));
+                    return (
+                      <div key={inv.id} className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <div className="font-bold text-gray-900 text-sm">{inv.projects?.customer_name || 'Unknown'}</div>
+                            <div className="text-[10px] text-gray-400 uppercase">{inv.type.replace('_', ' ')}</div>
+                          </div>
+                          <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${inv.status === 'paid' ? 'bg-green-100 text-green-700' : inv.status === 'partial' ? 'bg-orange-100 text-orange-700' : 'bg-red-50 text-red-600'}`}>{inv.status}</span>
+                        </div>
+                        <div className="mb-3">
+                          <div className="flex justify-between text-[10px] mb-1 font-bold text-gray-500">
+                            <span>{Number(inv.amount_paid).toLocaleString()}</span>
+                            <span>{Number(inv.amount).toLocaleString()} SAR</span>
+                          </div>
+                          <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                            <div className={`h-full rounded-full ${percent === 100 ? 'bg-green-500' : 'bg-orange-400'}`} style={{ width: `${percent}%` }}></div>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 justify-end">
+                          <button onClick={() => openEditModal(inv)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"><Pencil className="w-4 h-4" /></button>
+                          {inv.status !== 'paid' && (<button onClick={() => openPaymentModal(inv)} className="p-1.5 text-green-600 hover:bg-green-50 rounded"><Plus className="w-4 h-4" /></button>)}
+                          <button onClick={() => generateInvoicePDF(inv)} className="p-1.5 text-gray-400 hover:text-black"><Download className="w-4 h-4" /></button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* Desktop Table View */}
+                <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-left text-sm">
                     <thead className="bg-gray-50 text-gray-500 font-bold text-xs uppercase border-b border-gray-100"><tr><th className="px-6 py-4">Invoice #</th><th className="px-6 py-4">Customer</th><th className="px-6 py-4">Milestone</th><th className="px-6 py-4 w-48">Payment Progress</th><th className="px-6 py-4 text-center">Status</th><th className="px-6 py-4 text-right">Actions</th></tr></thead>
                     <tbody className="divide-y divide-gray-50">{invoices.map((inv) => { const percent = Math.min(100, Math.round((inv.amount_paid / inv.amount) * 100)); return (<tr key={inv.id} className="hover:bg-gray-50 group"><td className="px-6 py-4 font-mono text-xs text-gray-500">{inv.invoice_ref}</td><td className="px-6 py-4"><div className="font-bold text-gray-900">{inv.projects?.customer_name || 'Unknown'}</div><div className="text-[10px] text-gray-400 uppercase">{inv.projects?.project_type}</div></td><td className="px-6 py-4 capitalize text-gray-600">{inv.type.replace('_', ' ')}</td><td className="px-6 py-4"><div className="flex justify-between text-[10px] mb-1 font-bold text-gray-500"><span>{Number(inv.amount_paid).toLocaleString()}</span><span>{Number(inv.amount).toLocaleString()} SAR</span></div><div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden"><div className={`h-full rounded-full ${percent === 100 ? 'bg-green-500' : 'bg-orange-400'}`} style={{ width: `${percent}%` }}></div></div></td><td className="px-6 py-4 text-center"><span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${inv.status === 'paid' ? 'bg-green-100 text-green-700' : inv.status === 'partial' ? 'bg-orange-100 text-orange-700' : 'bg-red-50 text-red-600'}`}>{inv.status}</span></td><td className="px-6 py-4 text-right flex justify-end gap-2"><button onClick={() => openEditModal(inv)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded border border-transparent hover:border-blue-200" title="Edit Invoice"><Pencil className="w-4 h-4" /></button>{inv.status !== 'paid' && (<button onClick={() => openPaymentModal(inv)} className="p-1.5 text-green-600 hover:bg-green-50 rounded border border-transparent hover:border-green-200" title="Record Payment"><Plus className="w-4 h-4" /></button>)}<button onClick={() => generateInvoicePDF(inv)} className="p-1.5 text-gray-400 hover:text-black" title="Download PDF"><Download className="w-4 h-4" /></button></td></tr>)})}</tbody>
                 </table>
+                </div>
+                </>
             )}
         </div>
 
