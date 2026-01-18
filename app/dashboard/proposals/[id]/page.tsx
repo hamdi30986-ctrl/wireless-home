@@ -81,74 +81,92 @@ export default function ProposalDetailPage() {
     loadQuote();
   }, [id, router]);
 
+  // --- UPDATED PDF GENERATOR (MOBILE SAFE) ---
   const generatePDF = () => {
     setIsDownloading(true);
-    const doc = new jsPDF();
-    const primaryColor: [number, number, number] = [0, 0, 0];
+    try {
+      const doc = new jsPDF();
+      const primaryColor: [number, number, number] = [0, 0, 0];
 
-    // Header Branding
-    doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("Casa Smart", 14, 22);
-    doc.setFontSize(10); doc.setFont("helvetica", "italic"); doc.setTextColor(100); doc.text("A Life Upgrade Systems!", 14, 28);
-    doc.setFont("helvetica", "normal"); doc.setTextColor(0); doc.setFontSize(9); doc.text("CR No: 7053332230", 14, 35); doc.text("Jeddah, Saudi Arabia", 14, 40);
-    
-    // Title & Ref
-    doc.setFontSize(16); doc.setFont("helvetica", "bold"); doc.text("QUOTATION", 195, 22, { align: 'right' });
-    doc.setFontSize(10); doc.setFont("helvetica", "normal"); 
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 195, 30, { align: 'right' }); 
-    doc.text(`Ref: #${quote.id.substr(0, 8).toUpperCase()}`, 195, 35, { align: 'right' });
-    
-    doc.setDrawColor(220); doc.setLineWidth(0.5); doc.line(14, 45, 196, 45); 
+      // Header Branding
+      doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("Casa Smart", 14, 22);
+      doc.setFontSize(10); doc.setFont("helvetica", "italic"); doc.setTextColor(100); doc.text("A Life Upgrade Systems!", 14, 28);
+      doc.setFont("helvetica", "normal"); doc.setTextColor(0); doc.setFontSize(9); doc.text("CR No: 7053332230", 14, 35); doc.text("Jeddah, Saudi Arabia", 14, 40);
+      
+      // Title & Ref
+      doc.setFontSize(16); doc.setFont("helvetica", "bold"); doc.text("QUOTATION", 195, 22, { align: 'right' });
+      doc.setFontSize(10); doc.setFont("helvetica", "normal"); 
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 195, 30, { align: 'right' }); 
+      doc.text(`Ref: #${quote.id.substr(0, 8).toUpperCase()}`, 195, 35, { align: 'right' });
+      
+      doc.setDrawColor(220); doc.setLineWidth(0.5); doc.line(14, 45, 196, 45); 
 
-    // Client Info
-    doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.text("Bill To:", 14, 55);
-    doc.setFont("helvetica", "normal"); 
-    doc.text(quote.customer_name || '', 14, 61); 
-    doc.text(quote.customer_phone || '', 14, 66); 
-    doc.text(`Project Type: ${quote.project_type?.toUpperCase()}`, 14, 71);
-    
-    // Table Data
-    const tableRows = quote.items.map((item: any) => [
-        item.name, 
-        (item.type || 'System').toUpperCase(), 
-        item.quantity, 
-        `${(item.unit_price || 0).toLocaleString()} SAR`, 
-        `${(item.total || 0).toLocaleString()} SAR`
-    ]);
-    
-    autoTable(doc, { 
-      startY: 80, 
-      head: [['Description', 'Type', 'Qty', 'Unit Price', 'Total']], 
-      body: tableRows, 
-      theme: 'grid', 
-      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, 
-      styles: { fontSize: 9, cellPadding: 3 }, 
-      columnStyles: { 0: { cellWidth: 80 }, 4: { halign: 'right', fontStyle: 'bold' } } 
-    });
-    
-    const finalY = (doc as any).lastAutoTable.finalY + 12;
-    const subtotal = quote.grand_total / 1.15;
-    const vat = quote.grand_total - subtotal;
+      // Client Info
+      doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.text("Bill To:", 14, 55);
+      doc.setFont("helvetica", "normal"); 
+      doc.text(quote.customer_name || '', 14, 61); 
+      doc.text(quote.customer_phone || '', 14, 66); 
+      doc.text(`Project Type: ${quote.project_type?.toUpperCase()}`, 14, 71);
+      
+      // Table Data
+      const tableRows = quote.items.map((item: any) => [
+          item.name, 
+          (item.type || 'System').toUpperCase(), 
+          item.quantity, 
+          `${(item.unit_price || 0).toLocaleString()} SAR`, 
+          `${(item.total || 0).toLocaleString()} SAR`
+      ]);
+      
+      autoTable(doc, { 
+        startY: 80, 
+        head: [['Description', 'Type', 'Qty', 'Unit Price', 'Total']], 
+        body: tableRows, 
+        theme: 'grid', 
+        headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, 
+        styles: { fontSize: 9, cellPadding: 3 }, 
+        columnStyles: { 0: { cellWidth: 80 }, 4: { halign: 'right', fontStyle: 'bold' } } 
+      });
+      
+      const finalY = (doc as any).lastAutoTable.finalY + 12;
+      const subtotal = quote.grand_total / 1.15;
+      const vat = quote.grand_total - subtotal;
 
-    // Totals Section Fix
-    doc.setFontSize(10); doc.setFont("helvetica", "normal");
-    doc.text(`Subtotal:`, 130, finalY); 
-    doc.text(`${subtotal.toLocaleString(undefined, {maximumFractionDigits:0})} SAR`, 195, finalY, { align: 'right' });
-    
-    doc.text(`VAT (15%):`, 130, finalY + 7); 
-    doc.text(`${vat.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 7, { align: 'right' });
-    
-    doc.setFontSize(11); doc.setFont("helvetica", "bold");
-    doc.text(`Grand Total`, 130, finalY + 18);
-    doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 18, { align: 'right' });
+      // Totals Section
+      doc.setFontSize(10); doc.setFont("helvetica", "normal");
+      doc.text(`Subtotal:`, 130, finalY); 
+      doc.text(`${subtotal.toLocaleString(undefined, {maximumFractionDigits:0})} SAR`, 195, finalY, { align: 'right' });
+      
+      doc.text(`VAT (15%):`, 130, finalY + 7); 
+      doc.text(`${vat.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 7, { align: 'right' });
+      
+      doc.setFontSize(11); doc.setFont("helvetica", "bold");
+      doc.text(`Grand Total`, 130, finalY + 18);
+      doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 18, { align: 'right' });
 
-    // Bank Transfer Info
-    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-    doc.text("Bank Transfer (Alrajhi Bank) IBAN: SA4680000540608016154327", 14, finalY + 30);
-    doc.setTextColor(0);
+      // Bank Transfer Info
+      doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
+      doc.text("Bank Transfer (Alrajhi Bank) IBAN: SA4680000540608016154327", 14, finalY + 30);
+      doc.setTextColor(0);
 
-    // Save
-    doc.save(`Quote_${quote.customer_name}_${new Date().toISOString().split('T')[0]}.pdf`);
-    setIsDownloading(false);
+      // -- MOBILE FIX LOGIC --
+      const fileName = `Quote_${quote.customer_name}_${new Date().toISOString().split('T')[0]}.pdf`;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // Open in new tab using Blob URL
+        const pdfBlob = doc.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+        window.open(url, '_blank');
+      } else {
+        // Direct download for desktop
+        doc.save(fileName);
+      }
+    } catch (err) {
+      console.error("PDF Error:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleAcceptQuote = async () => {

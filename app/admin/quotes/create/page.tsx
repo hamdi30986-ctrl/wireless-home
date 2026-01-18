@@ -21,14 +21,14 @@ type QuoteItem = {
   total: number;
 };
 
-// --- INNER COMPONENT (Contains all your original logic) ---
+// --- INNER COMPONENT ---
 function QuoteFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit');
 
   // --- STATE ---
-  const [customer, setCustomer] = useState({ name: '', phone: '', type: 'villa' });
+  const [customer, setCustomer] = useState({ name: '', phone: '', type: '' });
   const [items, setItems] = useState<QuoteItem[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [isProductPickerOpen, setIsProductPickerOpen] = useState(false);
@@ -46,7 +46,6 @@ function QuoteFormContent() {
       const { data } = await supabase.from('products').select('id, name, cost_price, price');
       if (data) setProducts(data);
 
-      // If editing an existing quote, load its data
       if (editId) {
         const { data: quote, error } = await supabase
           .from('quotes')
@@ -59,9 +58,8 @@ function QuoteFormContent() {
           setCustomer({
             name: quote.customer_name || '',
             phone: quote.customer_phone || '',
-            type: quote.project_type || 'villa'
+            type: quote.project_type || '' 
           });
-          // Load items with proper IDs
           const loadedItems = (quote.items || []).map((item: any, idx: number) => ({
             ...item,
             id: item.id || `loaded-${idx}`
@@ -73,11 +71,11 @@ function QuoteFormContent() {
     loadData();
   }, [router, editId]);
 
-  // --- 2. THE GOLDEN FORMULA ENGINE ---
+  // --- 2. CALCULATIONS ---
   const calculateSellingPrice = (baseCost: number) => {
     const cost = Number(baseCost) || 0;
-    const warrantyBuffer = cost * 1.05; // +5% Warranty
-    const withProfit = warrantyBuffer * 1.40; // +40% Profit Markup
+    const warrantyBuffer = cost * 1.05; 
+    const withProfit = warrantyBuffer * 1.40; 
     return Math.round(withProfit); 
   };
 
@@ -117,29 +115,27 @@ function QuoteFormContent() {
 
   const removeItem = (id: string) => setItems(items.filter(i => i.id !== id));
 
-  // --- 3. DYNAMIC PRICING LOGIC (FIXED) ---
+  // --- 3. DYNAMIC PRICING LOGIC ---
   const handleTypeChange = (type: string) => {
+    if (!type) return;
+    
     setCustomer({ ...customer, type });
     
-    // 1. Define Prices based on Type
     let fee = 0;
     if (type === 'villa') fee = 2500;      
     else if (type === 'mansion') fee = 5000; 
     else if (type === 'apartment') fee = 1500; 
     else fee = 3000; // Commercial
     
-    // 2. Find existing Software item
     const existingIndex = items.findIndex(i => i.name.toLowerCase().includes('software'));
 
     if (existingIndex >= 0) {
-      // UPDATE EXISTING ITEM
       const updatedItems = [...items];
       updatedItems[existingIndex].unit_price = fee;
       updatedItems[existingIndex].total = fee * updatedItems[existingIndex].quantity;
       updatedItems[existingIndex].name = `Software Configuration (${type.toUpperCase()})`;
       setItems(updatedItems);
     } else {
-      // CREATE NEW ITEM
       const feeItem: QuoteItem = {
         id: 'software-fee',
         name: `Software Configuration (${type.toUpperCase()})`,
@@ -153,24 +149,19 @@ function QuoteFormContent() {
     }
   };
 
-  // --- 4. TOTALS CALCULATION ---
   const subTotal = items.reduce((sum, item) => sum + (Number(item.total) || 0), 0);
   const vatAmount = subTotal * 0.15;
   const grandTotal = subTotal + vatAmount;
   const totalInternalCost = items.reduce((sum, item) => sum + ((Number(item.cost_price) || 0) * (Number(item.quantity) || 1)), 0);
   const estimatedProfit = (subTotal - totalInternalCost); 
 
-  // --- 5. SAVE TO DATABASE ---
   const handleSave = async () => {
-    if (!customer.name) {
-      alert('Please enter a Customer Name.');
-      return;
-    }
+    if (!customer.name) { alert('Please enter a Customer Name.'); return; }
+    if (!customer.type) { alert('Please select a Project Type.'); return; }
 
     setIsSaving(true);
 
     try {
-      // Calculate expiry date (1 month from now)
       const expiryDate = new Date();
       expiryDate.setMonth(expiryDate.getMonth() + 1);
 
@@ -187,11 +178,9 @@ function QuoteFormContent() {
       };
 
       if (isEditing && editId) {
-        // UPDATE existing quote (don't change expiry_date on edit)
         const { error } = await supabase.from('quotes').update(quoteData).eq('id', editId);
         if (error) throw error;
       } else {
-        // INSERT new quote with expiry_date
         quoteData.expiry_date = expiryDate.toISOString();
         const { error } = await supabase.from('quotes').insert([quoteData]);
         if (error) throw error;
@@ -262,14 +251,15 @@ function QuoteFormContent() {
             <div>
               <label className="block text-xs font-bold text-gray-500 mb-1">Project Type (Triggers Price)</label>
               <select 
-                className="w-full p-2 border rounded-lg font-medium bg-gray-50 focus:ring-2 focus:ring-black/5 outline-none"
+                className={`w-full p-2 border rounded-lg font-medium focus:ring-2 focus:ring-black/5 outline-none ${customer.type === '' ? 'text-gray-400' : 'text-gray-900 bg-gray-50'}`}
                 value={customer.type}
                 onChange={(e) => handleTypeChange(e.target.value)}
               >
-                <option value="villa">Villa (Standard) - 2500 SAR</option>
-                <option value="apartment">Apartment - 1500 SAR</option>
-                <option value="mansion">Mansion - 5000 SAR</option>
-                <option value="commercial">Commercial - 3000 SAR</option>
+                <option value="" disabled>-- Select Project Type --</option>
+                <option value="villa" className="text-gray-900">Villa (Standard) - 2500 SAR</option>
+                <option value="apartment" className="text-gray-900">Apartment - 1500 SAR</option>
+                <option value="mansion" className="text-gray-900">Mansion - 5000 SAR</option>
+                <option value="commercial" className="text-gray-900">Commercial - 3000 SAR</option>
               </select>
             </div>
           </div>

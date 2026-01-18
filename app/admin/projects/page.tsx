@@ -40,7 +40,13 @@ export default function ProjectsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push('/login'); return; }
     if (user.user_metadata?.role !== 'admin') { router.push('/dashboard'); return; }
-    const { data, error } = await supabase.from('projects').select('*, quotes ( items, grand_total, total_cost, total_profit )').order('created_at', { ascending: false });
+    
+    // UPDATED QUERY: Added invoices(id, type, status)
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*, quotes ( items, grand_total, total_cost, total_profit ), invoices ( id, type, status )')
+      .order('created_at', { ascending: false });
+
     if (!error && data) setProjects(data);
     setIsLoading(false);
   };
@@ -72,6 +78,7 @@ export default function ProjectsPage() {
   };
 
   const openInvoiceModal = (project: any) => { setInvoiceModal({ open: true, project }); setInvoiceType('down_payment'); };
+  
   const createInvoice = async () => {
     if (!invoiceModal.project) return;
     const grandTotal = invoiceModal.project.quotes?.grand_total || 0;
@@ -80,10 +87,29 @@ export default function ProjectsPage() {
     else if (invoiceType === 'installation') { amount = grandTotal * 0.40; refSuffix = 'INST'; }
     else if (invoiceType === 'handover') { amount = grandTotal * 0.20; refSuffix = 'FNL'; }
     else { amount = Number(customAmount); refSuffix = 'CUST'; }
+    
     if (amount <= 0) return alert('Invalid amount');
-    const invoiceData = { project_id: invoiceModal.project.id, invoice_ref: `INV-${invoiceModal.project.id.substr(0,4).toUpperCase()}-${refSuffix}`, type: invoiceType, amount: Math.round(amount), status: 'unpaid' };
+    
+    const invoiceData = { 
+        project_id: invoiceModal.project.id, 
+        invoice_ref: `INV-${invoiceModal.project.id.substr(0,4).toUpperCase()}-${refSuffix}`, 
+        type: invoiceType, 
+        amount: Math.round(amount), 
+        status: 'unpaid' 
+    };
+
     const { error } = await supabase.from('invoices').insert([invoiceData]);
-    if (error) { alert('Error: ' + error.message); } else { alert('Success! Invoice created.'); setInvoiceModal({ open: false, project: null }); }
+    if (error) { 
+        if (error.message.includes('unique constraint') || error.code === '23505') {
+            alert('⚠️ Invoice already exists for this stage!');
+        } else {
+            alert('Error: ' + error.message); 
+        }
+    } else { 
+        alert('Success! Invoice created.'); 
+        setInvoiceModal({ open: false, project: null }); 
+        fetchProjects(); // Refresh to update UI
+    }
   };
 
   const openCredModal = (project: any) => {
@@ -129,19 +155,25 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-[#f4f4f5] font-sans text-slate-900">
       
+      {/* MOBILE-OPTIMIZED HEADER */}
       <nav className="bg-[#0d1117] border-b border-gray-800 sticky top-0 z-40 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors"><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" /></Link>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10"><Layout className="w-4 h-4 sm:w-6 sm:h-6 text-white" /></div>
+          <div className="flex items-center gap-3">
+            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors p-1"><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" /></Link>
             <div>
-              <h1 className="font-bold text-sm sm:text-xl tracking-tight text-white">{viewMode === 'board' ? 'Projects' : 'History'}</h1>
-              <p className="text-[10px] sm:text-xs text-gray-400 font-medium tracking-wider uppercase">Operations</p>
+              <h1 className="font-bold text-lg sm:text-xl tracking-tight text-white leading-none">
+                {viewMode === 'board' ? 'Projects' : 'History'}
+              </h1>
+              <p className="text-[10px] sm:text-xs text-gray-400 font-medium tracking-wider uppercase mt-0.5">Operations</p>
             </div>
           </div>
-          <div className="flex bg-white/10 rounded-lg p-0.5 sm:p-1 border border-white/10">
-            <button onClick={() => { setViewMode('board'); setExpandedProject(null); }} className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-bold transition-all ${viewMode === 'board' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}><Layout className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Board</span></button>
-            <button onClick={() => { setViewMode('history'); setExpandedProject(null); }} className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-bold transition-all ${viewMode === 'history' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}><History className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">History</span></button>
+          <div className="flex bg-white/10 rounded-lg p-1 border border-white/10">
+            <button onClick={() => { setViewMode('board'); setExpandedProject(null); }} className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${viewMode === 'board' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}>
+                <Layout className="w-4 h-4" /> <span className="hidden sm:inline">Board</span>
+            </button>
+            <button onClick={() => { setViewMode('history'); setExpandedProject(null); }} className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${viewMode === 'history' ? 'bg-white text-black shadow-md' : 'text-gray-400 hover:text-white'}`}>
+                <History className="w-4 h-4" /> <span className="hidden sm:inline">History</span>
+            </button>
           </div>
         </div>
       </nav>
@@ -164,29 +196,63 @@ export default function ProjectsPage() {
                     <div className="space-y-3">
                       {stageProjects.map((project) => (
                         <div key={project.id} className={`bg-white rounded-xl border border-gray-200 shadow-sm transition-all ${expandedProject === project.id ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}>
-                          <div className="p-3">
-                            <div className="flex justify-between items-start mb-2 cursor-pointer" onClick={() => toggleExpand(project.id)}>
-                              <div className="overflow-hidden"><h4 className="font-bold text-gray-900 text-sm truncate">{project.customer_name}</h4><div className="flex items-center gap-2 text-[10px] text-gray-400 mt-0.5"><Clock className="w-3 h-3" /> {new Date(project.created_at).toLocaleDateString()}</div></div>
+                          <div className="p-4">
+                            <div className="flex justify-between items-start mb-3 cursor-pointer" onClick={() => toggleExpand(project.id)}>
+                              <div className="overflow-hidden">
+                                <h4 className="font-bold text-gray-900 text-sm truncate">{project.customer_name}</h4>
+                                <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1"><Clock className="w-3 h-3" /> {new Date(project.created_at).toLocaleDateString()}</div>
+                              </div>
                               <div className="text-gray-400 shrink-0 ml-2">{expandedProject === project.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</div>
                             </div>
-                            <div className="space-y-2">
-                              <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-lg border border-gray-100"><User className="w-3 h-3 text-gray-400" /><select className="text-xs bg-transparent border-none w-full focus:ring-0 cursor-pointer font-medium text-gray-700 p-0" value={project.technician_name || ''} onChange={(e) => updateTechnician(project.id, e.target.value)}><option value="">Select Tech...</option><option value="Hamdi">Hamdi</option><option value="Maher">Maher</option></select></div>
-                              <div className="flex items-center justify-between pt-1 gap-1">
+                            
+                            <div className="space-y-3">
+                              {/* Technician Selector */}
+                              <div className="flex items-center gap-3 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                                <User className="w-4 h-4 text-gray-400 shrink-0" />
+                                <select 
+                                    className="text-xs bg-transparent border-none w-full focus:ring-0 cursor-pointer font-medium text-gray-700 p-0" 
+                                    value={project.technician_name || ''} 
+                                    onChange={(e) => updateTechnician(project.id, e.target.value)}
+                                >
+                                    <option value="">Select Tech...</option>
+                                    <option value="Hamdi">Hamdi</option>
+                                    <option value="Maher">Maher</option>
+                                </select>
+                              </div>
+                              
+                              <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-50">
+                                {/* Action Buttons */}
                                 <div className="flex gap-1">
-                                  <button onClick={() => openInvoiceModal(project)} title="Create Invoice" className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg"><DollarSign className="w-4 h-4" /></button>
-                                  <button onClick={() => openCredModal(project)} title="Manage Credentials" className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-lg"><Key className="w-4 h-4" /></button>
-                                  <button onClick={() => terminateProject(project.id)} title="Stop" className="p-1.5 text-red-300 hover:bg-red-50 hover:text-red-600 rounded-lg"><Ban className="w-4 h-4" /></button>
+                                  <button onClick={() => openInvoiceModal(project)} title="Create Invoice" className="p-2 text-green-600 hover:bg-green-50 rounded-lg bg-white border border-gray-100 shadow-sm"><DollarSign className="w-4 h-4" /></button>
+                                  <button onClick={() => openCredModal(project)} title="Manage Credentials" className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg bg-white border border-gray-100 shadow-sm"><Key className="w-4 h-4" /></button>
+                                  <button onClick={() => terminateProject(project.id)} title="Stop" className="p-2 text-red-300 hover:bg-red-50 hover:text-red-600 rounded-lg"><Ban className="w-4 h-4" /></button>
                                 </div>
-                                <div className="flex gap-1">
-                                  {stageKey !== 'preparation' && <button onClick={() => updateStage(project, getPrevStage(stageKey))} className="px-2 py-1 text-[10px] font-bold text-gray-400 hover:bg-gray-100 rounded border border-gray-200">Back</button>}
+                                
+                                {/* Movement Buttons */}
+                                <div className="flex gap-2">
+                                  {stageKey !== 'preparation' && <button onClick={() => updateStage(project, getPrevStage(stageKey))} className="px-3 py-2 text-[10px] font-bold text-gray-500 hover:bg-gray-100 rounded-lg border border-gray-200">Back</button>}
                                   {stageKey === 'handover' ? (
-                                    <button onClick={() => { if(confirm('Archive as Completed?')) updateStage(project, 'completed'); }} className="px-2 py-1 text-[10px] font-bold text-white bg-green-600 rounded-lg flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Done</button>
-                                  ) : (<button onClick={() => updateStage(project, getNextStage(stageKey))} className="px-2 py-1 text-[10px] font-bold text-white bg-black rounded-lg">Next</button>)}
+                                    <button onClick={() => { if(confirm('Archive as Completed?')) updateStage(project, 'completed'); }} className="px-4 py-2 text-[10px] font-bold text-white bg-green-600 rounded-lg flex items-center gap-1 shadow-md"><CheckCircle className="w-3 h-3" /> Done</button>
+                                  ) : (<button onClick={() => updateStage(project, getNextStage(stageKey))} className="px-4 py-2 text-[10px] font-bold text-white bg-black rounded-lg shadow-md">Next</button>)}
                                 </div>
                               </div>
                             </div>
                           </div>
-                          {expandedProject === project.id && (<div className="border-t border-gray-100 bg-gray-50 p-2 rounded-b-xl">{project.quotes?.items?.length > 0 ? (<div className="bg-white rounded-lg border border-gray-200 overflow-hidden"><table className="w-full text-[10px] text-left"><tbody className="divide-y divide-gray-50">{project.quotes.items.map((item: any, idx: number) => (<tr key={idx}><td className="p-2 font-medium text-gray-700">{item.name}</td><td className="p-2 text-gray-500 text-right">x{item.quantity}</td></tr>))}</tbody></table></div>) : (<div className="p-2 text-center text-[10px] text-gray-400 italic">No items.</div>)}</div>)}
+                          {expandedProject === project.id && (
+                             <div className="border-t border-gray-100 bg-gray-50 p-3 rounded-b-xl">
+                                {project.quotes?.items?.length > 0 ? (
+                                    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                        <table className="w-full text-[10px] text-left">
+                                            <tbody className="divide-y divide-gray-50">
+                                                {project.quotes.items.map((item: any, idx: number) => (
+                                                    <tr key={idx}><td className="p-2 font-medium text-gray-700">{item.name}</td><td className="p-2 text-gray-500 text-right">x{item.quantity}</td></tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (<div className="p-2 text-center text-[10px] text-gray-400 italic">No items found.</div>)}
+                             </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -212,7 +278,6 @@ export default function ProjectsPage() {
                           <div className="space-y-3">
                             <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-lg border border-gray-100"><User className="w-3 h-3 text-gray-400" /><select className="text-xs bg-transparent border-none w-full focus:ring-0 cursor-pointer font-medium text-gray-700 p-0" value={project.technician_name || ''} onChange={(e) => updateTechnician(project.id, e.target.value)}><option value="">Select Tech...</option><option value="Hamdi">Hamdi</option><option value="Maher">Maher</option></select></div>
                             <div className="flex items-center justify-between pt-1 gap-1">
-                              {/* BUTTONS */}
                               <div className="flex gap-1">
                                 <button onClick={() => openInvoiceModal(project)} title="Create Invoice" className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-transparent hover:border-green-200"><DollarSign className="w-4 h-4" /></button>
                                 <button onClick={() => openCredModal(project)} title="Manage Credentials" className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors border border-transparent hover:border-purple-200"><Key className="w-4 h-4" /></button>
@@ -240,13 +305,19 @@ export default function ProjectsPage() {
         {/* --- VIEW 2: HISTORY --- */}
         {viewMode === 'history' && (
           <div className="space-y-4">
-             <div className="flex gap-2 sm:gap-4 border-b border-gray-200 pb-1 overflow-x-auto"><button onClick={() => setHistoryFilter('completed')} className={`pb-2 sm:pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${historyFilter === 'completed' ? 'border-green-500 text-green-700' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Completed</button><button onClick={() => setHistoryFilter('terminated')} className={`pb-2 sm:pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${historyFilter === 'terminated' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Terminated</button></div>
+             {/* Filter Tabs */}
+             <div className="flex gap-2 sm:gap-4 border-b border-gray-200 pb-1 overflow-x-auto">
+                <button onClick={() => setHistoryFilter('completed')} className={`pb-2 sm:pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${historyFilter === 'completed' ? 'border-green-500 text-green-700' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Completed</button>
+                <button onClick={() => setHistoryFilter('terminated')} className={`pb-2 sm:pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all whitespace-nowrap ${historyFilter === 'terminated' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Terminated</button>
+             </div>
+             
              {/* Mobile Card View */}
              <div className="sm:hidden space-y-3">
                {historyProjects.map(project => {
                  const revenue = project.quotes?.grand_total || 0;
+                 const profit = project.quotes?.total_profit || 0;
                  return (
-                   <div key={project.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4" onClick={() => toggleExpand(project.id)}>
+                   <div key={project.id} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 transition-all" onClick={() => toggleExpand(project.id)}>
                      <div className="flex justify-between items-start mb-2">
                        <div>
                          <h4 className="font-bold text-gray-900">{project.customer_name}</h4>
@@ -258,9 +329,35 @@ export default function ProjectsPage() {
                        <span className="bg-gray-100 px-2 py-1 rounded">{project.technician_name || 'Unassigned'}</span>
                        <span className="flex items-center gap-1"><Timer className="w-3 h-3" /> {getDuration(project.created_at, project.date_completed || project.date_terminated)}</span>
                      </div>
+                     
+                     {/* EXPANDED REPORT (MOBILE) */}
                      {expandedProject === project.id && (
-                       <div className="mt-3 pt-3 border-t border-gray-100 text-xs">
-                         {project.status === 'completed' && <div className="text-green-600 font-bold">Revenue: {revenue.toLocaleString()} SAR</div>}
+                       <div className="mt-4 pt-4 border-t border-gray-100 animate-in slide-in-from-top-2">
+                         <h5 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Execution Report</h5>
+                         <div className="space-y-2 mb-4">
+                             {[
+                                 { l: 'Prep', t: project.tech_preparation, d: getDuration(project.created_at, project.date_installation) },
+                                 { l: 'Install', t: project.tech_installation, d: getDuration(project.date_installation, project.date_programming) },
+                                 { l: 'Program', t: project.tech_programming, d: getDuration(project.date_programming, project.date_qc) },
+                                 { l: 'QC', t: project.tech_qc, d: getDuration(project.date_qc, project.date_handover), hl: true },
+                                 { l: 'Handover', t: project.tech_handover, d: getDuration(project.created_at, project.date_completed) }
+                             ].map((row, i) => (
+                                 <div key={i} className={`flex justify-between items-center text-xs p-2 rounded-lg ${row.hl ? 'bg-orange-50' : 'bg-gray-50'}`}>
+                                     <div>
+                                         <span className="font-bold text-gray-700 block">{row.l}</span>
+                                         <span className="text-[10px] text-gray-400">{row.t || '-'}</span>
+                                     </div>
+                                     <span className="font-mono bg-white px-2 py-1 rounded border border-gray-200">{row.d}</span>
+                                 </div>
+                             ))}
+                         </div>
+                         {project.status === 'completed' && (
+                             <div className="bg-gray-900 rounded-xl p-4 text-white">
+                                <h5 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2"><DollarSign className="w-3 h-3" /> Financials</h5>
+                                <div className="flex justify-between text-sm mb-1"><span className="text-gray-400">Revenue</span><span className="font-bold">{revenue.toLocaleString()}</span></div>
+                                <div className="flex justify-between text-sm border-t border-gray-700 pt-2 mt-2"><span className="text-green-400">Profit</span><span className="font-bold text-green-400">+{profit.toLocaleString()}</span></div>
+                             </div>
+                         )}
                        </div>
                      )}
                    </div>
@@ -268,6 +365,7 @@ export default function ProjectsPage() {
                })}
                {historyProjects.length === 0 && <div className="text-center py-12 text-gray-400">No projects found.</div>}
              </div>
+
              {/* Desktop Table View */}
              <div className="hidden sm:block bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2">
                 <div className="overflow-x-auto">
@@ -316,24 +414,102 @@ export default function ProjectsPage() {
           </div>
         )}
 
-        {/* --- INVOICE MODAL --- */}
+        {/* --- INVOICE MODAL (UPDATED) --- */}
         {invoiceModal.open && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
                 <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
-                    <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 className="font-bold text-gray-900">Create Invoice</h3><button onClick={() => setInvoiceModal({ open: false, project: null })}><X className="w-5 h-5 text-gray-400 hover:text-black" /></button></div>
+                    <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                        <h3 className="font-bold text-gray-900">Create Invoice</h3>
+                        <button onClick={() => setInvoiceModal({ open: false, project: null })}><X className="w-5 h-5 text-gray-400 hover:text-black" /></button>
+                    </div>
                     <div className="p-6 space-y-4">
-                        <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 font-medium text-center">Project Value: SAR {invoiceModal.project?.quotes?.grand_total?.toLocaleString()}</div>
+                        <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 font-medium text-center">
+                            Project Value: SAR {invoiceModal.project?.quotes?.grand_total?.toLocaleString()}
+                        </div>
+                        
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-2">Invoice Type</label>
                             <div className="grid grid-cols-2 gap-2">
-                                <button onClick={() => setInvoiceType('down_payment')} className={`p-3 rounded-lg border text-sm font-bold transition-all ${invoiceType === 'down_payment' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>Down Payment (40%)</button>
-                                <button onClick={() => setInvoiceType('installation')} className={`p-3 rounded-lg border text-sm font-bold transition-all ${invoiceType === 'installation' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>2nd Payment (40%)</button>
-                                <button onClick={() => setInvoiceType('handover')} className={`p-3 rounded-lg border text-sm font-bold transition-all ${invoiceType === 'handover' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>Final Handover (20%)</button>
-                                <button onClick={() => setInvoiceType('custom')} className={`p-3 rounded-lg border text-sm font-bold transition-all ${invoiceType === 'custom' ? 'bg-black text-white border-black' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>Custom Amount</button>
+                                {/* LOGIC: Check existing invoices */}
+                                {(() => {
+                                    const invs = invoiceModal.project?.invoices || [];
+                                    const hasDP = invs.some((i: any) => i.type === 'down_payment');
+                                    const hasInst = invs.some((i: any) => i.type === 'installation');
+                                    const hasHandover = invs.some((i: any) => i.type === 'handover');
+
+                                    return (
+                                        <>
+                                            <button 
+                                                onClick={() => !hasDP && setInvoiceType('down_payment')} 
+                                                disabled={hasDP}
+                                                className={`p-3 rounded-lg border text-sm font-bold transition-all relative overflow-hidden ${
+                                                    hasDP 
+                                                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-70' 
+                                                    : invoiceType === 'down_payment' 
+                                                        ? 'bg-black text-white border-black' 
+                                                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {hasDP ? 'DP Billed' : 'Down Payment (40%)'}
+                                                {hasDP && <CheckCircle className="w-3 h-3 absolute top-1 right-1 text-green-500" />}
+                                            </button>
+
+                                            <button 
+                                                onClick={() => !hasInst && setInvoiceType('installation')} 
+                                                disabled={hasInst}
+                                                className={`p-3 rounded-lg border text-sm font-bold transition-all relative overflow-hidden ${
+                                                    hasInst 
+                                                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-70' 
+                                                    : invoiceType === 'installation' 
+                                                        ? 'bg-black text-white border-black' 
+                                                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {hasInst ? 'Inst. Billed' : '2nd Payment (40%)'}
+                                                {hasInst && <CheckCircle className="w-3 h-3 absolute top-1 right-1 text-green-500" />}
+                                            </button>
+
+                                            <button 
+                                                onClick={() => !hasHandover && setInvoiceType('handover')} 
+                                                disabled={hasHandover}
+                                                className={`p-3 rounded-lg border text-sm font-bold transition-all relative overflow-hidden ${
+                                                    hasHandover 
+                                                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-70' 
+                                                    : invoiceType === 'handover' 
+                                                        ? 'bg-black text-white border-black' 
+                                                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {hasHandover ? 'Final Billed' : 'Final Handover (20%)'}
+                                                {hasHandover && <CheckCircle className="w-3 h-3 absolute top-1 right-1 text-green-500" />}
+                                            </button>
+
+                                            <button 
+                                                onClick={() => setInvoiceType('custom')} 
+                                                className={`p-3 rounded-lg border text-sm font-bold transition-all ${
+                                                    invoiceType === 'custom' 
+                                                    ? 'bg-black text-white border-black' 
+                                                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                Custom Amount
+                                            </button>
+                                        </>
+                                    );
+                                })()}
                             </div>
                         </div>
-                        {invoiceType === 'custom' && (<div className="animate-in slide-in-from-top-1"><label className="block text-xs font-bold text-gray-500 mb-1">Enter Amount (SAR)</label><input type="number" className="w-full p-3 border rounded-lg font-bold" placeholder="0.00" value={customAmount} onChange={(e) => setCustomAmount(e.target.value)} /></div>)}
-                        <button onClick={createInvoice} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-green-200 transition-all flex justify-center items-center gap-2"><DollarSign className="w-5 h-5" /> Generate Invoice</button>
+
+                        {invoiceType === 'custom' && (
+                            <div className="animate-in slide-in-from-top-1">
+                                <label className="block text-xs font-bold text-gray-500 mb-1">Enter Amount (SAR)</label>
+                                <input type="number" className="w-full p-3 border rounded-lg font-bold" placeholder="0.00" value={customAmount} onChange={(e) => setCustomAmount(e.target.value)} />
+                            </div>
+                        )}
+                        
+                        <button onClick={createInvoice} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-green-200 transition-all flex justify-center items-center gap-2">
+                            <DollarSign className="w-5 h-5" /> Generate Invoice
+                        </button>
                     </div>
                 </div>
             </div>

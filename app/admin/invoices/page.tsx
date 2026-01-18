@@ -90,75 +90,92 @@ export default function InvoicesPage() {
     setPaymentModal({ open: false, invoice: null });
   };
 
+  // --- UPDATED PDF GENERATOR WITH MOBILE FIX ---
   const generateInvoicePDF = (invoice: any) => {
-    const doc = new jsPDF();
-    // --- FIX: Explicitly type the color tuple ---
-    const primaryColor: [number, number, number] = [0, 0, 0]; 
+    try {
+      const doc = new jsPDF();
+      const primaryColor: [number, number, number] = [0, 0, 0]; 
 
-    doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("Casa Smart", 14, 22);
-    doc.setFontSize(10); doc.setFont("helvetica", "italic"); doc.setTextColor(100); doc.text("A Life Upgrade Systems!", 14, 28);
-    doc.setFont("helvetica", "normal"); doc.setTextColor(0); doc.setFontSize(9); doc.text("CR No: 7053332230", 14, 35); doc.text("Jeddah, Saudi Arabia", 14, 40);
-    
-    doc.setFontSize(16); doc.setFont("helvetica", "bold"); doc.text("TAX INVOICE", 195, 22, { align: 'right' });
-    doc.setFontSize(10); doc.setFont("helvetica", "normal"); 
-    doc.text(`Invoice No: ${invoice.invoice_ref}`, 195, 30, { align: 'right' }); 
-    doc.text(`Date: ${new Date(invoice.created_at).toLocaleDateString()}`, 195, 35, { align: 'right' }); 
-    doc.text(`Status: ${invoice.status.toUpperCase()}`, 195, 40, { align: 'right' });
-    
-    doc.setDrawColor(220); doc.line(14, 45, 196, 45); 
-    
-    doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.text("Bill To:", 14, 55);
-    doc.setFont("helvetica", "normal"); 
-    doc.text(invoice.projects?.customer_name || 'Valued Customer', 14, 61); 
-    doc.text(invoice.projects?.customer_phone || '', 14, 66);
-    
-    let description = "Custom Service Payment"; 
-    if (invoice.type === 'down_payment') description = "40% Advance Payment - Smart Home Project"; 
-    if (invoice.type === 'installation') description = "40% Progress Payment - Installation Phase"; 
-    if (invoice.type === 'handover') description = "20% Final Payment - Project Handover";
-    
-    autoTable(doc, { 
-      startY: 80, 
-      head: [['Description', 'Reference Project', 'Total Amount']], 
-      body: [[description, `${invoice.projects?.project_type?.toUpperCase()} Project`, `${invoice.amount.toLocaleString()} SAR`]], 
-      theme: 'grid', 
-      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, // This line is now fixed
-      styles: { fontSize: 10, cellPadding: 5 }, 
-      columnStyles: { 2: { halign: 'right', fontStyle: 'bold' } } 
-    });
-    
-    const finalY = (doc as any).lastAutoTable.finalY + 10;
-    const net = invoice.amount / 1.15; 
-    const vat = invoice.amount - net;
-    
-    doc.setFontSize(10); 
-    doc.text(`Subtotal:`, 140, finalY); 
-    doc.text(`${net.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY, { align: 'right' });
-    
-    doc.text(`VAT (15%):`, 140, finalY + 6); 
-    doc.text(`${vat.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 6, { align: 'right' });
-    
-    doc.setFontSize(11); doc.setFont("helvetica", "bold");
-    doc.text(`Total Due`, 140, finalY + 16);
-    doc.text(`${invoice.amount.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
+      doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("Casa Smart", 14, 22);
+      doc.setFontSize(10); doc.setFont("helvetica", "italic"); doc.setTextColor(100); doc.text("A Life Upgrade Systems!", 14, 28);
+      doc.setFont("helvetica", "normal"); doc.setTextColor(0); doc.setFontSize(9); doc.text("CR No: 7053332230", 14, 35); doc.text("Jeddah, Saudi Arabia", 14, 40);
+      
+      doc.setFontSize(16); doc.setFont("helvetica", "bold"); doc.text("TAX INVOICE", 195, 22, { align: 'right' });
+      doc.setFontSize(10); doc.setFont("helvetica", "normal"); 
+      doc.text(`Invoice No: ${invoice.invoice_ref}`, 195, 30, { align: 'right' }); 
+      doc.text(`Date: ${new Date(invoice.created_at).toLocaleDateString()}`, 195, 35, { align: 'right' }); 
+      doc.text(`Status: ${invoice.status.toUpperCase()}`, 195, 40, { align: 'right' });
+      
+      doc.setDrawColor(220); doc.line(14, 45, 196, 45); 
+      
+      doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.text("Bill To:", 14, 55);
+      doc.setFont("helvetica", "normal"); 
+      doc.text(invoice.projects?.customer_name || 'Valued Customer', 14, 61); 
+      doc.text(invoice.projects?.customer_phone || '', 14, 66);
+      
+      let description = "Custom Service Payment"; 
+      if (invoice.type === 'down_payment') description = "40% Advance Payment - Smart Home Project"; 
+      if (invoice.type === 'installation') description = "40% Progress Payment - Installation Phase"; 
+      if (invoice.type === 'handover') description = "20% Final Payment - Project Handover";
+      
+      autoTable(doc, { 
+        startY: 80, 
+        head: [['Description', 'Reference Project', 'Total Amount']], 
+        body: [[description, `${invoice.projects?.project_type?.toUpperCase()} Project`, `${invoice.amount.toLocaleString()} SAR`]], 
+        theme: 'grid', 
+        headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, 
+        styles: { fontSize: 10, cellPadding: 5 }, 
+        columnStyles: { 2: { halign: 'right', fontStyle: 'bold' } } 
+      });
+      
+      const finalY = (doc as any).lastAutoTable.finalY + 10;
+      const net = invoice.amount / 1.15; 
+      const vat = invoice.amount - net;
+      
+      doc.setFontSize(10); 
+      doc.text(`Subtotal:`, 140, finalY); 
+      doc.text(`${net.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY, { align: 'right' });
+      
+      doc.text(`VAT (15%):`, 140, finalY + 6); 
+      doc.text(`${vat.toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 6, { align: 'right' });
+      
+      doc.setFontSize(11); doc.setFont("helvetica", "bold");
+      doc.text(`Total Due`, 140, finalY + 16);
+      doc.text(`${invoice.amount.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
 
-    if (invoice.amount_paid > 0) {
-      doc.setFontSize(10); doc.setTextColor(0, 150, 0);
-      doc.text(`Amount Paid:`, 140, finalY + 24);
-      doc.text(`- ${invoice.amount_paid.toLocaleString()} SAR`, 195, finalY + 24, { align: 'right' });
+      if (invoice.amount_paid > 0) {
+        doc.setFontSize(10); doc.setTextColor(0, 150, 0);
+        doc.text(`Amount Paid:`, 140, finalY + 24);
+        doc.text(`- ${invoice.amount_paid.toLocaleString()} SAR`, 195, finalY + 24, { align: 'right' });
 
-      doc.setTextColor(200, 0, 0);
-      doc.text(`Balance Due:`, 140, finalY + 30);
-      doc.text(`${(invoice.amount - invoice.amount_paid).toLocaleString()} SAR`, 195, finalY + 30, { align: 'right' });
+        doc.setTextColor(200, 0, 0);
+        doc.text(`Balance Due:`, 140, finalY + 30);
+        doc.text(`${(invoice.amount - invoice.amount_paid).toLocaleString()} SAR`, 195, finalY + 30, { align: 'right' });
+      }
+
+      // Bank Transfer Info
+      const bankY = invoice.amount_paid > 0 ? finalY + 42 : finalY + 28;
+      doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
+      doc.text("Bank Transfer (Al-Rajhi Bank) IBAN: SA4680000540608016154327", 14, bankY);
+      doc.setTextColor(0);
+
+      // -- MOBILE CHECK & DOWNLOAD --
+      const fileName = `Invoice_${invoice.invoice_ref}.pdf`;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // Open Blob in new tab for mobile safety
+        const pdfBlob = doc.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+        window.open(url, '_blank');
+      } else {
+        // Direct download for desktop
+        doc.save(fileName);
+      }
+    } catch (err) {
+      console.error("PDF Generation Failed:", err);
+      alert("PDF generation failed. Please try again.");
     }
-
-    // Bank Transfer Info
-    const bankY = invoice.amount_paid > 0 ? finalY + 42 : finalY + 28;
-    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-    doc.text("Bank Transfer (Al-Rajhi Bank) IBAN: SA4680000540608016154327", 14, bankY);
-    doc.setTextColor(0);
-
-    doc.save(`Invoice_${invoice.invoice_ref}.pdf`);
   };
 
   return (

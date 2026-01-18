@@ -81,51 +81,83 @@ export default function QuotesPage() {
     fetchQuotes();
   };
 
+  // --- UPDATED PDF GENERATOR WITH MOBILE FIX ---
   const generatePDF = (quote: any) => {
-    const doc = new jsPDF();
-    const primaryColor: [number, number, number] = [0, 0, 0];
+    try {
+      const doc = new jsPDF();
+      const primaryColor: [number, number, number] = [0, 0, 0];
 
-    doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("Casa Smart", 14, 22);
-    doc.setFontSize(10); doc.setFont("helvetica", "italic"); doc.setTextColor(100); doc.text("A Life Upgrade Systems!", 14, 28);
-    doc.setFont("helvetica", "normal"); doc.setTextColor(0); doc.setFontSize(9); doc.text("CR No: 7053332230", 14, 35); doc.text("Jeddah, Saudi Arabia", 14, 40);
-    doc.setFontSize(16); doc.setFont("helvetica", "bold"); doc.text("QUOTATION", 195, 22, { align: 'right' });
-    doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text(`Date: ${new Date().toLocaleDateString()}`, 195, 30, { align: 'right' }); doc.text(`Ref: #${quote.id.substr(0, 8).toUpperCase()}`, 195, 35, { align: 'right' });
-    doc.setDrawColor(220); doc.setLineWidth(0.5); doc.line(14, 45, 196, 45); 
-    doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.text("Bill To:", 14, 55);
-    doc.setFont("helvetica", "normal"); doc.text(quote.customer_name, 14, 61); doc.text(quote.customer_phone || '', 14, 66); doc.text(`Project Type: ${quote.project_type.toUpperCase()}`, 14, 71);
-    
-    const tableRows = quote.items.map((item: any) => [item.name, item.type.toUpperCase(), item.quantity, `${item.unit_price?.toLocaleString()} SAR`, `${item.total?.toLocaleString()} SAR`]);
-    
-    autoTable(doc, { 
-      startY: 80, 
-      head: [['Description', 'Type', 'Qty', 'Unit Price', 'Total']], 
-      body: tableRows, 
-      theme: 'grid', 
-      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, 
-      styles: { fontSize: 9, cellPadding: 3 }, 
-      columnStyles: { 0: { cellWidth: 80 }, 4: { halign: 'right', fontStyle: 'bold' } } 
-    });
-    
-    const finalY = (doc as any).lastAutoTable.finalY + 10;
-    doc.setFontSize(10); doc.text(`Subtotal:`, 140, finalY); doc.text(`${(quote.grand_total / 1.15).toLocaleString(undefined, {maximumFractionDigits:0})} SAR`, 195, finalY, { align: 'right' });
-    doc.text(`VAT (15%):`, 140, finalY + 6); doc.text(`${(quote.grand_total - (quote.grand_total / 1.15)).toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 6, { align: 'right' });
-    doc.setFontSize(11); doc.setFont("helvetica", "bold"); doc.text(`Grand Total`, 140, finalY + 16); doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
+      doc.setFontSize(26); doc.setFont("helvetica", "bold"); doc.text("Casa Smart", 14, 22);
+      doc.setFontSize(10); doc.setFont("helvetica", "italic"); doc.setTextColor(100); doc.text("A Life Upgrade Systems!", 14, 28);
+      doc.setFont("helvetica", "normal"); doc.setTextColor(0); doc.setFontSize(9); doc.text("CR No: 7053332230", 14, 35); doc.text("Jeddah, Saudi Arabia", 14, 40);
+      doc.setFontSize(16); doc.setFont("helvetica", "bold"); doc.text("QUOTATION", 195, 22, { align: 'right' });
+      doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text(`Date: ${new Date().toLocaleDateString()}`, 195, 30, { align: 'right' }); 
+      doc.text(`Ref: #${quote.id.substr(0, 8).toUpperCase()}`, 195, 35, { align: 'right' });
+      
+      doc.setDrawColor(220); doc.setLineWidth(0.5); doc.line(14, 45, 196, 45); 
+      doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.text("Bill To:", 14, 55);
+      doc.setFont("helvetica", "normal"); doc.text(quote.customer_name, 14, 61); doc.text(quote.customer_phone || '', 14, 66); doc.text(`Project Type: ${quote.project_type.toUpperCase()}`, 14, 71);
+      
+      const tableRows = quote.items.map((item: any) => [
+        item.name, 
+        item.type.toUpperCase(), 
+        item.quantity, 
+        `${item.unit_price?.toLocaleString()} SAR`, 
+        `${item.total?.toLocaleString()} SAR`
+      ]);
+      
+      autoTable(doc, { 
+        startY: 80, 
+        head: [['Description', 'Type', 'Qty', 'Unit Price', 'Total']], 
+        body: tableRows, 
+        theme: 'grid', 
+        headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' }, 
+        styles: { fontSize: 9, cellPadding: 3 }, 
+        columnStyles: { 0: { cellWidth: 80 }, 4: { halign: 'right', fontStyle: 'bold' } } 
+      });
+      
+      const finalY = (doc as any).lastAutoTable.finalY + 10;
+      doc.setFontSize(10); doc.text(`Subtotal:`, 140, finalY); doc.text(`${(quote.grand_total / 1.15).toLocaleString(undefined, {maximumFractionDigits:0})} SAR`, 195, finalY, { align: 'right' });
+      doc.text(`VAT (15%):`, 140, finalY + 6); doc.text(`${(quote.grand_total - (quote.grand_total / 1.15)).toLocaleString(undefined, {maximumFractionDigits:2})} SAR`, 195, finalY + 6, { align: 'right' });
+      doc.setFontSize(11); doc.setFont("helvetica", "bold"); doc.text(`Grand Total`, 140, finalY + 16); doc.text(`${quote.grand_total?.toLocaleString()} SAR`, 195, finalY + 16, { align: 'right' });
 
-    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-    doc.text("Bank Transfer (Al-Rajhi) IBAN: SA4680000540608016154327", 14, finalY + 28);
-    doc.setTextColor(0);
+      doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
+      doc.text("Bank Transfer (Al-Rajhi) IBAN: SA4680000540608016154327", 14, finalY + 28);
+      doc.setTextColor(0);
 
-    const paymentY = doc.internal.pageSize.height - 65;
-    doc.setFontSize(9); doc.setTextColor(0); doc.setFont("helvetica", "bold"); doc.text("Payment Schedule:", 14, paymentY);
-    doc.setFont("helvetica", "normal"); doc.text("• 40% Advance Payment upon acceptance.", 14, paymentY + 6); doc.text("• 40% Second Payment upon commencement of installation.", 14, paymentY + 11); doc.text("• 20% Final Payment upon handover.", 14, paymentY + 16);
-    
-    const termsY = doc.internal.pageSize.height - 35;
-    doc.setDrawColor(200); doc.line(14, termsY, 196, termsY); 
-    doc.setTextColor(80); doc.setFontSize(8); doc.setFont("helvetica", "bold"); doc.text("Warranty & Terms of Service:", 14, termsY + 8);
-    const terms = ["1. 2-Year Warranty: Covers all hardware defects and software stability issues.", "2. Void Conditions: Warranty is void if device enclosures are opened or non-recommended items installed.", "3. Scope: Software support covers configuration corruption not caused by unauthorized user access."];
-    let currentY = termsY + 13; terms.forEach(term => { doc.text(term, 14, currentY); currentY += 4; });
-    
-    doc.save(`Quote_${quote.customer_name}_${new Date().toISOString().split('T')[0]}.pdf`);
+      const paymentY = doc.internal.pageSize.height - 65;
+      doc.setFontSize(9); doc.setTextColor(0); doc.setFont("helvetica", "bold"); doc.text("Payment Schedule:", 14, paymentY);
+      doc.setFont("helvetica", "normal"); doc.text("• 40% Advance Payment upon acceptance.", 14, paymentY + 6); 
+      doc.text("• 40% Second Payment upon commencement of installation.", 14, paymentY + 11); 
+      doc.text("• 20% Final Payment upon handover.", 14, paymentY + 16);
+      
+      const termsY = doc.internal.pageSize.height - 35;
+      doc.setDrawColor(200); doc.line(14, termsY, 196, termsY); 
+      doc.setTextColor(80); doc.setFontSize(8); doc.setFont("helvetica", "bold"); doc.text("Warranty & Terms of Service:", 14, termsY + 8);
+      
+      const terms = [
+        "1. 2-Year Warranty: Covers all hardware defects and software stability issues.", 
+        "2. Void Conditions: Warranty is void if device enclosures are opened or non-recommended items installed.", 
+        "3. Scope: Software support covers configuration corruption not caused by unauthorized user access."
+      ];
+      let currentY = termsY + 13; 
+      terms.forEach(term => { doc.text(term, 14, currentY); currentY += 4; });
+      
+      // -- MOBILE CHECK & DOWNLOAD --
+      const fileName = `Quote_${quote.customer_name}_${new Date().toISOString().split('T')[0]}.pdf`;
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        const pdfBlob = doc.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+        window.open(url, '_blank');
+      } else {
+        doc.save(fileName);
+      }
+    } catch (err) {
+      console.error("PDF Failed", err);
+      alert("Could not generate PDF. Please try again.");
+    }
   };
 
   const toggleExpand = (id: string) => { if (expandedQuote === id) setExpandedQuote(null); else setExpandedQuote(id); };
@@ -135,7 +167,6 @@ export default function QuotesPage() {
       
       {/* MOBILE OPTIMIZED NAV */}
       <nav className="bg-[#0d1117] border-b border-gray-800 sticky top-0 z-40 shadow-xl">
-        {/* Top Row: Brand & Action */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/admin" className="text-gray-400 hover:text-white transition-colors p-1"><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" /></Link>
@@ -148,7 +179,6 @@ export default function QuotesPage() {
           </div>
           
           <div className="flex items-center gap-2">
-             {/* Desktop Filters (Hidden on Mobile) */}
              <div className="hidden sm:flex items-center gap-2 mr-2">
                 <button onClick={() => setFilterMode('active')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'active' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>Active</button>
                 <button onClick={() => setFilterMode('accepted')} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'accepted' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-white'}`}>Accepted</button>
@@ -161,7 +191,6 @@ export default function QuotesPage() {
           </div>
         </div>
 
-        {/* Mobile Scrollable Filter Row */}
         <div className="sm:hidden flex gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide border-t border-gray-800/50 pt-3">
           <button onClick={() => setFilterMode('active')} className={`px-4 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all ${filterMode === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}>Active</button>
           <button onClick={() => setFilterMode('accepted')} className={`px-4 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all ${filterMode === 'accepted' ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-400 border border-gray-700'}`}>Accepted</button>
@@ -183,15 +212,12 @@ export default function QuotesPage() {
             {quotes.map((quote) => (
               <div key={quote.id} className={`bg-white rounded-xl sm:rounded-2xl border transition-all duration-300 relative ${expandedQuote === quote.id ? 'border-blue-500 shadow-lg ring-1 ring-blue-500' : 'border-gray-200 hover:border-gray-300 shadow-sm'} ${activeMenu === quote.id ? 'z-20' : 'z-0'}`}>
                 
-                {/* COMPACT CARD HEADER */}
                 <div onClick={() => toggleExpand(quote.id)} className={`p-4 cursor-pointer transition-all ${expandedQuote === quote.id ? 'bg-gray-50/50' : ''}`}>
                   <div className="flex items-start gap-3 sm:gap-4">
-                    {/* Avatar */}
                     <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0 border border-gray-100 shadow-sm ${quote.status === 'accepted' ? 'bg-green-100 text-green-600' : quote.status === 'rejected' ? 'bg-red-50 text-red-500' : 'bg-white text-gray-500'}`}>
                         <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
 
-                    {/* Main Content - Row Layout on Mobile too */}
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start">
                           <div>
@@ -199,7 +225,6 @@ export default function QuotesPage() {
                             <div className="text-[10px] sm:text-xs text-gray-500 uppercase font-medium tracking-wide mt-0.5">{quote.project_type}</div>
                           </div>
                           
-                          {/* Menu & Chevron */}
                           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                               <div className="relative">
                                   <button onClick={(e) => { e.stopPropagation(); setActiveMenu(activeMenu === quote.id ? null : quote.id); }} className="p-1.5 hover:bg-gray-200 rounded-full text-gray-400 hover:text-black transition-colors">
@@ -229,7 +254,6 @@ export default function QuotesPage() {
                           </div>
                       </div>
 
-                      {/* Info Row (Price & Date) */}
                       <div className="flex items-center justify-between mt-3 sm:mt-2">
                          <div className="flex items-center gap-3">
                              <div className="text-sm sm:text-lg font-black text-slate-900">SAR {quote.grand_total?.toLocaleString()}</div>
@@ -243,7 +267,6 @@ export default function QuotesPage() {
                   </div>
                 </div>
 
-                {/* Expanded Details - Improved Mobile Table */}
                 {expandedQuote === quote.id && (
                   <div className="border-t border-gray-100 bg-gray-50/50 p-3 sm:p-6 rounded-b-xl sm:rounded-b-2xl animate-in slide-in-from-top-1">
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
